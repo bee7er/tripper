@@ -1,0 +1,63 @@
+
+    .= SEQ: Controller
+    |   .= SEQ: Dialogue
+    |   |   ACT: Ask for loan amount
+    |   |   .= CASE
+    |   |   |- CMP: Is loan > 100,000
+    |   |   |   ACT: Explain that an Equifax search will be conducted
+    |   |   |   ACT: Ask for repayment type
+    |   |   |   .= CASE
+    |   |   |   |- CND: Is repayment type REPAYMENT
+    |   |   |   |   ACT: Explain repayment mortgage
+    |   |   |   |- ELSE
+    |   |   |   |   ACT: Explain interest only mortgage
+    |   |   |   ._ End CND
+    |   |   |   .= REPEAT WHILE
+    |   |   |   |-ITR: Enter the security properties
+    |   |   |   |   ACT: Enter security property details
+    |   |   |   ._ END WHILE
+    |   |   ._ END CASE
+    |   ._ End SEQ
+    |   ACT: End
+    ._ End SEQ
+
+
+Gender
+
+CND: M Male
+CND: F Female
+LST: *All values
+
+Status: IF gender IS Male
+
+Condition:  CTX.Field op CTX.Field
+
+TODO
+
+    The response object should have a context and a value
+    Like could be a CON, STS or RSP and then a corresponding reference
+    How do we handle the response object?
+        Currently it is now disconnected from both the conditions and the instances
+
+Specs
+
+    A Trip describes the routes through a particular interaction.
+    The Blocks describe the potential, individual elements of a given Trip.
+    An Instance is a Block in a Trip.
+
+    A Journey is the experience of a User in a given Trip.
+    A Response is the data enterred by a User for a given Instance.
+    Not all Instances require a Response.
+
+    There are various types of Blocks, which allow the creator of the Trip to construct presentation materials, questions and routes.
+    A Block may involve the presentation of copy, i.e. text, or a resource, such as an image, music or video.
+    A Block may involve the asking of a question and the recording of the Response.
+
+    A question is a particular type of Block, which involves the user to respond.
+    The response may or may not be required.
+
+Building a Trip
+    1. Add Trip
+    2. Edit Trip details
+
+

@@ -1,0 +1,9 @@
+# TODO
+Options -Indexes
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^brianetheridge.com$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^www.russetheridge.com$
+RewriteCond %{REQUEST_URI} !public/
+RewriteRule (.*) /public/$1 [L]
+AddType x-httpd-php55 .php
