@@ -30,7 +30,6 @@
         <tbody>
         @if(count($trips)>0)
             <div class="row">
-                <h2>{!! trans("admin/trip.trip") !!}</h2>
                 @foreach ($trips as $trip)
                     <div class="col-md-6">
                         <div class="row">

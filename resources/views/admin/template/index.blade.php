@@ -30,7 +30,6 @@
         <tbody>
         @if(count($templates)>0)
             <div class="row">
-                <h2>{!! trans("admin/template.template") !!}</h2>
                 @foreach ($templates as $template)
                     <div class="col-md-6">
                         <div class="row">

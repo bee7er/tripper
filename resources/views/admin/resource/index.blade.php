@@ -33,7 +33,6 @@
         <tbody>
         @if(count($resources)>0)
             <div class="row">
-                <h2>{!! trans("admin/resource.resource") !!}</h2>
                 @foreach ($resources as $resource)
                     <div class="col-md-6">
                         <div class="row">
