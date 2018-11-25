@@ -1,6 +1,7 @@
 <?php
 
 /****************   Model binding into route **************************/
+Route::model('trip', 'App\Trip');
 Route::model('language', 'App\Language');
 Route::model('template', 'App\Template');
 Route::model('resource', 'App\Resource');
@@ -34,6 +35,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
 
     # Admin Dashboard
     Route::get('dashboard', 'Admin\DashboardController@index');
+
+    # Trip
+    Route::get('trip/data', 'Admin\TripController@data');
+    Route::get('trip/{trip}/show', 'Admin\TripController@show');
+    Route::get('trip/{trip}/edit', 'Admin\TripController@edit');
+    Route::get('trip/{trip}/delete', 'Admin\TripController@delete');
+    Route::resource('trip', 'Admin\TripController');
+
+    Route::get('actionDiagram/{trip}/editActionDiagram', 'Admin\ActionDiagramController@index');
+    Route::resource('actionDiagram', 'Admin\ActionDiagramController');
 
     # Language
     Route::get('language/data', 'Admin\LanguageController@data');

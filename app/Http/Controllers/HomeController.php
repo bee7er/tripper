@@ -103,43 +103,9 @@ class HomeController extends Controller
 		$tree = [];
 		$controller = Instance::getController();
 		if ($controller) {
-			$this->loadChildren($controller, $tree, 0);
+			Instance::loadChildren($controller, $tree, 0);
 		}
 
 		return view('pages.home', compact('resources', 'notices', 'loggedIn', 'user', 'tree'));
-	}
-
-	public function loadChildren($instance, &$tree, $depth)
-	{
-		$depth++;
-		if ($instance) {
-			$children = Instance::getChildren($instance->id);
-			$len = count($children);
-			for ($i=0; $i<$len; $i++) {
-				$child = $children[$i];
-				$nextChild = isset($children[$i + 1]) ? $children[$i + 1] : null;
-				$nextBlock = null;
-				if ($nextChild) {
-					$nextBlock = Block::getBlock($nextChild->block_id);
-				}
-
-				$block = Block::getBlock($child->block_id);
-
-				$tree[$child->id . ''] = (str_repeat('| ', $depth - 1) . $block->top1 . $block->top2 . ' ' . $block->type . ': ' . $child->title);
-
-				//dd($block);
-				if ($block->container) {
-					$this->loadChildren($child, $tree, $depth);
-
-					if ($nextBlock && $nextBlock->type == Block::BLOCK_TYPE_ELSE) {
-						// Do not include an end entry because the condition continues
-					} elseif ($block->type == Block::BLOCK_TYPE_ELSE) {
-						$tree[$child->id . 'e'] = (str_repeat('| ', $depth - 1) . $block->bottom1 . $block->bottom2 . Block::BLOCK_TYPE_CONDITION . ': End ' . $child->title);
-					} else {
-						$tree[$child->id . 'e'] = (str_repeat('| ', $depth - 1) . $block->bottom1 . $block->bottom2 . $block->type . ': End ' . $child->title);
-					}
-				}
-			}
-		}
 	}
 }

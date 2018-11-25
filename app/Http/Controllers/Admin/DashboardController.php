@@ -1,9 +1,11 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminController;
+use App\Language;
 use App\Template;
 use App\Notice;
 use App\Resource;
+use App\Trip;
 use App\User;
 
 class DashboardController extends AdminController {
@@ -19,9 +21,11 @@ class DashboardController extends AdminController {
         $title = "Dashboard";
 
         $users = User::count();
+        $languages = Language::count();
         $template = Template::count();
         $resource = Resource::count();
         $notice = Notice::count();
-		return view('admin.dashboard.index',  compact('title','resource','notice','template','users'));
+        $trip = Trip::count();
+		return view('admin.dashboard.index',  compact('title','trip','resource','notice','template','languages','users'));
 	}
 }

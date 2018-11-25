@@ -10,15 +10,40 @@
     </h3>
     <div class="row">
         <div class="col-lg-3 col-md-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="glyphicon glyphicon-screenshot fa-3x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$trip}}</div>
+                            <div>{{ trans("admin/trip.trip") }}</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{url('admin/trip')}}">
+                    <div class="panel-footer">
+                        <span class="pull-left">{{ trans("admin/admin.view_detail") }}</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3">
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
-                            <i class="glyphicon glyphicon-eye-close fa-3x"></i>
+                            <i class="glyphicon glyphicon-eye-open fa-3x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{$template}}</div>
-                            <div>{{ trans("admin/template.template") }}!</div>
+                            <div>{{ trans("admin/template.template") }}</div>
                         </div>
                     </div>
                 </div>
@@ -33,7 +58,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-3">
-            <div class="panel panel-info">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
@@ -41,7 +66,7 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{$resource}}</div>
-                            <div>{{ trans("admin/resource.resource") }}!</div>
+                            <div>{{ trans("admin/resource.resource") }}</div>
                         </div>
                     </div>
                 </div>
@@ -56,7 +81,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-3">
-            <div class="panel panel-info">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
@@ -64,11 +89,36 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{$notice}}</div>
-                            <div>{{ trans("admin/notice.notice") }}!</div>
+                            <div>{{ trans("admin/notice.notice") }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{url('admin/notice')}}">
+                    <div class="panel-footer">
+                        <span class="pull-left">{{ trans("admin/admin.view_detail") }}</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-language fa-3x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$languages}}</div>
+                            <div>{{ trans("admin/admin.languages") }}</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{url('admin/language')}}">
                     <div class="panel-footer">
                         <span class="pull-left">{{ trans("admin/admin.view_detail") }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -87,7 +137,7 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{$users}}</div>
-                            <div>{{ trans("admin/admin.users") }}!</div>
+                            <div>{{ trans("admin/admin.users") }}</div>
                         </div>
                     </div>
                 </div>

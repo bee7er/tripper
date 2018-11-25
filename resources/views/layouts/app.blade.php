@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Trip :: @section('title') @show</title>
+    <title>Tripper :: @section('title') @show</title>
     @section('meta_keywords')
         <meta name="keywords" content="animation, animator, director, creator, designer"/>
     @show @section('meta_author')
@@ -13,7 +13,7 @@
     @show @section('meta_description')
         <meta name="description" content="Tripulator"/>
     @show
-        <meta property="og:title" content="Trip">
+        <meta property="og:title" content="Tripper">
         <meta property="og:image" content="http://www.squaresquare.tv/public/img/thumbs/bathroomBoarder_hv.jpg">
         <meta property="og:description" content="It's a journey">
 

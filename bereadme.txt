@@ -5,4 +5,4 @@
 
 # Kick off in a browser with:
 
-    http://localhost/trip/public/
+    http://localhost/tripper/public/

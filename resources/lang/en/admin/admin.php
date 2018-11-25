@@ -9,6 +9,7 @@ return [
     'back' => 'Back',
     'created_at' => 'Created',
     'language' => 'Language',
+    'languages' => 'Languages',
     'yes'       => 'Yes',
     'no'        =>  'No',
     'view_detail' => 'View Details',
