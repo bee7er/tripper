@@ -19,9 +19,9 @@ class Instance extends Model
      *
      * @return Instance
      */
-    public static function getController()
+    public static function getController($id)
     {
-        $instance = Instance::select(
+        $instance = Instance::first(
             array(
                 'instances.id',
                 'instances.trip_id',
@@ -35,8 +35,7 @@ class Instance extends Model
                 'instances.deleted_at',
             )
         )
-            ->where("instances.parent_id", null)
-            ->orderBy("instances.seq")
+            ->where("instances.id", $id)
             ->get();
 
         return $instance[0];
@@ -49,8 +48,10 @@ class Instance extends Model
      * @param $tree
      * @param $depth
      */
-    public static function loadChildren($instance, &$tree, $depth)
+    public static function loadChildren($instance, &$tree, $depth = 0)
     {
+        //print '<pre/>'; print_r($instance);die;
+
         $depth++;
         if ($instance) {
             $children = self::getChildren($instance->id);

@@ -145,7 +145,7 @@ class TripController extends AdminController
             ->add_column('actions',
                 '<a href="{{{ url(\'admin/trip/\' . $id . \'/edit\' ) }}}" class="btn btn-success btn-sm iframe" ><span class="glyphicon glyphicon-pencil"></span>  {{ trans("admin/modal.edit") }}</a> ' .
                 '<a href="{{{ url(\'admin/trip/\' . $id . \'/delete\' ) }}}" class="btn btn-sm btn-danger iframe"><span class="glyphicon glyphicon-trash"></span> {{ trans("admin/modal.delete") }}</a> ' .
-                '<a href="{{{ url(\'admin/actionDiagram/\' . $id . \'/editActionDiagram\' ) }}}" class="btn btn-sm btn-danger iframe"><span class="glyphicon glyphicon-trash"></span> {{ trans("admin/actionDiagram.editActionDiagram") }}</a> ' .
+                '<a href="{{{ url(\'admin/actionDiagram/\' . $id . \'/editActionDiagram\' ) }}}" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> {{ trans("admin/actionDiagram.editActionDiagram") }}</a> ' .
                 '<input type="hidden" name="row" value="{{$id}}" id="row">'
             )
             ->remove_column('id')

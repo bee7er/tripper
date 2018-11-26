@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\AdminController;
@@ -20,15 +21,17 @@ class ActionDiagramController extends AdminController
      *
      * @return View
      */
-    public function index()
+    public function index(Request $request)
     {
         $tree = [];
-        $controller = Instance::getController();
+        $controller = Instance::getController($request->trip->id);
         if ($controller) {
-            Instance::loadChildren($controller, $tree, 0);
+            Instance::loadChildren($controller, $tree);
         }
 
+        $tripTitle = $request->trip->title;
+
         // Show the page
-        return view('admin.actionDiagram.index', compact('tree'));
+        return view('admin.actionDiagram.index', compact('tree', 'tripTitle'));
     }
 }
