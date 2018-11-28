@@ -101,7 +101,7 @@ class HomeController extends Controller
 		}
 
 		$tree = [];
-		$controller = Instance::getController(1);
+		$controller = Instance::getController();
 		if ($controller) {
 			Instance::loadChildren($controller, $tree, 0);
 		}

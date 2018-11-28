@@ -19,7 +19,7 @@ class Instance extends Model
      *
      * @return Instance
      */
-    public static function getController($id)
+    public static function getController($id = 0)
     {
         $instance = Instance::first(
             array(
@@ -35,7 +35,9 @@ class Instance extends Model
                 'instances.deleted_at',
             )
         )
-            ->where("instances.id", $id)
+            ->where("instances.id", ">=", $id)
+            ->orderBy("id", "ASC")
+            ->limit(1)
             ->get();
 
         return $instance[0];
@@ -48,7 +50,7 @@ class Instance extends Model
      * @param $tree
      * @param $depth
      */
-    public static function loadChildren($instance, &$tree, $depth = 0)
+    public static function loadChildren($instance, &$tree, $depth = 0, $colors = [])
     {
         //print '<pre/>'; print_r($instance);die;
 
@@ -68,7 +70,7 @@ class Instance extends Model
                 }
 
                 $child->block = Block::getBlock($child->block_id);
-                $child->line = self::getOpeningLine($child, $child->block, $depth);
+                $child->line = self::getOpeningLine($child, $child->block, $depth, $colors);
 
                 $tree[$child->id . '_start'] = $child;
 
@@ -77,17 +79,21 @@ class Instance extends Model
                     // Let's have a new object
                     $child = clone $child;
 
-                    self::loadChildren($child, $tree, $depth);
+                    $colors[] = $child->block->color;
+
+                    self::loadChildren($child, $tree, $depth, $colors);
 
                     if ($nextBlock && $nextBlock->type == Block::BLOCK_TYPE_ELSE) {
                         // Do not include an end entry because the condition continues
                     } elseif ($child->block->type == Block::BLOCK_TYPE_ELSE) {
-                        $child->line = self::getElseLine($child, $child->block, $depth);
+                        $child->line = self::getElseLine($child, $child->block, $depth, $colors);
                         $tree[$child->id . '_else'] = $child;
                     } else {
-                        $child->line = self::getClosingLine($child, $child->block, $depth);
+                        $child->line = self::getClosingLine($child, $child->block, $depth, $colors);
                         $tree[$child->id . '_end'] = $child;
                     }
+
+                    array_pop($colors);
                 }
             }
         }
@@ -98,16 +104,23 @@ class Instance extends Model
      *
      * @return array
      */
-    public static function getOpeningLine($instance, $block, $depth)
+    public static function getOpeningLine($instance, $block, $depth, $colors)
     {
+        $prefix = '';
+        for ($i=0; $i<($depth - 1); $i++) {
+            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
+        }
+
         return (
-            str_repeat('| ', $depth - 1)
+            $prefix
+            . "<span style='color: #{$block->color}'>"
             . $block->top1
             . $block->top2
-            . ' '
+            . '&nbsp;&nbsp;'
             . $block->type
             . ': '
             . $instance->title
+            . "</span>"
         );
     }
 
@@ -116,15 +129,22 @@ class Instance extends Model
      *
      * @return array
      */
-    public static function getElseLine($instance, $block, $depth)
+    public static function getElseLine($instance, $block, $depth, $colors)
     {
+        $prefix = '';
+        for ($i=0; $i<($depth - 1); $i++) {
+            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
+        }
+
         return (
-            str_repeat('| ', $depth - 1)
+            $prefix
+            . "<span style='color: #{$block->color}'>"
             . $block->bottom1
             . $block->bottom2
+            . '&nbsp;&nbsp;'
             . Block::BLOCK_TYPE_CONDITION
             . ': End '
-            . $instance->title
+            . "</span>"
         );
     }
 
@@ -133,15 +153,23 @@ class Instance extends Model
      *
      * @return array
      */
-    public static function getClosingLine($instance, $block, $depth)
+    public static function getClosingLine($instance, $block, $depth, $colors)
     {
+        $prefix = '';
+        for ($i=0; $i<($depth - 1); $i++) {
+            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
+        }
+
         return (
-            str_repeat('| ', $depth - 1)
+            $prefix
+            . "<span style='color: #{$block->color}'>"
             . $block->bottom1
             . $block->bottom2
+            . '&nbsp;&nbsp;'
             . $block->type
             . ': End '
             . $instance->title
+            . "</span>"
         );
     }
 
