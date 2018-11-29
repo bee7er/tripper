@@ -46,10 +46,10 @@
     <div style="margin: 10px;">
 
         @if(count($tree)>0)
-            <div class="row-container">
-                <div class="row" style="text-align: left;">
+            <div id="dig" class="row-container" style="border: 1px solid #c4c4c4;">
+                <div class="row" style="text-align: left;margin: 0;padding: 8px;">
                     @foreach($tree as $twig)
-                        <div>{!! $twig->line !!}</div>
+                        <div class="row-selected" id="{!! $twig->id !!}">{!! $twig->line !!}</div>
                     @endforeach
                 </div>
             </div>
@@ -57,7 +57,7 @@
 
     </div>
 
-    <div class="menu" id="menu" style="font-weigh: bold;">
+    <div class="menu" id="menu" style="font-weigh: bold;z-index: 9999;background-color: white;">
         <ul class="menu-options">
             <li class="menu-option">Back</li>
             <li class="menu-option">Reload</li>
@@ -135,19 +135,25 @@
         });
 
         let menuVisible = false;
+        let target = null;
 
         const toggleMenu = function(command) {
             let menu = $("#menu");
 
             menu.css('display', command === "show" ? "block" : "none");
+            menuVisible = (command === "show");
         };
 
         const setPosition = function({ top, left }) {
 
             let menu = $("#menu");
 
-            menu.css("left", left + 'px');
             menu.css("top", top + 'px');
+            menu.css("left", left + 'px');
+
+//            let position = $("#dig").position();
+//            menu.css("left", position.left + 'px');
+//            menu.css("top", position.top + 'px');
 
             toggleMenu('show');
         };
@@ -159,14 +165,42 @@
         window.addEventListener("contextmenu", function(e) {
             e.preventDefault();
 
-            const origin = {
-                top: e.pageY,
-                left: e.pageX
-            };
+//            console.log(target.closest('div').attr('id'));
 
-            setPosition(origin);
+            if (null !== target) {
+                let position = $(e.target).closest('div').parent().position();
+                let top = e.pageY - position.top - 300;
+                let left = e.pageX - position.left + 40;
+
+                const origin = {
+                    top: top,
+                    left: left
+                };
+
+                setPosition(origin);
+            }
             return false;
         });
+
+        $(".row-selected").click(function rowSelected(e) {
+            e.preventDefault();
+
+            setTarget(e);
+        });
+
+        function setTarget(e) {
+            clearTarget();
+            target = $(e.target);
+            target.css('border','1px solid red');
+            console.log(target.closest('div').attr('id'));
+        }
+
+        function clearTarget() {
+            if (null !== target) {
+                target.css('border', '0px solid red');
+                target = null;
+            }
+        }
 
     </script>
 @endsection
