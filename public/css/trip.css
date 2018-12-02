@@ -29,6 +29,14 @@
     background: rgba(0, 128, 128, 0.25);
 }
 
+.menu-show {
+    display: block;
+}
+
+.menu-hide {
+    display: none;
+}
+
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
 

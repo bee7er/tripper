@@ -50,11 +50,12 @@
             });
         });
 
-        let menuVisible = false;
-        let target = null;
-        let toggleCommand = null;
+        //
+        let targetInstance = null;
 
-        const contextMenuCallback = function(response) {
+        // Execute the context menu construction and using a callback to receive the result
+        const contextMenuCallback = function(response, command) {
+
             let menu = $("#menu");
             if (response && response.success === true) {
                 if (response.success === true) {
@@ -64,24 +65,24 @@
                 $(".menu-option").click(function (e) {
                     e.preventDefault();
 
-                    if (null !== target) {
+                    if (null !== targetInstance) {
                         openForm();
                     }
                 });
 
-                menu.css('display', toggleCommand === "show" ? "block" : "none");
-                menuVisible = (toggleCommand === "show");
+                let newClass =(command === "show" ? "menu-show" : "menu-hide");
+                // Clear current classes and then set the new one
+                menu.removeClass("menu-show menu-hide");
+                menu.addClass(newClass);
             }
         };
         const toggleMenu = function(command) {
-            let instanceId = target.closest('div').attr('id');
+            let instanceId = targetInstance.closest('div').attr('id');
             let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-            // Must use global for callback function
-            toggleCommand = command;
-            ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback);
+            ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback, command);
         };
 
-        const setPosition = function({ top, left }) {
+        const setMenuPosition = function({ top, left }) {
             let menu = $("#menu");
 
             menu.css("top", top + 'px');
@@ -90,20 +91,22 @@
         };
 
         window.addEventListener("click", function(e) {
-            if (menuVisible) toggleMenu("hide");
+            let menu = $("#menu");
+            if (menu.hasClass('menu-show')) toggleMenu("hide");
         });
 
         window.addEventListener("keyup", function(e) {
             if (e.which == 27) {
-                if (menuVisible) toggleMenu("hide");
-                else if (target) clearTarget();
+                let menu = $("#menu");
+                if (menu.hasClass('menu-show')) toggleMenu("hide");
+                else if (targetInstance) clearTarget();
             }
         });
 
         window.addEventListener("contextmenu", function(e) {
             e.preventDefault();
 
-            if (null !== target) {
+            if (null !== targetInstance) {
                 let position = $(e.target).closest('div').parent().position();
                 let top = e.pageY - position.top - 300;
                 let left = e.pageX - position.left + 40;
@@ -113,7 +116,7 @@
                     left: left
                 };
 
-                setPosition(origin);
+                setMenuPosition(origin);
             }
             return false;
         });
@@ -126,17 +129,18 @@
 
         function setTarget(e) {
             clearTarget();
-            target = $(e.target);
-            target.parent().addClass('instance-selected');
+            targetInstance = $(e.target);
+            targetInstance.parent().addClass('instance-selected');
         }
 
         function clearTarget() {
-            if (null !== target) {
-                target.parent().removeClass('instance-selected');
-                target = null;
+            if (null !== targetInstance) {
+                targetInstance.parent().removeClass('instance-selected');
+                targetInstance = null;
             }
         }
 
+        // Execute the form construction and loading using a callback to receive the result
         const openFormCallback = function(response) {
             if (response && response.success === true) {
                 $("#instanceFormData").html(response.formHtml);
@@ -144,7 +148,7 @@
             }
         };
         function openForm() {
-            let instanceId = target.closest('div').attr('id');
+            let instanceId = targetInstance.closest('div').attr('id');
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
             ajaxCall(url, JSON.stringify({instanceId}), openFormCallback);
         }
@@ -153,6 +157,7 @@
             $("#instanceForm").css('display', 'none');
         }
 
+        // Execute the form submission and using a callback to receive the result
         const submitFormCallback = function(response) {
             if (response && response.success === true) {
                 $("#instanceFormData").html(response.formHtml);
@@ -163,7 +168,7 @@
         };
         function submitForm() {
             let formData = $("#instanceForm").serializeArray();
-            let instanceId = target.closest('div').attr('id');
+            let instanceId = targetInstance.closest('div').attr('id');
             let url = "{{config('app.base_url')}}admin/api/update-instance/";
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
         }

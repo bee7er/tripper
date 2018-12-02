@@ -3,10 +3,10 @@
  *
  * @param url
  * @param data
+ * @param callback
+ * @param params - any additional parameters to pass on to the callback
  */
-function ajaxCall(url, data, callback) {
-
-    let instanceId = target.closest('div').attr('id');
+function ajaxCall(url, data, callback, params) {
 
     $.ajax({
         type: 'post',
@@ -16,7 +16,7 @@ function ajaxCall(url, data, callback) {
         cache: false,
         processData: false
     }).success(function (response) {
-        callback(response);
+        callback(response, params);
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // Optionally alert the user of an error here...
         var textResponse = jqXHR.responseText;
