@@ -74,6 +74,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
         ['prefix' => 'api'],
         function () {
             Route::post(
+                '/get-action-diagram',
+                [
+                    'as' => 'api-get-action-diagram-route',
+                    'uses' => 'Admin\ActionDiagramController@getActionDiagram'
+                ]
+            );
+            Route::post(
                 '/update-instance',
                 [
                     'as' => 'api-update-instance-route',

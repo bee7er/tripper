@@ -9,7 +9,7 @@
 
     <div class="page-header">
         <h3>
-            {!! trans("admin/actionDiagram.title") !!}: {!! $tripTitle !!}
+            {!! trans("admin/actionDiagram.title") !!}: {!! $trip->title !!}
             <div class="pull-right">
                 <div class="pull-right">
                     <button class="btn btn-primary btn-xs go_back">
@@ -20,21 +20,7 @@
         </h3>
     </div>
 
-    <div style="margin: 10px;">
-
-        @if(count($tree)>0)
-            <div id="dig" class="row-container" style="border: 1px solid #c4c4c4;">
-                <div class="row" style="text-align: left;margin: 0;padding: 8px;">
-                    @foreach($tree as $twig)
-                        <div class="row-selected" id="{!! $twig->id !!}">{!! $twig->line !!}</div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-    </div>
-
-
+    @include('partials.action-diagram')
     @include('partials.context-menu')
     @include('partials.forms')
 
@@ -54,94 +40,112 @@
         let targetInstance = null;
 
         // Execute the context menu construction and using a callback to receive the result
-        const contextMenuCallback = function(response, command) {
+        const actionDiagramCallback = function(response, command) {
 
-            let menu = $("#menu");
+            let diagram = $("#actionDiagram");
             if (response && response.success === true) {
                 if (response.success === true) {
-                    menu.html(response.formHtml);
-                }
+                    diagram.html(response.formHtml);
 
-                $(".menu-option").click(function (e) {
-                    e.preventDefault();
+                    // Now that the diagram has been constructed we set up the event handlers
+                    // Execute the context menu construction and using a callback to receive the result
+                    const contextMenuCallback = function(response, command) {
 
-                    if (null !== targetInstance) {
-                        openForm();
+                        let menu = $("#menu");
+                        if (response && response.success === true) {
+                            if (response.success === true) {
+                                menu.html(response.formHtml);
+                            }
+
+                            $(".menu-option").click(function (e) {
+                                e.preventDefault();
+
+                                if (null !== targetInstance) {
+                                    openForm();
+                                }
+                            });
+
+                            let newClass =(command === "show" ? "menu-show" : "menu-hide");
+                            // Clear current classes and then set the new one
+                            menu.removeClass("menu-show menu-hide");
+                            menu.addClass(newClass);
+                        }
+                    };
+                    const toggleMenu = function(command) {
+                        let instanceId = targetInstance.attr('id');
+                        let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
+                        ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback, command);
+                    };
+
+                    const setMenuPosition = function({ top, left }) {
+                        let menu = $("#menu");
+                        menu.css("top", top + 'px');
+                        menu.css("left", left + 'px');
+                        toggleMenu('show');
+                    };
+
+                    window.addEventListener("click", function(e) {
+                        let menu = $("#menu");
+                        if (menu.hasClass('menu-show')) toggleMenu("hide");
+                    });
+
+                    window.addEventListener("keyup", function(e) {
+                        if (e.which == 27) {
+                            let menu = $("#menu");
+                            if (menu.hasClass('menu-show')) toggleMenu("hide");
+                            else if (targetInstance) clearTarget();
+
+                            closeForm();
+                        }
+                    });
+
+                    window.addEventListener("contextmenu", function(e) {
+                        e.preventDefault();
+
+                        if (null !== targetInstance) {
+                            let position = $(e.target).position();
+                            let top = e.pageY - position.top - 300;
+                            let left = e.pageX - position.left + 40;
+
+                            const origin = {
+                                top: top,
+                                left: left
+                            };
+
+                            setMenuPosition(origin);
+                        }
+                        return false;
+                    });
+
+                    $(".row-selected").click(function rowSelected(e) {
+                        e.preventDefault();
+
+                        setTarget(e);
+                    });
+
+                    function setTarget(e) {
+                        clearTarget();
+                        closeForm();
+
+                        targetInstance = $(e.target).parent();
+                        targetInstance.addClass('instance-selected');
                     }
-                });
 
-                let newClass =(command === "show" ? "menu-show" : "menu-hide");
-                // Clear current classes and then set the new one
-                menu.removeClass("menu-show menu-hide");
-                menu.addClass(newClass);
+                    function clearTarget() {
+                        if (null !== targetInstance) {
+                            targetInstance.removeClass('instance-selected');
+                            targetInstance = null;
+                        }
+                    }
+                }
             }
         };
-        const toggleMenu = function(command) {
-            let instanceId = targetInstance.attr('id');
-            let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-            ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback, command);
+        const loadActionDiagram = function(command) {
+            let tripId = '{!! $trip->id !!}';
+            let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
+            ajaxCall(url, JSON.stringify({tripId}), actionDiagramCallback);
         };
-
-        const setMenuPosition = function({ top, left }) {
-            let menu = $("#menu");
-            menu.css("top", top + 'px');
-            menu.css("left", left + 'px');
-            toggleMenu('show');
-        };
-
-        window.addEventListener("click", function(e) {
-            let menu = $("#menu");
-            if (menu.hasClass('menu-show')) toggleMenu("hide");
-        });
-
-        window.addEventListener("keyup", function(e) {
-            if (e.which == 27) {
-                let menu = $("#menu");
-                if (menu.hasClass('menu-show')) toggleMenu("hide");
-                else if (targetInstance) clearTarget();
-
-                closeForm();
-            }
-        });
-
-        window.addEventListener("contextmenu", function(e) {
-            e.preventDefault();
-
-            if (null !== targetInstance) {
-                let position = $(e.target).position();
-                let top = e.pageY - position.top - 300;
-                let left = e.pageX - position.left + 40;
-
-                const origin = {
-                    top: top,
-                    left: left
-                };
-
-                setMenuPosition(origin);
-            }
-            return false;
-        });
-
-        $(".row-selected").click(function rowSelected(e) {
-            e.preventDefault();
-
-            setTarget(e);
-        });
-
-        function setTarget(e) {
-            clearTarget();
-            closeForm();
-
-            targetInstance = $(e.target).parent();
-            targetInstance.addClass('instance-selected');
-        }
-
-        function clearTarget() {
-            if (null !== targetInstance) {
-                targetInstance.removeClass('instance-selected');
-                targetInstance = null;
-            }
-        }
+        loadActionDiagram();
 
         // Execute the form construction and loading using a callback to receive the result
         const openFormCallback = function(response) {
@@ -163,10 +167,14 @@
         // Execute the form submission and using a callback to receive the result
         const submitFormCallback = function(response) {
             if (response && response.success === true) {
+
                 $("#instanceFormData").html(response.formHtml);
+
                 setTimeout(function () {
                     closeForm();
                 }, 100);
+
+                loadActionDiagram();
             }
         };
         function submitForm() {
