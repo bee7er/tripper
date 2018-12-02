@@ -13,21 +13,14 @@ Route::pattern('slug', '[0-9a-z-_]+');
 /***************    Site routes  **********************************/
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
-// NB Using the following as an alias to video controller
-Route::get('/{name}', 'VideoController@show');
-Route::get('video/{name}', 'VideoController@show');
 // Others
 Route::get('home', 'HomeController@index');
-Route::get('template', 'PagesController@template');
-Route::get('movin', 'PagesController@movin');
-Route::get('gif/{id}', 'GifController@show');
-Route::get('image/{id}', 'ImageController@show');
+Route::get('about', 'PagesController@about');
 
 Route::controllers([
     'auth' => 'Auth\AuthController',
     'password' => 'Auth\PasswordController',
 ]);
-
 /***************    Admin routes  **********************************/
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
 
@@ -42,6 +35,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::resource('trip', 'Admin\TripController');
 
     Route::get('actionDiagram/{trip}/editActionDiagram', 'Admin\ActionDiagramController@index');
+    Route::get('actionDiagram/{instance}/updateinstance', 'Admin\ActionDiagramController@updateinstance');
     Route::resource('actionDiagram', 'Admin\ActionDiagramController');
 
     # Language
@@ -75,4 +69,32 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::get('user/{user}/edit', 'Admin\UserController@edit');
     Route::get('user/{user}/delete', 'Admin\UserController@delete');
     Route::resource('user', 'Admin\UserController');
+
+    Route::group(
+        ['prefix' => 'api'],
+        function () {
+            Route::post(
+                '/update-instance',
+                [
+                    'as' => 'api-update-instance-route',
+                    'uses' => 'Admin\ActionDiagramController@updateInstance'
+                ]
+            );
+            Route::post(
+                '/get-instance-context-menu',
+                [
+                    'as' => 'api-et-instance-context-menu-route',
+                    'uses' => 'Admin\ActionDiagramController@getInstanceContextMenu'
+                ]
+            );
+            Route::post(
+                '/get-instance-form',
+                [
+                    'as' => 'api-get-instance-form-route',
+                    'uses' => 'Admin\ActionDiagramController@getInstanceForm'
+                ]
+            );
+        }
+    );
+
 });

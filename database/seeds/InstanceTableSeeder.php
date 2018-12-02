@@ -22,6 +22,7 @@ class InstanceTableSeeder extends Seeder
         $trip = Trip::where('title', 'First trip')->firstOrFail();
 
         $actBlock = Block::where('type', Block::BLOCK_TYPE_ACTION)->firstOrFail();
+        $cmtBlock = Block::where('type', Block::BLOCK_TYPE_COMMENT)->firstOrFail();
         $cndBlock = Block::where('type', Block::BLOCK_TYPE_CONDITION)->firstOrFail();
         $elsBlock = Block::where('type', Block::BLOCK_TYPE_ELSE)->firstOrFail();
         $itrBlock = Block::where('type', Block::BLOCK_TYPE_ITERATION)->firstOrFail();
@@ -48,8 +49,16 @@ class InstanceTableSeeder extends Seeder
         $seqInstance->trip_id = $trip->id;
         $seqInstance->parent_id = $ctrlSeqInstance->id;
         $seqInstance->seq = 1;
-        $seqInstance->title = 'Dialogue';
+        $seqInstance->title = 'Mortgage Enquiry';
         $seqInstance->save();
+
+        $cmtInstance = new Instance();
+        $cmtInstance->block_id = $cmtBlock->id;
+        $cmtInstance->trip_id = $trip->id;
+        $cmtInstance->parent_id = $seqInstance->id;
+        $cmtInstance->seq = 1.2;
+        $cmtInstance->title = 'A conversation between an adviser and a mortgage applicant';
+        $cmtInstance->save();
 
         // Question to determine loan amount
         $actInstance = new Instance();

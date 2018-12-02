@@ -14,7 +14,7 @@ class CreateBlocksTable extends Migration
 		Schema::create('blocks', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
-			$table->enum('type', array('act', 'cnd', 'els', 'itr', 'seq'))->unique();
+			$table->enum('type', array('act', 'cmt', 'cnd', 'els', 'itr', 'seq'))->unique();
 			$table->string('label');
 			$table->char('top1', 1);
 			$table->char('top2', 1);
@@ -23,6 +23,7 @@ class CreateBlocksTable extends Migration
 			$table->char('bottom2', 1);
 			$table->char('color', 6);
 			$table->boolean('container');
+            $table->smallInteger('contextMenuMap')->unsigned();
 			$table->timestamps();
             $table->softDeletes();
 		});

@@ -12,6 +12,8 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        //
+        'admin/api/update-instance',
+        'admin/api/get-instance-form',
+        'admin/api/get-instance-context-menu'
     ];
 }

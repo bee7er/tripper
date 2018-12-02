@@ -14,18 +14,13 @@
                 </div>
             </div>
             <div class="go-top" onclick="scrollToAnchor('top');">
-                <div id="goTopHand-work" class="bodymovin-hand" onmouseover="startBodymovinHand(WORK);"
-                     onmouseout="stopBodymovinHand(WORK);">
-                </div>
+                @if($loggedIn)
+                    <div style="color: white;text-align: center;">{{ $user->username }} is logged in</div>
+                @endif
             </div>
         @endif
 
     </div>
-
-
-    @if($loggedIn)
-        <div style="color: white;text-align: center;">{{ $user->username }} is logged in</div>
-    @endif
 
 @endsection
 

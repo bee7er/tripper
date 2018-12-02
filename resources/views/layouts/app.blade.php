@@ -13,10 +13,6 @@
     @show @section('meta_description')
         <meta name="description" content="Tripulator"/>
     @show
-        <meta property="og:title" content="Tripper">
-        <meta property="og:image" content="http://www.squaresquare.tv/public/img/thumbs/bathroomBoarder_hv.jpg">
-        <meta property="og:description" content="It's a journey">
-
 		<link href="{{ asset('css/site.css') }}" rel="stylesheet">
         <script src="{{ asset('js/site.js?v3') }}"></script>
 

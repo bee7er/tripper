@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,7 +22,11 @@ class Instance extends Model
      */
     public static function getController($id = 0)
     {
-        $instance = Instance::first(
+        if (0 !== $id) {
+            return self::where(['trip_id' => $id,'seq' => 0])->firstOrFail();
+        }
+
+        $instances = Instance::first(
             array(
                 'instances.id',
                 'instances.trip_id',
@@ -40,7 +45,31 @@ class Instance extends Model
             ->limit(1)
             ->get();
 
-        return $instance[0];
+        if ($instances && count($instances) > 0) {
+            return $instances[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the instance
+     *
+     * @return Instance
+     */
+    public static function getInstance($id)
+    {
+        $instances = DB::table('instances')
+            ->join('blocks', 'blocks.id', '=', 'instances.block_id')
+            ->select('instances.*', 'blocks.*')
+            ->where(['instances.id' => $id])
+            ->get();
+
+        if ($instances && count($instances) > 0) {
+            return $instances[0];
+        }
+
+        return null;
     }
 
     /**

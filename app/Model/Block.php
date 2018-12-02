@@ -11,10 +11,13 @@ class Block extends Model
     use SoftDeletes;
 
     const BLOCK_TYPE_ACTION = 'act';
+    const BLOCK_TYPE_COMMENT = 'cmt';
     const BLOCK_TYPE_CONDITION = 'cnd';
     const BLOCK_TYPE_ELSE = 'els';
     const BLOCK_TYPE_ITERATION = 'itr';
     const BLOCK_TYPE_SEQUENCE = 'seq';
+
+    const CONTEXT_MENU_MAP_ACTION = '';
 
     protected $dates = ['deleted_at'];
 
