@@ -84,21 +84,21 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                 '/update-instance',
                 [
                     'as' => 'api-update-instance-route',
-                    'uses' => 'Admin\ActionDiagramController@updateInstance'
+                    'uses' => 'Admin\InstanceController@updateInstance'
                 ]
             );
             Route::post(
                 '/get-instance-context-menu',
                 [
                     'as' => 'api-et-instance-context-menu-route',
-                    'uses' => 'Admin\ActionDiagramController@getInstanceContextMenu'
+                    'uses' => 'Admin\InstanceController@getInstanceContextMenu'
                 ]
             );
             Route::post(
                 '/get-instance-form',
                 [
                     'as' => 'api-get-instance-form-route',
-                    'uses' => 'Admin\ActionDiagramController@getInstanceForm'
+                    'uses' => 'Admin\InstanceController@getInstanceForm'
                 ]
             );
         }

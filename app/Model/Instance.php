@@ -62,7 +62,7 @@ class Instance extends Model
         // NB Avoid using Block columns which clash with instance
         $instances = DB::table('instances')
             ->join('blocks', 'blocks.id', '=', 'instances.block_id')
-            ->select('instances.*', 'blocks.contextMenuMap')
+            ->select('instances.*', 'blocks.type', 'blocks.contextMenuMap')
             ->where(['instances.id' => $id])
             ->get();
 

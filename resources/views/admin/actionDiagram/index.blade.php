@@ -60,12 +60,14 @@
                             $(".menu-option").click(function (e) {
                                 e.preventDefault();
 
+                                // Which option was selected?
+                                let action = $(e.target).attr('id');
                                 if (null !== targetInstance) {
-                                    openForm();
+                                    openForm(action);
                                 }
                             });
 
-                            let newClass =(command === "show" ? "menu-show" : "menu-hide");
+                            let newClass = (command === "show" ? "menu-show" : "menu-hide");
                             // Clear current classes and then set the new one
                             menu.removeClass("menu-show menu-hide");
                             menu.addClass(newClass);
@@ -154,10 +156,10 @@
                 $("#instanceForm").css('display', 'block');
             }
         };
-        function openForm() {
+        function openForm(action) {
             let instanceId = targetInstance.attr('id');
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
-            ajaxCall(url, JSON.stringify({instanceId}), openFormCallback);
+            ajaxCall(url, JSON.stringify({instanceId, action}), openFormCallback);
         }
 
         function closeForm() {
