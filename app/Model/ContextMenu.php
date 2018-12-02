@@ -4,7 +4,7 @@ namespace App\Model;
 
 class ContextMenu
 {
-
+    // Bit map definitions
     const CONTEXT_MENU_EDIT = 1;
     const CONTEXT_MENU_COLLAPSE = 2;
     const CONTEXT_MENU_INSERT_ACTION = 4;
@@ -18,7 +18,7 @@ class ContextMenu
     const CONTEXT_MENU_DELETE = 1024;
 
     /**
-     * Build and return the context menu for an object
+     * Build and return the context menu for an instance
      *
      * @param $instance
      * @return string

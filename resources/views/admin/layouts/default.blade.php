@@ -15,7 +15,9 @@
               content="Tripper description"/>
     @show
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/trip.css') }}" rel="stylesheet">
     <script src="{{ asset('js/admin.js') }}"></script>
+    <script src="{{ asset('js/trip.js') }}"></script>
     @yield('styles')
 </head>
 <body>
