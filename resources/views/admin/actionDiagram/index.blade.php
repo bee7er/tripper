@@ -50,7 +50,7 @@
             });
         });
 
-        //
+        // The selected action diagram instance entry
         let targetInstance = null;
 
         // Execute the context menu construction and using a callback to receive the result
@@ -77,14 +77,13 @@
             }
         };
         const toggleMenu = function(command) {
-            let instanceId = targetInstance.closest('div').attr('id');
+            let instanceId = targetInstance.attr('id');
             let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
             ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback, command);
         };
 
         const setMenuPosition = function({ top, left }) {
             let menu = $("#menu");
-
             menu.css("top", top + 'px');
             menu.css("left", left + 'px');
             toggleMenu('show');
@@ -100,6 +99,8 @@
                 let menu = $("#menu");
                 if (menu.hasClass('menu-show')) toggleMenu("hide");
                 else if (targetInstance) clearTarget();
+
+                closeForm();
             }
         });
 
@@ -107,7 +108,7 @@
             e.preventDefault();
 
             if (null !== targetInstance) {
-                let position = $(e.target).closest('div').parent().position();
+                let position = $(e.target).position();
                 let top = e.pageY - position.top - 300;
                 let left = e.pageX - position.left + 40;
 
@@ -129,13 +130,15 @@
 
         function setTarget(e) {
             clearTarget();
-            targetInstance = $(e.target);
-            targetInstance.parent().addClass('instance-selected');
+            closeForm();
+
+            targetInstance = $(e.target).parent();
+            targetInstance.addClass('instance-selected');
         }
 
         function clearTarget() {
             if (null !== targetInstance) {
-                targetInstance.parent().removeClass('instance-selected');
+                targetInstance.removeClass('instance-selected');
                 targetInstance = null;
             }
         }
@@ -148,7 +151,7 @@
             }
         };
         function openForm() {
-            let instanceId = targetInstance.closest('div').attr('id');
+            let instanceId = targetInstance.attr('id');
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
             ajaxCall(url, JSON.stringify({instanceId}), openFormCallback);
         }
@@ -167,8 +170,7 @@
             }
         };
         function submitForm() {
-            let formData = $("#instanceForm").serializeArray();
-            let instanceId = targetInstance.closest('div').attr('id');
+            let formData = $("#instanceFormData").serializeArray();
             let url = "{{config('app.base_url')}}admin/api/update-instance/";
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
         }

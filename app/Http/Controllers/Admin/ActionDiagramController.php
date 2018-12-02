@@ -60,6 +60,7 @@ class ActionDiagramController extends AdminController
                 $formHtml = '<h1>Comment</h1>
 
                 <label for="title"><b>Title</b></label>
+                <input type="hidden" name="instanceId" value="' . $instance->id . '">
                 <input type="text" placeholder="Enter Title" name="title" id="title" value="' . $instance->title . '">
 
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
@@ -82,13 +83,25 @@ class ActionDiagramController extends AdminController
     {
         $data = Input::get();
 
-//        print '<pre/>'; print_r($data);die;
-
         $formData = [];
         if ($data) {
             foreach ($data as $datum) {
                 $formData[$datum['name']] = $datum['value'];
             }
+        }
+
+        // Update the instance
+        try {
+//            Log::info('1', []);
+            $instance = Instance::find($formData['instanceId']);
+            $instance->title = $formData['title'];
+            $instance->save();
+        } catch (\Exception $e) {
+            Log::info('Error updating data: ' . $formData['instanceId'], [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
         }
 
         return Response::json(array(
@@ -111,7 +124,6 @@ class ActionDiagramController extends AdminController
             $formHtml = 'Error, instance id not found in function parameters';
         } else {
             $instance = Instance::getInstance($instanceId);
-
             if (!$instance) {
                 $success = false;
                 $formHtml = "Error, could not find instance for id $instanceId";
@@ -136,81 +148,4 @@ class ActionDiagramController extends AdminController
         // Show the page
         return view('admin.actionDiagram.create_edit', compact([]));
     }
-
-//    /**
-//     * Show the form for editing the specified object.
-//     *
-//     * @param  int $id
-//     * @return Response
-//     */
-//    public function edit(Instance $instance)
-//    {
-////        print '<pre/>'; print_r($instance);die;
-//
-//        // Show the page
-//        return view('admin.actionDiagram.create_edit', compact('instance'));
-//    }
-//
-//    /**
-//     * Store a newly created object in storage
-//     *
-//     * @return Response
-//     */
-//    public function store(InstanceRequest $request)
-//    {
-//        Log::info('Saving new data', [$request->get('title')]);
-//
-//        $title = $request->get('title');
-//        $instance = new Instance([
-//            'title' => $title
-//        ]);
-//        $instance->save();
-//    }
-//
-//    /**
-//     * Update the specified object in storage
-//     *
-//     * @param  int $id
-//     * @return Response
-//     */
-//    public function update(InstanceRequest $request, Instance $instance)
-//    {
-//        try {
-//            Log::info('Update instance', []);
-//            $title = $request->get('title');
-//
-//            $instance->update([
-//                'title' => $title
-//            ]);
-//        } catch (\Exception $e) {
-//            Log::info('Error updating data: ' . $instance->id, [
-//                $e->getMessage(),
-//                $e->getFile(),
-//                $e->getLine()
-//            ]);
-//        }
-//    }
-//
-//    /**
-//     * Remove the specified object from storage
-//     *
-//     * @param $id
-//     * @return Response
-//     */
-//
-//    public function delete(Instance $instance)
-//    {
-//        return view('admin.actionDiagram.delete', compact('instance'));
-//    }
-//
-//    /**
-//     * Remove the specified object from storage.
-//     *
-//     * @param $id
-//     * @return Response
-//     */
-//    public function destroy(Instance $instance)
-//    {
-//        $instance->delete();
-//    }
 }
