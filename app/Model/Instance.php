@@ -16,6 +16,12 @@ class Instance extends Model
     protected $guarded  = array('id');
 
     /**
+     * Action diagram entries
+     * @var array
+     */
+    public $entries = [];
+
+    /**
      * Get the parents children
      *
      * @return Instance
@@ -100,7 +106,10 @@ class Instance extends Model
                 }
 
                 $child->block = Block::getBlock($child->block_id);
-                $child->line = self::getOpeningLine($child, $child->block, $depth, $colors);
+                $child->entries[] = self::getOpeningLine($child, $child->block, $depth, $colors);
+                if ($child->block->container && $child->block->type !== Block::BLOCK_TYPE_ELSE) {
+                    $child->entries[] = self::getContainerLine($child, $child->block, $depth, $colors);
+                }
 
                 $tree[$child->id . '_start'] = $child;
 
@@ -108,6 +117,7 @@ class Instance extends Model
 
                     // Let's have a new object
                     $child = clone $child;
+                    $child->entries = [];
 
                     $colors[] = $child->block->color;
 
@@ -116,10 +126,10 @@ class Instance extends Model
                     if ($nextBlock && $nextBlock->type == Block::BLOCK_TYPE_ELSE) {
                         // Do not include an end entry because the condition continues
                     } elseif ($child->block->type == Block::BLOCK_TYPE_ELSE) {
-                        $child->line = self::getElseLine($child, $child->block, $depth, $colors);
+                        $child->entries[] = self::getElseLine($child, $child->block, $depth, $colors);
                         $tree[$child->id . '_else'] = $child;
                     } else {
-                        $child->line = self::getClosingLine($child, $child->block, $depth, $colors);
+                        $child->entries[] = self::getClosingLine($child, $child->block, $depth, $colors);
                         $tree[$child->id . '_end'] = $child;
                     }
 
@@ -130,28 +140,18 @@ class Instance extends Model
     }
 
     /**
-     * Build and return the string representing the opening line
+     * Get the current prefix, comprising the depth and colors of previous levels
      *
-     * @return array
+     * @return string
      */
-    public static function getOpeningLine($instance, $block, $depth, $colors)
+    private static function getPrefix($depth, $colors)
     {
         $prefix = '';
         for ($i=0; $i<($depth - 1); $i++) {
             $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
         }
 
-        return (
-            $prefix
-            . "<span style='color: #{$block->color}'>"
-            . $block->top1
-            . $block->top2
-            . '&nbsp;&nbsp;'
-            . $block->type
-            . ': '
-            . $instance->title
-            . "</span>"
-        );
+        return $prefix;
     }
 
     /**
@@ -159,16 +159,61 @@ class Instance extends Model
      *
      * @return array
      */
-    public static function getElseLine($instance, $block, $depth, $colors)
+    public static function getOpeningLine($instance, $block, $depth, $colors)
     {
-        $prefix = '';
-        for ($i=0; $i<($depth - 1); $i++) {
-            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
+        $prefix = self::getPrefix($depth, $colors);
+
+        // Insert before for containers but after for non-containers
+        $title = 'Insert before';
+        $insertAction = 'before';
+        if (!$block->container) {
+            $title = 'Insert after';
+            $insertAction = 'after';
         }
 
         return (
             $prefix
-            . "<span style='color: #{$block->color}'>"
+            . "<span style='color: #{$block->color}' title='$title' data-insert-action='$insertAction'>"
+            . $block->top1
+            . $block->top2
+            . '&nbsp;&nbsp;'
+            . $block->type
+            . ($block->container ? '' : ': ' . $instance->title)
+            . "</span>"
+        );
+    }
+
+    /**
+     * Build and return the string representing the first line of a container
+     *
+     * @return array
+     */
+    public static function getContainerLine($instance, $block, $depth, $colors)
+    {
+        $prefix = self::getPrefix($depth, $colors);
+
+        return (
+            $prefix
+            . "<span style='color: #{$block->color}' title='Insert inside' data-insert-action='inside'>"
+            . $block->side
+            . '-&nbsp;&nbsp;'
+            . $instance->title
+            . "</span>"
+        );
+    }
+
+    /**
+     * Build and return the string representing the closing of an else
+     *
+     * @return array
+     */
+    public static function getElseLine($instance, $block, $depth, $colors)
+    {
+        $prefix = self::getPrefix($depth, $colors);
+
+        return (
+            $prefix
+            . "<span style='color: #{$block->color}' title='Insert after' data-insert-action='after'>"
             . $block->bottom1
             . $block->bottom2
             . '&nbsp;&nbsp;'
@@ -185,14 +230,11 @@ class Instance extends Model
      */
     public static function getClosingLine($instance, $block, $depth, $colors)
     {
-        $prefix = '';
-        for ($i=0; $i<($depth - 1); $i++) {
-            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
-        }
+        $prefix = self::getPrefix($depth, $colors);
 
         return (
             $prefix
-            . "<span style='color: #{$block->color}'>"
+            . "<span style='color: #{$block->color}' title='Insert after' data-insert-action='after'>"
             . $block->bottom1
             . $block->bottom2
             . '&nbsp;&nbsp;'

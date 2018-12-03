@@ -99,7 +99,7 @@ class InstanceController extends AdminController
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" name="action" value="' . $action . '">
-                <input type="text" placeholder="Enter Title" name="title" id="title" value="' . ($instance ? $instance->title : '') . '">
+                <input type="text" placeholder="Enter Title" name="title" id="title" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
     }
