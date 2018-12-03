@@ -181,7 +181,7 @@
         };
         function submitForm() {
             let formData = $("#instanceFormData").serializeArray();
-            let url = "{{config('app.base_url')}}admin/api/update-instance/";
+            let url = "{{config('app.base_url')}}admin/api/save-instance/";
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
         }
     </script>

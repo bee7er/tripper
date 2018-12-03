@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Model\Journey;
-use App\Model\Trip;
+use App\Trip;
 use App\User;
 
 class JourneyTableSeeder extends Seeder

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\Trip;
+use App\Trip;
 
 class TripTableSeeder extends Seeder
 {

@@ -26,7 +26,7 @@ class ContextMenu
     const CM_ACTION_INSERT_ELSE = 'insert-else';
     const CM_ACTION_INSERT_ITERATION = 'insert-iteration';
     const CM_ACTION_INSERT_SEQUENCE = 'insert-sequence';
-    const CM_ACTION_ACTION_ZOOM = 'zoom';
+    const CM_ACTION_ZOOM = 'zoom';
     const CM_ACTION_UNZOOM = 'unzoom';
     const CM_ACTION_DELETE = 'delete';
 

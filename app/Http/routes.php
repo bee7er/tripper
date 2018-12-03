@@ -81,10 +81,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                 ]
             );
             Route::post(
-                '/update-instance',
+                '/save-instance',
                 [
-                    'as' => 'api-update-instance-route',
-                    'uses' => 'Admin\InstanceController@updateInstance'
+                    'as' => 'api-save-instance-route',
+                    'uses' => 'Admin\InstanceController@saveInstance'
                 ]
             );
             Route::post(

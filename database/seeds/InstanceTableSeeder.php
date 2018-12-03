@@ -11,7 +11,7 @@ use App\Model\Operator;
 use App\Model\Question;
 use App\Model\Status;
 use App\Model\Subtype;
-use App\Model\Trip;
+use App\Trip;
 
 class InstanceTableSeeder extends Seeder
 {

@@ -65,7 +65,7 @@ class InstanceController extends AdminController
             case ContextMenu::CM_ACTION_EDIT:
                 switch ($instance->type) {
                     case Block::BLOCK_TYPE_COMMENT:
-                        return $this->getCommentForm($action, $instance);
+                        return $this->getCommentForm($instance, $action);
 
                     case Block::BLOCK_TYPE_ACTION:
 
@@ -75,7 +75,7 @@ class InstanceController extends AdminController
                 break;
 
             case ContextMenu::CM_ACTION_INSERT_COMMENT:
-                return $this->getCommentForm($action);
+                return $this->getCommentForm($instance, $action);
 
             default:
                 break;
@@ -89,11 +89,11 @@ class InstanceController extends AdminController
     /**
      * Return the form for editing / inserting a comment
      *
-     * @param $action
      * @param null $instance
+     * @param $action
      * @return string
      */
-    public function getCommentForm($action, $instance = null)
+    public function getCommentForm($instance, $action)
     {
         return '<h1>'.ucfirst($action).' Comment</h1>
                 <label for="title"><b>Title</b></label>
@@ -105,14 +105,39 @@ class InstanceController extends AdminController
     }
 
     /**
-     * Update an instance
+     * Save an instance, with update or insert
      *
      * @return Response
      */
-    public function updateInstance()
+    public function saveInstance()
     {
         $formData = $this->getFormData();
 
+        switch ($formData['action']) {
+            case ContextMenu::CM_ACTION_EDIT:
+                return $this->updateInstance($formData);
+
+            case ContextMenu::CM_ACTION_INSERT_COMMENT:
+                return $this->insertInstance($formData);
+
+            default:
+                break;
+        }
+
+        return Response::json(array(
+            'success' => true,
+            'data'   => 'Unknown action',
+        ));
+    }
+
+    /**
+     * Update an instance
+     *
+     * @param $formData
+     * @return Response
+     */
+    public function updateInstance($formData)
+    {
         // Update the instance
         try {
             $instance = Instance::find($formData['instanceId']);
@@ -121,6 +146,45 @@ class InstanceController extends AdminController
             Log::info('Update instance', []);
         } catch (\Exception $e) {
             Log::info('Error updating data: ' . $formData['instanceId'], [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+        }
+
+        return Response::json(array(
+            'success' => true,
+            'data'   => $formData
+        ));
+    }
+
+    /**
+     * Insert a new instance
+     *
+     * @param $formData
+     * @return Response
+     */
+    public function insertInstance($formData)
+    {
+        // Insert the instance
+        try {
+            $sibling = Instance::find($formData['instanceId']);
+            $block = Block::where('type','=',Block::BLOCK_TYPE_COMMENT)->first();
+
+            if (ContextMenu::CM_ACTION_INSERT_COMMENT === $formData['action']) {
+                $parentId = $sibling->parent_id;
+            }
+
+            $newInstance = new Instance();
+            $newInstance->id = null;
+            $newInstance->parent_id = $parentId;
+            $newInstance->seq = $sibling->seq + 0.1;
+            $newInstance->block_id = $block->id;
+            $newInstance->title = $formData['title'];
+            $newInstance->save();
+            Log::info('Insert instance', []);
+        } catch (\Exception $e) {
+            Log::info('Error inserting data: ' . $formData['title'], [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
