@@ -88,9 +88,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                 ]
             );
             Route::post(
+                '/delete-instance',
+                [
+                    'as' => 'api-delete-instance-route',
+                    'uses' => 'Admin\InstanceController@deleteInstance'
+                ]
+            );
+            Route::post(
                 '/get-instance-context-menu',
                 [
-                    'as' => 'api-et-instance-context-menu-route',
+                    'as' => 'api-get-instance-context-menu-route',
                     'uses' => 'Admin\InstanceController@getInstanceContextMenu'
                 ]
             );

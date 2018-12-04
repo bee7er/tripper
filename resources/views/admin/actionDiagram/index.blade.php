@@ -62,6 +62,7 @@
 
                                 // Which option was selected?
                                 let action = $(e.target).attr('id');
+
                                 if (null !== targetInstance) {
                                     openForm(action);
                                 }
@@ -181,7 +182,14 @@
         };
         function submitForm() {
             let formData = $("#instanceFormData").serializeArray();
+            let action = $("#action").val();
+
+            // Defaulting to edit / insert
             let url = "{{config('app.base_url')}}admin/api/save-instance/";
+            if (action === '{{ \App\Model\ContextMenu::CM_ACTION_DELETE }}') {
+                url = "{{config('app.base_url')}}admin/api/delete-instance/";
+            }
+
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
         }
     </script>

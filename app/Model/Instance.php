@@ -43,6 +43,7 @@ class Instance extends Model
                 'instances.parent_id',
                 'instances.seq',
                 'instances.title',
+                'instances.collapsed',
                 'instances.deleted_at',
             )
         )
@@ -88,7 +89,7 @@ class Instance extends Model
      */
     public static function loadChildren($instance, &$tree, $depth = 0, $colors = [])
     {
-        //print '<pre/>'; print_r($instance);die;
+//        print '<pre/>'; print_r($instance);die;
 
         $depth++;
         if ($instance) {
@@ -113,7 +114,7 @@ class Instance extends Model
 
                 $tree[$child->id . '_start'] = $child;
 
-                if ($child->block->container) {
+                if ($child->block->container && !$child->collapsed) {
 
                     // Let's have a new object
                     $child = clone $child;
@@ -173,7 +174,7 @@ class Instance extends Model
 
         return (
             $prefix
-            . "<span style='color: #{$block->color}' title='$title' data-insert-action='$insertAction'>"
+            . "<span style='color: #{$block->color}' title='$title' id='{$instance->id}_insert-action' data-insert-action='$insertAction'>"
             . $block->top1
             . $block->top2
             . '&nbsp;&nbsp;'
@@ -194,10 +195,10 @@ class Instance extends Model
 
         return (
             $prefix
-            . "<span style='color: #{$block->color}' title='Insert inside' data-insert-action='inside'>"
+            . "<span style='color: #{$block->color}' title='Insert inside' id='{$instance->id}_insert-action' data-insert-action='inside'>"
             . $block->side
             . '-&nbsp;&nbsp;'
-            . $instance->title
+            . $instance->title . ($instance->collapsed ? 'true' : 'false')
             . "</span>"
         );
     }
@@ -213,7 +214,7 @@ class Instance extends Model
 
         return (
             $prefix
-            . "<span style='color: #{$block->color}' title='Insert after' data-insert-action='after'>"
+            . "<span style='color: #{$block->color}' title='Insert after' id='{$instance->id}_insert-action' data-insert-action='after'>"
             . $block->bottom1
             . $block->bottom2
             . '&nbsp;&nbsp;'
@@ -263,6 +264,7 @@ class Instance extends Model
                 'instances.parent_id',
                 'instances.seq',
                 'instances.title',
+                'instances.collapsed',
                 'instances.deleted_at',
             )
         )

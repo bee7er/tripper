@@ -9,7 +9,9 @@
             <div class="row-container">
                 <div class="row" style="text-align: left;">
                     @foreach($tree as $twig)
-                        <div>{!! $twig->line !!}</div>
+                        @foreach($twig->entries as $entry)
+                            <div>{!! $entry !!}</div>
+                        @endforeach
                     @endforeach
                 </div>
             </div>

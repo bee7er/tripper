@@ -22,6 +22,7 @@ class CreateInstancesTable extends Migration
 			$table->unsignedInteger('question_id')->nullable();
 			$table->unsignedInteger('condition_id')->nullable();
 			$table->unsignedInteger('parent_id')->nullable();
+			$table->boolean('collapsed');
 			$table->foreign('trip_id')->references('id')->on('trips')->onDelete('set null');
 			$table->foreign('block_id')->references('id')->on('blocks')->onDelete('set null');
 			$table->foreign('subtype_id')->references('id')->on('subtypes')->onDelete('set null');

@@ -74,6 +74,9 @@ class InstanceController extends AdminController
                 }
                 break;
 
+            case ContextMenu::CM_ACTION_DELETE:
+                return $this->getDeleteForm($instance, $action);
+
             case ContextMenu::CM_ACTION_INSERT_COMMENT:
                 return $this->getCommentForm($instance, $action);
 
@@ -84,7 +87,23 @@ class InstanceController extends AdminController
         return false;
     }
 
-
+    /**
+     * Return the form for deleting an instance
+     *
+     * @param null $instance
+     * @param $action
+     * @return string
+     */
+    public function getDeleteForm($instance, $action)
+    {
+        return '<h1>'.ucfirst($action).' Entry</h1>
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="action" name="action" value="' . $action . '">
+                <div>Are you sure you want to delete the following entry:</div><br>
+                <div><strong>' . $instance->title . '</strong></div><br>
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
+    }
 
     /**
      * Return the form for editing / inserting a comment
@@ -97,8 +116,8 @@ class InstanceController extends AdminController
     {
         return '<h1>'.ucfirst($action).' Comment</h1>
                 <label for="title"><b>Title</b></label>
-                <input type="hidden" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
-                <input type="hidden" name="action" value="' . $action . '">
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="text" placeholder="Enter Title" name="title" id="title" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
@@ -131,6 +150,34 @@ class InstanceController extends AdminController
     }
 
     /**
+     * Delete an instance, and all its contents
+     *
+     * @return Response
+     */
+    public function deleteInstance()
+    {
+        $formData = $this->getFormData();
+
+        try {
+            $instance = Instance::find($formData['instanceId']);
+            $instance->delete();
+            Log::info("Delete instance with id {$instance->id}", []);
+        } catch (\Exception $e) {
+            Log::info("Error deleting instance with id {$instance->id}", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+        }
+
+        //TODO Completion messages
+        return Response::json(array(
+            'success' => true,
+            'data'   => 'Completion message',
+        ));
+    }
+
+    /**
      * Update an instance
      *
      * @param $formData
@@ -143,9 +190,9 @@ class InstanceController extends AdminController
             $instance = Instance::find($formData['instanceId']);
             $instance->title = $formData['title'];
             $instance->save();
-            Log::info('Update instance', []);
+            Log::info("Update instance with id {$instance->id}", []);
         } catch (\Exception $e) {
-            Log::info('Error updating data: ' . $formData['instanceId'], [
+            Log::info("Error updating instance with id {$instance->id}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
@@ -171,17 +218,22 @@ class InstanceController extends AdminController
             $sibling = Instance::find($formData['instanceId']);
             $block = Block::where('type','=',Block::BLOCK_TYPE_COMMENT)->first();
 
+            // NB Inserting AFTER
             if (ContextMenu::CM_ACTION_INSERT_COMMENT === $formData['action']) {
                 $parentId = $sibling->parent_id;
             }
 
             $newInstance = new Instance();
             $newInstance->id = null;
+            $newInstance->trip_id = $sibling->trip_id;
             $newInstance->parent_id = $parentId;
             $newInstance->seq = $sibling->seq + 0.1;
             $newInstance->block_id = $block->id;
             $newInstance->title = $formData['title'];
             $newInstance->save();
+            // NB AFTER Resequence the siblings so we can keep the order
+            $this->resequenceInstanceChildren($parentId);
+
             Log::info('Insert instance', []);
         } catch (\Exception $e) {
             Log::info('Error inserting data: ' . $formData['title'], [
@@ -195,6 +247,35 @@ class InstanceController extends AdminController
             'success' => true,
             'data'   => $formData
         ));
+    }
+
+    /**
+     * Resequence a set of instances
+     *
+     * @param $parentId
+     * @return mixed
+     */
+    public function resequenceInstanceChildren($parentId)
+    {
+        try {
+            $children = Instance::getChildren($parentId);
+
+            if ($children) {
+                $seq = 1;
+                foreach ($children as $child) {
+                    $newChild = Instance::find($child->id);
+                    $newChild->seq = $seq++;
+                    $newChild->save();
+                }
+                Log::info('Resequenced children of parent ' . $parentId, []);
+            }
+        } catch (\Exception $e) {
+            Log::info('Error resequencng data: ' . $parentId, [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+        }
     }
 
     /**
