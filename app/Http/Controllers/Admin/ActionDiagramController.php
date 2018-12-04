@@ -61,8 +61,8 @@ class ActionDiagramController extends AdminController
                 $formHtml .= '<div class="row" style="text-align: left;margin: 0;padding: 8px;">';
                 if (count($tree) > 0) {
                     foreach($tree as $twig) {
-                        foreach($twig->entries as $entry) {
-                            $formHtml .= '<div class="row-selected" id="' . $twig->id . '">' . $entry . '</div >';
+                        foreach($twig->entries as $key => $entry) {
+                            $formHtml .= $entry;
                         }
                     }
                 }

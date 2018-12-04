@@ -158,9 +158,13 @@
             }
         };
         function openForm(action) {
-            let instanceId = targetInstance.attr('id');
+            let targetInstanceId = targetInstance.attr('id'),
+                    instanceIdParts = targetInstanceId.split('_'),
+                    instanceId = instanceIdParts[0],
+                    insertAction = instanceIdParts[1];
+
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
-            ajaxCall(url, JSON.stringify({instanceId, action}), openFormCallback);
+            ajaxCall(url, JSON.stringify({instanceId, action, insertAction}), openFormCallback);
         }
 
         function closeForm() {

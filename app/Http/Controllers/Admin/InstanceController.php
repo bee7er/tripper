@@ -41,8 +41,9 @@ class InstanceController extends AdminController
                 $formHtml = "Error, could not find instance for id $instanceId";
             } else {
                 $action = Input::get('action');
+                $insertAction = Input::get('insertAction');
 
-                $formHtml = $this->getFormByTypeAndAction($instance, $action);
+                $formHtml = $this->getFormByTypeAndAction($instance, $action, $insertAction);
             }
         }
 
@@ -57,15 +58,16 @@ class InstanceController extends AdminController
      *
      * @param $instance
      * @param $action
+     * @param $insertAction
      * @return bool|string
      */
-    public function getFormByTypeAndAction($instance, $action)
+    public function getFormByTypeAndAction($instance, $action, $insertAction)
     {
         switch ($action) {
             case ContextMenu::CM_ACTION_EDIT:
                 switch ($instance->type) {
                     case Block::BLOCK_TYPE_COMMENT:
-                        return $this->getCommentForm($instance, $action);
+                        return $this->getCommentForm($instance, $action, $insertAction);
 
                     case Block::BLOCK_TYPE_ACTION:
 
@@ -78,7 +80,7 @@ class InstanceController extends AdminController
                 return $this->getDeleteForm($instance, $action);
 
             case ContextMenu::CM_ACTION_INSERT_COMMENT:
-                return $this->getCommentForm($instance, $action);
+                return $this->getCommentForm($instance, $action, $insertAction);
 
             default:
                 break;
@@ -108,16 +110,18 @@ class InstanceController extends AdminController
     /**
      * Return the form for editing / inserting a comment
      *
-     * @param null $instance
+     * @param $instance
      * @param $action
+     * @param $insertAction
      * @return string
      */
-    public function getCommentForm($instance, $action)
+    public function getCommentForm($instance, $action, $insertAction)
     {
         return '<h1>'.ucfirst($action).' Comment</h1>
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
+                <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
                 <input type="text" placeholder="Enter Title" name="title" id="title" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';

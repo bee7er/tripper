@@ -173,14 +173,15 @@ class Instance extends Model
         }
 
         return (
-            $prefix
-            . "<span style='color: #{$block->color}' title='$title' id='{$instance->id}_insert-action' data-insert-action='$insertAction'>"
+            "<div class='row-selected' id='{$instance->id}_insert-$insertAction'>"
+            . $prefix
+            . "<span style='color: #{$block->color}' title='$title'>"
             . $block->top1
             . $block->top2
             . '&nbsp;&nbsp;'
             . $block->type
             . ($block->container ? '' : ': ' . $instance->title)
-            . "</span>"
+            . "</span></div>"
         );
     }
 
@@ -194,12 +195,13 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            $prefix
-            . "<span style='color: #{$block->color}' title='Insert inside' id='{$instance->id}_insert-action' data-insert-action='inside'>"
+            "<div class='row-selected' id='{$instance->id}_insert-inside'>"
+            . $prefix
+            . "<span style='color: #{$block->color}' title='Insert inside'>"
             . $block->side
             . '-&nbsp;&nbsp;'
             . $instance->title . ($instance->collapsed ? 'true' : 'false')
-            . "</span>"
+            . "</span></div>"
         );
     }
 
@@ -213,14 +215,15 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            $prefix
-            . "<span style='color: #{$block->color}' title='Insert after' id='{$instance->id}_insert-action' data-insert-action='after'>"
+            "<div class='row-selected' id='{$instance->id}_insert-after'>"
+            . $prefix
+            . "<span style='color: #{$block->color}' title='Insert after'>"
             . $block->bottom1
             . $block->bottom2
             . '&nbsp;&nbsp;'
             . Block::BLOCK_TYPE_CONDITION
             . ': End '
-            . "</span>"
+            . "</span></div>"
         );
     }
 
@@ -234,15 +237,16 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            $prefix
-            . "<span style='color: #{$block->color}' title='Insert after' data-insert-action='after'>"
+            "<div class='row-selected' id='{$instance->id}_insert-after'>"
+            . $prefix
+            . "<span style='color: #{$block->color}' title='Insert after'>"
             . $block->bottom1
             . $block->bottom2
             . '&nbsp;&nbsp;'
             . $block->type
             . ': End '
             . $instance->title
-            . "</span>"
+            . "</span></div>"
         );
     }
 
