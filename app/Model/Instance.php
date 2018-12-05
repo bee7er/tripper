@@ -114,7 +114,7 @@ class Instance extends Model
 
                 $tree[$child->id . '_start'] = $child;
 
-                if ($child->block->container && !$child->collapsed) {
+                if ($child->block->container) {
 
                     // Let's have a new object
                     $child = clone $child;
@@ -122,7 +122,9 @@ class Instance extends Model
 
                     $colors[] = $child->block->color;
 
-                    self::loadChildren($child, $tree, $depth, $colors);
+                    if (!$child->collapsed) {
+                        self::loadChildren($child, $tree, $depth, $colors);
+                    }
 
                     if ($nextBlock && $nextBlock->type == Block::BLOCK_TYPE_ELSE) {
                         // Do not include an end entry because the condition continues
@@ -165,11 +167,15 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         // Insert before for containers but after for non-containers
-        $title = 'Insert before';
-        $insertAction = ContextMenu::INSERT_BEFORE;
-        if (!$block->container) {
-            $title = 'Insert after';
-            $insertAction = ContextMenu::INSERT_AFTER;
+        $title = 'Insert after';
+        $insertAction = ContextMenu::INSERT_AFTER;
+        $collapsed = '';
+        if ($block->container) {
+            $title = 'Insert before';
+            $insertAction = ContextMenu::INSERT_BEFORE;
+            if ($instance->collapsed) {
+                $collapsed = "- collapsed";
+            }
         }
 
         return (
@@ -180,7 +186,7 @@ class Instance extends Model
             . $block->top2
             . '&nbsp;&nbsp;'
             . $block->type
-            . ($block->container ? '' : ': ' . $instance->title)
+            . ($block->container ? '' : ': ' . $instance->title) . $collapsed
             . "</span></div>"
         );
     }
