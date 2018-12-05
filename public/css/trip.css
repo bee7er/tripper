@@ -25,6 +25,10 @@
     cursor: pointer;
 }
 
+.inactive {
+    color: #d8d8d8;
+}
+
 .menu .menu-options .menu-option:hover {
     background: rgba(0, 128, 128, 0.25);
 }

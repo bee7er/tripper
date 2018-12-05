@@ -47,14 +47,14 @@ class ContextMenu
         $formHtml = '<ul class="menu-options">';
         $formHtml .= ($map & self::CM_EDIT ? '<li class="menu-option" id="'.self::CM_ACTION_EDIT.'">Edit</li>' : '');
         $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">Collapse/Expand</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_COMMENT ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_COMMENT.'">Insert Comment</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_CASE ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_CASE.'">Insert Case</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_ELSE ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ELSE.'">Insert Else</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_ITERATION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ITERATION.'">Insert Iteration</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_SEQUENCE ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_SEQUENCE.'">Insert Sequence</li>' : '');
-        $formHtml .= ($map & self::CM_ZOOM ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
-        $formHtml .= ($map & self::CM_UNZOOM ? '<li class="menu-option" id="'.self::CM_ACTION_UNZOOM.'">Unzoom</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_CASE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_CASE.'">Insert Case</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_ELSE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ELSE.'">Insert Else</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_ITERATION ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ITERATION.'">Insert Iteration</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_SEQUENCE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_SEQUENCE.'">Insert Sequence</li>' : '');
+        $formHtml .= ($map & self::CM_ZOOM ? '<li class="menu-option inactive" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
+        $formHtml .= ($map & self::CM_UNZOOM ? '<li class="menu-option inactive" id="'.self::CM_ACTION_UNZOOM.'">Unzoom</li>' : '');
         $formHtml .= ($map & self::CM_DELETE ? '<li class="menu-option" id="'.self::CM_ACTION_DELETE.'">Delete</li>' : '');
         $formHtml .= '</ul>';
 
