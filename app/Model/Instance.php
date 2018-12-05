@@ -166,14 +166,14 @@ class Instance extends Model
 
         // Insert before for containers but after for non-containers
         $title = 'Insert before';
-        $insertAction = 'before';
+        $insertAction = ContextMenu::INSERT_BEFORE;
         if (!$block->container) {
             $title = 'Insert after';
-            $insertAction = 'after';
+            $insertAction = ContextMenu::INSERT_AFTER;
         }
 
         return (
-            "<div class='row-selected' id='{$instance->id}_insert-$insertAction'>"
+            "<div class='row-selected' id='{$instance->id}_$insertAction'>"
             . $prefix
             . "<span style='color: #{$block->color}' title='$title'>"
             . $block->top1
@@ -195,7 +195,7 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            "<div class='row-selected' id='{$instance->id}_insert-inside'>"
+            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_INSIDE . "'>"
             . $prefix
             . "<span style='color: #{$block->color}' title='Insert inside'>"
             . $block->side
@@ -215,7 +215,7 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            "<div class='row-selected' id='{$instance->id}_insert-after'>"
+            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_AFTER . "'>"
             . $prefix
             . "<span style='color: #{$block->color}' title='Insert after'>"
             . $block->bottom1
@@ -237,7 +237,7 @@ class Instance extends Model
         $prefix = self::getPrefix($depth, $colors);
 
         return (
-            "<div class='row-selected' id='{$instance->id}_insert-after'>"
+            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_AFTER . "'>"
             . $prefix
             . "<span style='color: #{$block->color}' title='Insert after'>"
             . $block->bottom1

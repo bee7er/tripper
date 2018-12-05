@@ -30,6 +30,10 @@ class ContextMenu
     const CM_ACTION_UNZOOM = 'unzoom';
     const CM_ACTION_DELETE = 'delete';
 
+    const INSERT_AFTER = 'insert-after';
+    const INSERT_INSIDE = 'insert-inside';
+    const INSERT_BEFORE = 'insert-before';
+
     /**
      * Build and return the context menu for an instance
      *

@@ -222,16 +222,31 @@ class InstanceController extends AdminController
             $sibling = Instance::find($formData['instanceId']);
             $block = Block::where('type','=',Block::BLOCK_TYPE_COMMENT)->first();
 
-            // NB Inserting AFTER
-            if (ContextMenu::CM_ACTION_INSERT_COMMENT === $formData['action']) {
-                $parentId = $sibling->parent_id;
+            // Where is this instance going?
+            $parentId = $seq = null;
+            switch ($formData['insertAction']) {
+                case ContextMenu::INSERT_AFTER:
+                    $parentId = $sibling->parent_id;
+                    $seq = $sibling->seq + 0.1;
+                    break;
+                case ContextMenu::INSERT_BEFORE:
+                    $parent = Instance::find($sibling->parent_id);
+                    $parentId = $parent->id;
+                    $seq = $sibling->seq - 0.1;
+                    break;
+                case ContextMenu::INSERT_INSIDE:
+                    $parentId = $sibling->id;
+                    $seq = 0.1;
+                    break;
+                default:
+                    throw new \Exception('Unexpected insert action');
             }
 
             $newInstance = new Instance();
             $newInstance->id = null;
             $newInstance->trip_id = $sibling->trip_id;
             $newInstance->parent_id = $parentId;
-            $newInstance->seq = $sibling->seq + 0.1;
+            $newInstance->seq = $seq;
             $newInstance->block_id = $block->id;
             $newInstance->title = $formData['title'];
             $newInstance->save();
