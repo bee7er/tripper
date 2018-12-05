@@ -114,6 +114,8 @@
                     window.addEventListener("contextmenu", function(e) {
                         e.preventDefault();
 
+                        checkEventForTarget(e);
+
                         if (null !== targetInstance) {
                             let position = $(e.target).position();
                             let top = e.pageY - position.top - 300;
@@ -138,16 +140,7 @@
                     function setTarget(e) {
                         clearTarget();
                         closeForm();
-
-                        targetInstance = $(e.target).parent();
-                        targetInstance.addClass('instance-selected');
-                    }
-
-                    function clearTarget() {
-                        if (null !== targetInstance) {
-                            targetInstance.removeClass('instance-selected');
-                            targetInstance = null;
-                        }
+                        checkEventForTarget(e);
                     }
                 }
             }
@@ -157,7 +150,27 @@
             let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
             ajaxCall(url, JSON.stringify({tripId}), actionDiagramCallback);
         };
+        // *****************
         loadActionDiagram();
+        // *****************
+
+        // Checks the event target to see if it is a usable entry
+        function checkEventForTarget(e) {
+            let target = $(e.target).parent();
+            // Only accept the target if it is one of our entries, i.e. it has an id
+            if (target.attr('id')) {
+                clearTarget();
+                targetInstance = target;
+                targetInstance.addClass('instance-selected');
+            }
+        }
+
+        function clearTarget() {
+            if (null !== targetInstance) {
+                targetInstance.removeClass('instance-selected');
+                targetInstance = null;
+            }
+        }
 
         // Execute the form construction and loading using a callback to receive the result
         const openFormCallback = function(response) {

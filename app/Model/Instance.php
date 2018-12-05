@@ -174,7 +174,7 @@ class Instance extends Model
             $title = 'Insert before';
             $insertAction = ContextMenu::INSERT_BEFORE;
             if ($instance->collapsed) {
-                $collapsed = "- collapsed";
+                $collapsed = "- Collapsed";
             }
         }
 
@@ -206,7 +206,7 @@ class Instance extends Model
             . "<span style='color: #{$block->color}' title='Insert inside'>"
             . $block->side
             . '-&nbsp;&nbsp;'
-            . $instance->title . ($instance->collapsed ? 'true' : 'false')
+            . $instance->title
             . "</span></div>"
         );
     }
