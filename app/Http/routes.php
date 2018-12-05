@@ -108,6 +108,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                     'uses' => 'Admin\InstanceController@getInstanceForm'
                 ]
             );
+            Route::post(
+                '/send-action',
+                [
+                    'as' => 'api-send-action-route',
+                    'uses' => 'Admin\InstanceController@sendAction'
+                ]
+            );
         }
     );
 

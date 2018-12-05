@@ -60,11 +60,20 @@
                             $(".menu-option").click(function (e) {
                                 e.preventDefault();
 
-                                // Which option was selected?
-                                let action = $(e.target).attr('id');
-
-                                if (null !== targetInstance) {
-                                    openForm(action);
+                                if (null === targetInstance) {
+                                    alert('Please select an action diagram entry');
+                                } else {
+                                    // Which option was selected?
+                                    let action = $(e.target).attr('id');
+                                    switch (action) {
+                                        case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
+                                            sendAction(action);
+                                            break;
+                                        case '{{\App\Model\ContextMenu::CM_ACTION_DELETE}}':
+                                        case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
+                                            openForm(action);
+                                            break;
+                                    }
                                 }
                             });
 
@@ -195,6 +204,22 @@
             }
 
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
+        }
+
+        const sendActionCallback = function(response) {
+            if (response && response.success === true) {
+
+                loadActionDiagram();
+            }
+        };
+        function sendAction(action) {
+            let targetInstanceId = targetInstance.attr('id'),
+                    instanceIdParts = targetInstanceId.split('_'),
+                    instanceId = instanceIdParts[0],
+                    insertAction = instanceIdParts[1];
+
+            let url = "{{config('app.base_url')}}admin/api/send-action/";
+            ajaxCall(url, JSON.stringify({instanceId, action, insertAction}), sendActionCallback);
         }
     </script>
 @endsection

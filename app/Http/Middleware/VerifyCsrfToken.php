@@ -13,10 +13,11 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
 
-        'admin/api/get-action-diagram',
-        'admin/api/save-instance',
         'admin/api/delete-instance',
+        'admin/api/get-action-diagram',
         'admin/api/get-instance-form',
         'admin/api/get-instance-context-menu',
+        'admin/api/save-instance',
+        'admin/api/send-action',
     ];
 }

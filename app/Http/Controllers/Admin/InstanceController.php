@@ -167,7 +167,7 @@ class InstanceController extends AdminController
             $instance->delete();
             Log::info("Delete instance with id {$instance->id}", []);
         } catch (\Exception $e) {
-            Log::info("Error deleting instance with id {$instance->id}", [
+            Log::info("Error deleting instance with id {$formData['instanceId']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
@@ -196,7 +196,7 @@ class InstanceController extends AdminController
             $instance->save();
             Log::info("Update instance with id {$instance->id}", []);
         } catch (\Exception $e) {
-            Log::info("Error updating instance with id {$instance->id}", [
+            Log::info("Error updating instance with id {$formData['instanceId']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
@@ -206,6 +206,42 @@ class InstanceController extends AdminController
         return Response::json(array(
             'success' => true,
             'data'   => $formData
+        ));
+    }
+
+    /**
+     * Process the sending of an action
+     *
+     * @param $formData
+     * @return Response
+     */
+    public function sendAction()
+    {
+        $params = Input::get();
+
+        try {
+            $instance = Instance::find($params['instanceId']);
+            $action = $params['action'];
+
+            if (ContextMenu::CM_ACTION_COLLAPSE === $action) {
+                // Toggle collapsed status
+                $instance->collapsed = !$instance->collapsed;
+            }
+
+            $instance->save();
+            Log::info("Instance with id {$instance->id} " . ($instance->collapsed ? 'collapsed' : 'expanded'), []);
+        } catch (\Exception $e) {
+            Log::info("Error updating instance with id {$params['instanceId']}", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+        }
+
+        //TODO Return a decent message
+        return Response::json(array(
+            'success' => true,
+            'data'   => $params
         ));
     }
 
