@@ -158,7 +158,7 @@
         function checkEventForTarget(e) {
             let target = $(e.target).parent();
             // Only accept the target if it is one of our entries, i.e. it has an id
-            if (target.attr('id')) {
+            if (target && target.attr('id')) {
                 clearTarget();
                 targetInstance = target;
                 targetInstance.addClass('instance-selected');
