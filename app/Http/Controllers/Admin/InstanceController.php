@@ -162,22 +162,29 @@ class InstanceController extends AdminController
     {
         $formData = $this->getFormData();
 
+        $message = null;
         try {
             $instance = Instance::find($formData['instanceId']);
             $instance->delete();
-            Log::info("Delete instance with id {$instance->id}", []);
+            $message = "Delete instance with id {$instance->id}";
+            Log::info($message, []);
         } catch (\Exception $e) {
+            $message  = $e->getMessage() . ' For more info see log.';
             Log::info("Error deleting instance with id {$formData['instanceId']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
             ]);
+
+            return Response::json(array(
+                'success' => false,
+                'data'   => ['message' => $message]
+            ));
         }
 
-        //TODO Completion messages
         return Response::json(array(
             'success' => true,
-            'data'   => 'Completion message',
+            'data'   => ['message' => $message]
         ));
     }
 
@@ -189,23 +196,30 @@ class InstanceController extends AdminController
      */
     public function updateInstance($formData)
     {
-        // Update the instance
+        $message = null;
         try {
             $instance = Instance::find($formData['instanceId']);
             $instance->title = $formData['title'];
             $instance->save();
-            Log::info("Update instance with id {$instance->id}", []);
+            $message = "Update instance with id {$instance->id}";
+            Log::info($message, []);
         } catch (\Exception $e) {
+            $message  = $e->getMessage() . ' For more info see log.';
             Log::info("Error updating instance with id {$formData['instanceId']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
             ]);
+
+            return Response::json(array(
+                'success' => false,
+                'data'   => ['message' => $message]
+            ));
         }
 
         return Response::json(array(
             'success' => true,
-            'data'   => $formData
+            'data'   => ['message' => $message]
         ));
     }
 
@@ -219,6 +233,7 @@ class InstanceController extends AdminController
     {
         $params = Input::get();
 
+        $message = null;
         try {
             $instance = Instance::find($params['instanceId']);
             $action = $params['action'];
@@ -229,19 +244,25 @@ class InstanceController extends AdminController
             }
 
             $instance->save();
-            Log::info("Instance with id {$instance->id} " . ($instance->collapsed ? 'collapsed' : 'expanded'), []);
+            $message = "Instance with id {$instance->id} " . ($instance->collapsed ? 'collapsed' : 'expanded');
+            Log::info($message, []);
         } catch (\Exception $e) {
+            $message  = $e->getMessage() . ' For more info see log.';
             Log::info("Error updating instance with id {$params['instanceId']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
             ]);
+
+            return Response::json(array(
+                'success' => false,
+                'data'   => ['message' => $message]
+            ));
         }
 
-        //TODO Return a decent message
         return Response::json(array(
             'success' => true,
-            'data'   => $params
+            'data'   => ['message' => $message]
         ));
     }
 
@@ -254,6 +275,7 @@ class InstanceController extends AdminController
     public function insertInstance($formData)
     {
         // Insert the instance
+        $message = null;
         try {
             $sibling = Instance::find($formData['instanceId']);
             $block = Block::where('type','=',Block::BLOCK_TYPE_COMMENT)->first();
@@ -289,18 +311,25 @@ class InstanceController extends AdminController
             // NB AFTER Resequence the siblings so we can keep the order
             $this->resequenceInstanceChildren($parentId);
 
-            Log::info('Insert instance', []);
+            $message = 'Insert instance ' . $newInstance->id;
+            Log::info($message, []);
         } catch (\Exception $e) {
+            $message  = $e->getMessage() . ' For more info see log.';
             Log::info('Error inserting data: ' . $formData['title'], [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
             ]);
+
+            return Response::json(array(
+                'success' => false,
+                'data'   => ['message' => $message]
+            ));
         }
 
         return Response::json(array(
             'success' => true,
-            'data'   => $formData
+            'data'   => ['message' => $message]
         ));
     }
 
@@ -341,18 +370,32 @@ class InstanceController extends AdminController
     public function getInstanceContextMenu()
     {
         $success = true;
-        $instanceId = Input::get('instanceId');
-        if (!$instanceId) {
-            $success = false;
-            $formHtml = 'Error, instance id not found in function parameters';
-        } else {
-            $instance = Instance::getInstance($instanceId);
-            if (!$instance) {
+        try {
+            $instanceId = Input::get('instanceId');
+            if (!$instanceId) {
                 $success = false;
-                $formHtml = "Error, could not find instance for id $instanceId";
+                $formHtml = 'Error, instance id not found in function parameters';
             } else {
-                $formHtml = ContextMenu::getContextMenu($instance);
+                $instance = Instance::getInstance($instanceId);
+                if (!$instance) {
+                    $success = false;
+                    $formHtml = "Error, could not find instance for id $instanceId";
+                } else {
+                    $formHtml = ContextMenu::getContextMenu($instance);
+                }
             }
+        } catch (\Exception $e) {
+            $message  = $e->getMessage() . ' For more info see log.';
+            Log::info('Error retrieving context menu', [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+
+            return Response::json(array(
+                'success' => false,
+                'data'   => ['message' => $message]
+            ));
         }
 
         return Response::json(array(

@@ -23,6 +23,7 @@
     @include('partials.action-diagram')
     @include('partials.context-menu')
     @include('partials.forms')
+    @include('partials.messages')
 
 @endsection
 {{-- Scripts --}}
@@ -37,7 +38,7 @@
         });
 
         // The selected action diagram instance entry
-        let targetInstance = null;
+        var targetInstance = null;
 
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response, command) {
@@ -86,7 +87,7 @@
                     const toggleMenu = function(command) {
                         let instanceId = targetInstance.attr('id');
                         let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-                        ajaxCall(url, JSON.stringify({instanceId}), contextMenuCallback, command);
+                        ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
                     };
 
                     const setMenuPosition = function({ top, left }) {
@@ -143,12 +144,15 @@
                         checkEventForTarget(e);
                     }
                 }
+            } else {
+                // DIsplay error
+                alert(response.data.message);
             }
         };
         const loadActionDiagram = function(command) {
             let tripId = '{!! $trip->id !!}';
             let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
-            ajaxCall(url, JSON.stringify({tripId}), actionDiagramCallback);
+            ajaxCall(url, JSON.stringify({'tripId': tripId}), actionDiagramCallback);
         };
         // *****************
         loadActionDiagram();
@@ -177,6 +181,9 @@
             if (response && response.success === true) {
                 $("#instanceFormData").html(response.formHtml);
                 $("#instanceForm").css('display', 'block');
+            } else {
+                // DIsplay error
+                alert(response.data.message);
             }
         };
         function openForm(action) {
@@ -186,7 +193,7 @@
                     insertAction = instanceIdParts[1];
 
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
-            ajaxCall(url, JSON.stringify({instanceId, action, insertAction}), openFormCallback);
+            ajaxCall(url, JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), openFormCallback);
         }
 
         function closeForm() {
@@ -204,6 +211,11 @@
                 }, 100);
 
                 loadActionDiagram();
+
+                $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+            } else {
+                // DIsplay error
+                alert(response.data.message);
             }
         };
         function submitForm() {
@@ -223,16 +235,21 @@
             if (response && response.success === true) {
 
                 loadActionDiagram();
+            } else {
+                // DIsplay error
+                alert(response.data.message);
             }
         };
         function sendAction(action) {
+
             let targetInstanceId = targetInstance.attr('id'),
                     instanceIdParts = targetInstanceId.split('_'),
                     instanceId = instanceIdParts[0],
                     insertAction = instanceIdParts[1];
 
             let url = "{{config('app.base_url')}}admin/api/send-action/";
-            ajaxCall(url, JSON.stringify({instanceId, action, insertAction}), sendActionCallback);
+            ajaxCall(url, JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), sendActionCallback);
         }
+
     </script>
 @endsection
