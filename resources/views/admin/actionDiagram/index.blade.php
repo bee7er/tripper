@@ -39,70 +39,16 @@
 
         // The selected action diagram instance entry
         var targetInstance = null;
+        var firstTimeThrough = true;
 
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response, command) {
 
             let diagram = $("#actionDiagram");
+
             if (response && response.success === true) {
                 if (response.success === true) {
                     diagram.html(response.formHtml);
-
-                    // Now that the diagram has been constructed we set up the event handlers
-                    // Execute the context menu construction and using a callback to receive the result
-                    const contextMenuCallback = function(response, command) {
-
-                        let menu = $("#menu");
-                        if (response && response.success === true) {
-                            if (response.success === true) {
-                                menu.html(response.formHtml);
-                            }
-
-                            $(".menu-option").click(function (e) {
-                                e.preventDefault();
-
-                                if (null === targetInstance) {
-                                    alert('Please select an action diagram entry');
-                                } else {
-                                    // Which option was selected?
-                                    let action = $(e.target).attr('id');
-
-
-                                    console.log(action);
-
-                                    switch (action) {
-                                        case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
-                                            sendAction(action);
-                                            break;
-                                        case '{{\App\Model\ContextMenu::CM_ACTION_DELETE}}':
-                                        case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
-                                        case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
-                                            openForm(action);
-                                            break;
-                                        default:
-                                            alert('nope');
-                                    }
-                                }
-                            });
-
-                            let newClass = (command === "show" ? "menu-show" : "menu-hide");
-                            // Clear current classes and then set the new one
-                            menu.removeClass("menu-show menu-hide");
-                            menu.addClass(newClass);
-                        }
-                    };
-                    const toggleMenu = function(command) {
-                        let instanceId = targetInstance.attr('id');
-                        let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-                        ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
-                    };
-
-                    const setMenuPosition = function({ top, left }) {
-                        let menu = $("#menu");
-                        menu.css("top", top + 'px');
-                        menu.css("left", left + 'px');
-                        toggleMenu('show');
-                    };
 
                     window.addEventListener("click", function(e) {
                         e.preventDefault();
@@ -123,30 +69,18 @@
                         }
                     });
 
-                    window.addEventListener("contextmenu", function(e) {
-                        e.preventDefault();
-
-                        checkEventForTarget(e);
-
-                        if (null !== targetInstance) {
-                            let position = $(e.target).position();
-                            let top = e.pageY - position.top - 300;
-                            let left = e.pageX - position.left + 40;
-
-                            const origin = {
-                                top: top,
-                                left: left
-                            };
-
-                            setMenuPosition(origin);
-                        }
-                        return false;
-                    });
-
                     $(".row-selected").click(function rowSelected(e) {
                         e.preventDefault();
 
                         setTarget(e);
+                    });
+
+                    $(".row-selected").dblclick(function rowSelected(e) {
+                        e.preventDefault();
+
+                        // Go ahead and edit
+                        setTarget(e);
+                        openForm('{{\App\Model\ContextMenu::CM_ACTION_EDIT}}');
                     });
 
                     function setTarget(e) {
@@ -168,6 +102,77 @@
         // *****************
         loadActionDiagram();
         // *****************
+        // Now that the diagram has been constructed we set up the event handlers
+        // Execute the context menu construction and using a callback to receive the result
+        const contextMenuCallback = function (response, command) {
+
+            let menu = $("#menu");
+            if (response && response.success === true) {
+                if (response.success === true) {
+                    menu.html(response.formHtml);
+                }
+
+                $(".menu-option").click(function (e) {
+                    e.preventDefault();
+
+                    if (null === targetInstance) {
+                        alert('Please select an action diagram entry');
+                    } else {
+                        // Which option was selected?
+                        let action = $(e.target).attr('id');
+                        switch (action) {
+                            case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
+                                sendAction(action);
+                                break;
+                            case '{{\App\Model\ContextMenu::CM_ACTION_DELETE}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
+                                openForm(action);
+                                break;
+                            default:
+                                alert('nope');
+                        }
+                    }
+                });
+
+                let newClass = (command === "show" ? "menu-show" : "menu-hide");
+                // Clear current classes and then set the new one
+                menu.removeClass("menu-show menu-hide");
+                menu.addClass(newClass);
+            }
+        };
+        const toggleMenu = function(command) {
+            let instanceId = targetInstance.attr('id');
+            let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
+            ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
+        };
+
+        const setMenuPosition = function({ top, left }) {
+            let menu = $("#menu");
+            menu.css("top", top + 'px');
+            menu.css("left", left + 'px');
+            toggleMenu('show');
+        };
+
+        window.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+
+            checkEventForTarget(e);
+
+            if (null !== targetInstance) {
+                let position = $(e.target).position();
+                let top = e.pageY - position.top - 300;
+                let left = e.pageX - position.left + 40;
+
+                const origin = {
+                    top: top,
+                    left: left
+                };
+
+                setMenuPosition(origin);
+            }
+            return false;
+        });
 
         // Checks the event target to see if it is a usable entry
         function checkEventForTarget(e) {
