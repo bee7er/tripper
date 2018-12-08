@@ -50,25 +50,6 @@
                 if (response.success === true) {
                     diagram.html(response.formHtml);
 
-                    window.addEventListener("click", function(e) {
-                        e.preventDefault();
-
-                        let menu = $("#menu");
-                        if (menu.hasClass('menu-show')) toggleMenu("hide");
-                    });
-
-                    window.addEventListener("keyup", function(e) {
-                        e.preventDefault();
-
-                        if (e.which == 27) {
-                            let menu = $("#menu");
-                            if (menu.hasClass('menu-show')) toggleMenu("hide");
-                            else if (targetInstance) clearTarget();
-
-                            closeForm();
-                        }
-                    });
-
                     $(".row-selected").click(function rowSelected(e) {
                         e.preventDefault();
 
@@ -172,6 +153,25 @@
                 setMenuPosition(origin);
             }
             return false;
+        });
+
+        window.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            let menu = $("#menu");
+            if (menu.hasClass('menu-show')) toggleMenu("hide");
+        });
+
+        window.addEventListener("keyup", function(e) {
+            e.preventDefault();
+
+            if (e.which == 27) {
+                let menu = $("#menu");
+                if (menu.hasClass('menu-show')) toggleMenu("hide");
+                else if (targetInstance) clearTarget();
+
+                closeForm();
+            }
         });
 
         // Checks the event target to see if it is a usable entry
