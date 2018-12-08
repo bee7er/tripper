@@ -122,7 +122,7 @@ class InstanceController extends AdminController
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <input type="text" placeholder="Enter Title" name="title" id="title" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
     }
@@ -166,7 +166,7 @@ class InstanceController extends AdminController
         try {
             $instance = Instance::find($formData['instanceId']);
             $instance->delete();
-            $message = "Delete instance with id {$instance->id}";
+            $message = "Deleted instance '{$instance->title}'";
             Log::info($message, []);
         } catch (\Exception $e) {
             $message  = $e->getMessage() . ' For more info see log.';
@@ -201,7 +201,7 @@ class InstanceController extends AdminController
             $instance = Instance::find($formData['instanceId']);
             $instance->title = $formData['title'];
             $instance->save();
-            $message = "Update instance with id {$instance->id}";
+            $message = "Updated '{$instance->title}'";
             Log::info($message, []);
         } catch (\Exception $e) {
             $message  = $e->getMessage() . ' For more info see log.';
@@ -244,7 +244,7 @@ class InstanceController extends AdminController
             }
 
             $instance->save();
-            $message = "Instance with id {$instance->id} " . ($instance->collapsed ? 'collapsed' : 'expanded');
+            $message = "'{$instance->title}' " . ($instance->collapsed ? 'collapsed' : 'expanded');
             Log::info($message, []);
         } catch (\Exception $e) {
             $message  = $e->getMessage() . ' For more info see log.';
@@ -282,19 +282,23 @@ class InstanceController extends AdminController
 
             // Where is this instance going?
             $parentId = $seq = null;
+            $where = null;
             switch ($formData['insertAction']) {
                 case ContextMenu::INSERT_AFTER:
                     $parentId = $sibling->parent_id;
                     $seq = $sibling->seq + 0.1;
+                    $where = 'after';
                     break;
                 case ContextMenu::INSERT_BEFORE:
                     $parent = Instance::find($sibling->parent_id);
                     $parentId = $parent->id;
                     $seq = $sibling->seq - 0.1;
+                    $where = 'before';
                     break;
                 case ContextMenu::INSERT_INSIDE:
                     $parentId = $sibling->id;
                     $seq = 0.1;
+                    $where = 'inside';
                     break;
                 default:
                     throw new \Exception('Unexpected insert action');
@@ -311,7 +315,7 @@ class InstanceController extends AdminController
             // NB AFTER Resequence the siblings so we can keep the order
             $this->resequenceInstanceChildren($parentId);
 
-            $message = 'Insert instance ' . $newInstance->id;
+            $message = "Inserted '" . $newInstance->title . "' $where";
             Log::info($message, []);
         } catch (\Exception $e) {
             $message  = $e->getMessage() . ' For more info see log.';

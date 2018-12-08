@@ -66,14 +66,21 @@
                                 } else {
                                     // Which option was selected?
                                     let action = $(e.target).attr('id');
+
+
+                                    console.log(action);
+
                                     switch (action) {
                                         case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
                                             sendAction(action);
                                             break;
                                         case '{{\App\Model\ContextMenu::CM_ACTION_DELETE}}':
                                         case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
+                                        case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
                                             openForm(action);
                                             break;
+                                        default:
+                                            alert('nope');
                                     }
                                 }
                             });
@@ -98,11 +105,15 @@
                     };
 
                     window.addEventListener("click", function(e) {
+                        e.preventDefault();
+
                         let menu = $("#menu");
                         if (menu.hasClass('menu-show')) toggleMenu("hide");
                     });
 
                     window.addEventListener("keyup", function(e) {
+                        e.preventDefault();
+
                         if (e.which == 27) {
                             let menu = $("#menu");
                             if (menu.hasClass('menu-show')) toggleMenu("hide");
@@ -145,8 +156,8 @@
                     }
                 }
             } else {
-                // DIsplay error
-                alert(response.data.message);
+                // Display error
+                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
         };
         const loadActionDiagram = function(command) {
@@ -182,9 +193,11 @@
                 $("#instanceFormData").html(response.formHtml);
                 $("#instanceForm").css('display', 'block');
             } else {
-                // DIsplay error
-                alert(response.data.message);
+                // Display error
+                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
+
+            $(".focus").focus();
         };
         function openForm(action) {
             let targetInstanceId = targetInstance.attr('id'),
@@ -214,8 +227,8 @@
 
                 $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             } else {
-                // DIsplay error
-                alert(response.data.message);
+                // Display error
+                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
         };
         function submitForm() {
@@ -235,9 +248,11 @@
             if (response && response.success === true) {
 
                 loadActionDiagram();
+
+                $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             } else {
-                // DIsplay error
-                alert(response.data.message);
+                // Display error
+                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
         };
         function sendAction(action) {

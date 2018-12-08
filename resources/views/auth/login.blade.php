@@ -6,13 +6,13 @@
 {{-- Content --}}
 @section('content')
     <div class="row">
-        <div class="page-header">
+        <div class="page-header" style="padding-left: 40px;">
             <h2>{!! trans('site/user.login_to_account') !!}</h2>
         </div>
     </div>
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="width:300px;margin: 0 auto;">
             {!! Form::open(array('url' => url('auth/login'), 'method' => 'post', 'files'=> true)) !!}
             <div class="form-group  {{ $errors->has('email') ? 'has-error' : '' }}">
                 {!! Form::label('email', "E-Mail Address", array('class' => 'control-label')) !!}
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-6 col-md-offset-4">
+                <div class="col-md-6 col-md-offset-2">
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="remember"> Remember Me
@@ -39,12 +39,12 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-6 col-md-offset-4">
-                    <button type="submit" class="btn btn-primary" style="margin-right: 15px;">
+                <div class="col-md-8 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">
                         Login
                     </button>
-
-                    <a href="{{ url('/password/email') }}">Forgot Your Password?</a>
+                    <br><br>
+                    <a href="{{ url('/password/email') }}">Forgot your password?</a>
                 </div>
             </div>
             {!! Form::close() !!}

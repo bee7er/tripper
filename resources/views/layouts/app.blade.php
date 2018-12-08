@@ -11,7 +11,7 @@
     @show @section('meta_author')
         <meta name="author" content="Brian Etheridge"/>
     @show @section('meta_description')
-        <meta name="description" content="Tripulator"/>
+        <meta name="description" content="The Tripulator"/>
     @show
 		<link href="{{ asset('css/site.css') }}" rel="stylesheet">
         <script src="{{ asset('js/site.js?v3') }}"></script>
