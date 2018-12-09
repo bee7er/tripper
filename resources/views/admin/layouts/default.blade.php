@@ -11,9 +11,10 @@
     @show @section('meta_author')
         <meta name="author" content="Brian Etheridge"/>
     @show @section('meta_description')
-        <meta name="description"
-              content="Tripper description"/>
+        <meta name="description" content="Tripper description"/>
     @show
+    <link rel="shortcut icon" href="{{config('app.base_url')}}favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{config('app.base_url')}}favicon.ico" type="image/x-icon">
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     <link href="{{ asset('css/trip.css') }}" rel="stylesheet">
     <script src="{{ asset('js/admin.js') }}"></script>

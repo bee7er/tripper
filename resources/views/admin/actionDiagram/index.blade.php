@@ -111,7 +111,7 @@
                                 openForm(action);
                                 break;
                             default:
-                                alert('nope');
+                                alert('Not yet supported');
                         }
                     }
                 });
@@ -138,9 +138,8 @@
 
             checkEventForTarget(e);
 
-            $("#menu").offset({left:e.pageX, top:e.pageY});
+            $("#menu").offset({left: e.pageX, top: e.pageY});
             toggleMenu('show');
-            return false;
         });
 
         window.addEventListener("click", function(e) {

@@ -68,7 +68,8 @@ class FormHelper
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->title) . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus"
+                 			value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->title) . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}
