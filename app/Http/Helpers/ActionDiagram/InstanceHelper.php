@@ -23,7 +23,10 @@ class InstanceHelper
 				return $this->update($params);
 
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
-				return $this->insert($params);
+				return $this->insert($params, Block::BLOCK_TYPE_COMMENT);
+
+			case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
+				return $this->insert($params, Block::BLOCK_TYPE_SEQUENCE);
 
 			default:
 				break;
@@ -73,12 +76,12 @@ class InstanceHelper
 	 * @param $formData
 	 * @return array
 	 */
-	public function insert($params)
+	public function insert($params, $blockType)
 	{
 		$success = $message = null;
 		try {
 			$sibling = Instance::find($params['instanceId']);
-			$block = Block::where('type','=',Block::BLOCK_TYPE_COMMENT)->first();
+			$block = Block::where('type','=',$blockType)->first();
 
 			// Where is this instance going?
 			$parentId = $seq = null;

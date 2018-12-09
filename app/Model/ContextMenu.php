@@ -57,7 +57,7 @@ class ContextMenu
         $formHtml .= ($map & self::CM_INSERT_CASE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_CASE.'">Insert Case</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ELSE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ELSE.'">Insert Else</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ITERATION ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ITERATION.'">Insert Iteration</li>' : '');
-        $formHtml .= ($map & self::CM_INSERT_SEQUENCE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_SEQUENCE.'">Insert Sequence</li>' : '');
+        $formHtml .= ($map & self::CM_INSERT_SEQUENCE ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_SEQUENCE.'">Insert Sequence</li>' : '');
         $formHtml .= ($map & self::CM_ZOOM ? '<li class="menu-option inactive" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
         $formHtml .= ($map & self::CM_UNZOOM ? '<li class="menu-option inactive" id="'.self::CM_ACTION_UNZOOM.'">Unzoom</li>' : '');
         $formHtml .= ($map & self::CM_DELETE ? '<li class="menu-option" id="'.self::CM_ACTION_DELETE.'">Delete</li>' : '');

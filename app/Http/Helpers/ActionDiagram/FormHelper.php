@@ -21,7 +21,7 @@ class FormHelper
 			case ContextMenu::CM_ACTION_EDIT:
 				switch ($instance->type) {
 					case Block::BLOCK_TYPE_COMMENT:
-						return $this->getCommentForm($instance, $action, $insertAction);
+						return $this->getTitleForm($instance, $action, $insertAction);
 
 					case Block::BLOCK_TYPE_ACTION:
 						return $this->getActionForm($instance, $action, $insertAction);
@@ -38,7 +38,8 @@ class FormHelper
 				return $this->getActionForm($instance, $action, $insertAction);
 
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
-				return $this->getCommentForm($instance, $action, $insertAction);
+			case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
+				return $this->getTitleForm($instance, $action, $insertAction);
 
 			default:
 				break;
@@ -76,7 +77,7 @@ class FormHelper
 	 */
 	private function getDeleteForm($instance, $action)
 	{
-		return '<h1>'.ucfirst($action).' Entry</h1>
+		return '<h1>' . ucfirst(str_replace('-', '', $action)) . ' Entry</h1>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <div>Are you sure you want to delete the following entry:</div><br>
@@ -86,21 +87,26 @@ class FormHelper
 	}
 
 	/**
-	 * Return the form for editing / inserting a comment
+	 * Return the form for editing / inserting an instance title only
 	 *
 	 * @param $instance
 	 * @param $action
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getCommentForm($instance, $action, $insertAction)
+	private function getTitleForm($instance, $action, $insertAction)
 	{
-		return '<h1>'.ucfirst($action).' Comment</h1>
+		$title = $instance->title;
+		if (ContextMenu::CM_ACTION_EDIT !== $action) {
+			$title = '';
+		}
+
+		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . '</h1>
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . ($action === ContextMenu::CM_ACTION_INSERT_COMMENT ? '' : $instance->title) . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $title . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}

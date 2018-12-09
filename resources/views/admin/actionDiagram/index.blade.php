@@ -88,9 +88,8 @@
 
             let menu = $("#menu");
             if (response && response.success === true) {
-                if (response.success === true) {
-                    menu.html(response.formHtml);
-                }
+
+                menu.html(response.formHtml);
 
                 $(".menu-option").click(function (e) {
                     e.preventDefault();
@@ -108,6 +107,7 @@
                             case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ACTION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_SEQUENCE}}':
                                 openForm(action);
                                 break;
                             default:
@@ -120,6 +120,9 @@
                 // Clear current classes and then set the new one
                 menu.removeClass("menu-show menu-hide");
                 menu.addClass(newClass);
+            } else {
+                // Display error
+                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
         };
         const toggleMenu = function(command) {
