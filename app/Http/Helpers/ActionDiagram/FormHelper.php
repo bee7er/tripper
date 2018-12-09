@@ -21,6 +21,7 @@ class FormHelper
 			case ContextMenu::CM_ACTION_EDIT:
 				switch ($instance->type) {
 					case Block::BLOCK_TYPE_COMMENT:
+					case Block::BLOCK_TYPE_SEQUENCE:
 						return $this->getTitleForm($instance, $action, $insertAction);
 
 					case Block::BLOCK_TYPE_ACTION:
