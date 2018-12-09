@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AdminController;
+use App\Model\Block;
+use App\Model\Instance;
 use App\Trip;
 use App\Http\Requests\Admin\TripRequest;
 use Datatables;
@@ -54,6 +56,31 @@ class TripController extends AdminController
             'title' => $title
         ]);
         $trip->save();
+        // We also create a default starting poit; an empty sequence
+        $block = Block::where('type','=',Block::BLOCK_TYPE_SEQUENCE)->first();
+        if (!$block) {
+            throw new \Exception('Block not found for type ' . Block::BLOCK_TYPE_SEQUENCE);
+        }
+
+        // We create a controller instance, which is a sequence block
+        $controller = new Instance();
+        $controller->id = null;
+        $controller->trip_id = $trip->id;
+        $controller->block_id = $block->id;
+        $controller->title = 'Controller';
+        $controller->protected = true;;
+        $controller->save();
+        // And now the first instance in the new trip, another sequence block
+        // These first two instances cannot be deleted
+        $sequence = new Instance();
+        $sequence->id = null;
+        $sequence->trip_id = $trip->id;
+        $sequence->seq = 1;
+        $sequence->parent_id = $controller->id;
+        $sequence->block_id = $block->id;
+        $sequence->title = 'Main sequence';
+        $sequence->protected = true;
+        $sequence->save();
     }
 
     /**

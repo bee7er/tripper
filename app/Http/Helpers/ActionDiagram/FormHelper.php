@@ -34,6 +34,9 @@ class FormHelper
 			case ContextMenu::CM_ACTION_DELETE:
 				return $this->getDeleteForm($instance, $action);
 
+			case ContextMenu::CM_ACTION_INSERT_ACTION:
+				return $this->getActionForm($instance, $action, $insertAction);
+
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
 				return $this->getCommentForm($instance, $action, $insertAction);
 
@@ -42,6 +45,26 @@ class FormHelper
 		}
 
 		return false;
+	}
+
+	/**
+	 * Return the form for editing / inserting an action
+	 *
+	 * @param $instance
+	 * @param $action
+	 * @param $insertAction
+	 * @return string
+	 */
+	private function getActionForm($instance, $action, $insertAction)
+	{
+		return '<h1>'.ucfirst($action).' Action</h1>
+                <label for="title"><b>Title</b></label>
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="action" name="action" value="' . $action . '">
+                <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->title) . '">
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}
 
 	/**

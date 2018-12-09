@@ -39,7 +39,6 @@
 
         // The selected action diagram instance entry
         var targetInstance = null;
-        var firstTimeThrough = true;
 
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response, command) {
@@ -107,6 +106,7 @@
                                 break;
                             case '{{\App\Model\ContextMenu::CM_ACTION_DELETE}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ACTION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
                                 openForm(action);
                                 break;
@@ -224,10 +224,6 @@
 
                 $("#instanceFormData").html(response.formHtml);
 
-                setTimeout(function () {
-                    closeForm();
-                }, 100);
-
                 loadActionDiagram();
 
                 $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
@@ -235,6 +231,10 @@
                 // Display error
                 $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
+
+            setTimeout(function () {
+                closeForm();
+            }, 100);
         };
         function submitForm() {
             let formData = $("#instanceFormData").serializeArray();

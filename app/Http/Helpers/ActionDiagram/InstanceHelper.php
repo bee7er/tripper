@@ -145,9 +145,15 @@ class InstanceHelper
 		try {
 			$instance = Instance::find($params['instanceId']);
 			if ($instance) {
-				$instance->delete();
-				$message = "Deleted instance '{$instance->title}'";
-				$success = true;
+				if ($instance->protected) {
+					$message  = 'This entry cannot be deleted';
+					$success = false;
+				} else {
+					// Ok to delete
+					$instance->delete();
+					$message = "Deleted instance '{$instance->title}'";
+					$success = true;
+				}
 			} else {
 				$message = "Could not find instance '{$params['instanceId']}'";
 				$success = false;

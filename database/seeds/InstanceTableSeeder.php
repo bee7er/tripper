@@ -42,6 +42,7 @@ class InstanceTableSeeder extends Seeder
         $ctrlSeqInstance->parent_id = null;
         $ctrlSeqInstance->seq = 0;
         $ctrlSeqInstance->title = 'Controller';
+        $ctrlSeqInstance->protected = true;
         $ctrlSeqInstance->save();
 
         $seqInstance = new Instance();
@@ -50,6 +51,7 @@ class InstanceTableSeeder extends Seeder
         $seqInstance->parent_id = $ctrlSeqInstance->id;
         $seqInstance->seq = 1;
         $seqInstance->title = 'Mortgage Enquiry';
+        $ctrlSeqInstance->protected = true;
         $seqInstance->save();
 
         $cmtInstance = new Instance();
