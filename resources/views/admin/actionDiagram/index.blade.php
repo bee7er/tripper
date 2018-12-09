@@ -108,6 +108,8 @@
                             case '{{\App\Model\ContextMenu::CM_ACTION_EDIT}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ACTION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_COMMENT}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_CONDITION}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ITERATION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_SEQUENCE}}':
                                 openForm(action);
                                 break;
