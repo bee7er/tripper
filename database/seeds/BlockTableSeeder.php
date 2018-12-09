@@ -63,7 +63,7 @@ class BlockTableSeeder extends Seeder
 
         $block = new Block();
         $block->type = Block::BLOCK_TYPE_ITERATION;
-        $block->label = 'Repeat while';
+        $block->label = 'Iteration';
         $block->top1 = '▞';
         $block->top2 = '▝';
         $block->side = '▎';

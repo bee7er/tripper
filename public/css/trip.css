@@ -30,11 +30,11 @@
 }
 
 .menu-container {
-    position: absolute;
+    position: relative;
 }
 
 .menu {
-    position: relative;
+    position: absolute;
 }
 
 .menu .menu-options .menu-option:hover {

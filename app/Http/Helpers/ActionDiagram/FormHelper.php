@@ -21,7 +21,7 @@ class FormHelper
 			case ContextMenu::CM_ACTION_EDIT:
 				switch ($instance->type) {
 					case Block::BLOCK_TYPE_ACTION:
-						return $this->getActionForm($instance, $action, $insertAction);
+						/////return $this->getActionForm($instance, $action, $insertAction);
 
 					case Block::BLOCK_TYPE_COMMENT:
 					case Block::BLOCK_TYPE_CONDITION:
@@ -38,8 +38,6 @@ class FormHelper
 				return $this->getDeleteForm($instance, $action);
 
 			case ContextMenu::CM_ACTION_INSERT_ACTION:
-				return $this->getActionForm($instance, $action, $insertAction);
-
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
 			case ContextMenu::CM_ACTION_INSERT_CONDITION:
 			case ContextMenu::CM_ACTION_INSERT_ITERATION:
@@ -107,7 +105,7 @@ class FormHelper
 			$title = '';
 		}
 
-		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . '</h1>
+		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $instance->label . '</h1>
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">

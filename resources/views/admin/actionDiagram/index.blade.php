@@ -190,15 +190,17 @@
             $(".focus").focus();
         };
         function openForm(action) {
-            let targetInstanceId = targetInstance.attr('id'),
-                    instanceIdParts = targetInstanceId.split('_'),
-                    instanceId = instanceIdParts[0],
-                    insertAction = instanceIdParts[1];
+            if (targetInstance) {
+                let targetInstanceId = targetInstance.attr('id'),
+                        instanceIdParts = targetInstanceId.split('_'),
+                        instanceId = instanceIdParts[0],
+                        insertAction = instanceIdParts[1];
 
-            let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
-            ajaxCall(url, JSON.stringify(
-                    {'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), openFormCallback
-            );
+                let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
+                ajaxCall(url, JSON.stringify(
+                        {'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), openFormCallback
+                );
+            }
         }
 
         function closeForm() {
