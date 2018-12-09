@@ -51,7 +51,6 @@
 
                     $(".row-selected").click(function rowSelected(e) {
                         e.preventDefault();
-
                         setTarget(e);
                     });
 
@@ -84,8 +83,10 @@
         // *****************
         // Now that the diagram has been constructed we set up the event handlers
         // Execute the context menu construction and using a callback to receive the result
-        const contextMenuCallback = function (response, command) {
-
+        const contextMenuCallback = function (response, params)
+        {
+            let command = params[0];
+            let event = params[1];
             let menu = $("#menu");
             if (response && response.success === true) {
 
@@ -120,16 +121,19 @@
                 // Clear current classes and then set the new one
                 menu.removeClass("menu-show menu-hide");
                 menu.addClass(newClass);
+                if (event) {
+                    menu.offset({left: event.pageX, top: event.pageY});
+                }
             } else {
                 // Display error
                 $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
             }
         };
-        const toggleMenu = function(command) {
+        const toggleMenu = function(command, event) {
             if (targetInstance) {
                 let instanceId = targetInstance.attr('id');
                 let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-                ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
+                ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, [command, event]);
             }
         };
 
@@ -139,20 +143,20 @@
             checkEventForTarget(e);
 
             $("#menu").offset({left: e.pageX, top: e.pageY});
-            toggleMenu('show');
+            toggleMenu('show', e);
         });
 
         window.addEventListener("click", function(e) {
             e.preventDefault();
 
-            if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
+            if ($("#menu").hasClass('menu-show')) toggleMenu("hide", e);
         });
 
         window.addEventListener("keyup", function(e) {
             e.preventDefault();
 
             if (e.which == 27) {
-                if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
+                if ($("#menu").hasClass('menu-show')) toggleMenu("hide", e);
                 else if (targetInstance) clearTarget();
 
                 closeForm();
@@ -174,6 +178,7 @@
             if (null !== targetInstance) {
                 targetInstance.removeClass('instance-selected');
                 targetInstance = null;
+                toggleMenu("hide", null);
             }
         }
 
@@ -257,7 +262,11 @@
                     insertAction = instanceIdParts[1];
 
             let url = "{{config('app.base_url')}}admin/api/send-action/";
-            ajaxCall(url, JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), sendActionCallback);
+            ajaxCall(
+                    url,
+                    JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}),
+                    sendActionCallback
+            );
         }
 
     </script>
