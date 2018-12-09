@@ -22,8 +22,17 @@ class InstanceHelper
 			case ContextMenu::CM_ACTION_EDIT:
 				return $this->update($params);
 
+			case ContextMenu::CM_ACTION_INSERT_ACTION:
+				return $this->insert($params, Block::BLOCK_TYPE_ACTION);
+
+			case ContextMenu::CM_ACTION_INSERT_CONDITION:
+				return $this->insert($params, Block::BLOCK_TYPE_CONDITION);
+
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
 				return $this->insert($params, Block::BLOCK_TYPE_COMMENT);
+
+			case ContextMenu::CM_ACTION_INSERT_ITERATION:
+				return $this->insert($params, Block::BLOCK_TYPE_ITERATION);
 
 			case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
 				return $this->insert($params, Block::BLOCK_TYPE_SEQUENCE);

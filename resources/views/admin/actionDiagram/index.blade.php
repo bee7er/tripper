@@ -126,16 +126,11 @@
             }
         };
         const toggleMenu = function(command) {
-            let instanceId = targetInstance.attr('id');
-            let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
-            ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
-        };
-
-        const setMenuPosition = function({ top, left }) {
-            let menu = $("#menu");
-            menu.css("top", top + 'px');
-            menu.css("left", left + 'px');
-            toggleMenu('show');
+            if (targetInstance) {
+                let instanceId = targetInstance.attr('id');
+                let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
+                ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, command);
+            }
         };
 
         window.addEventListener("contextmenu", function(e) {
@@ -143,34 +138,22 @@
 
             checkEventForTarget(e);
 
-            if (null !== targetInstance) {
-                let position = $(e.target).position();
-                let top = e.pageY - position.top - 300;
-                let left = e.pageX - position.left + 40;
-
-                const origin = {
-                    top: top,
-                    left: left
-                };
-
-                setMenuPosition(origin);
-            }
+            $("#menu").offset({left:e.pageX, top:e.pageY});
+            toggleMenu('show');
             return false;
         });
 
         window.addEventListener("click", function(e) {
             e.preventDefault();
 
-            let menu = $("#menu");
-            if (menu.hasClass('menu-show')) toggleMenu("hide");
+            if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
         });
 
         window.addEventListener("keyup", function(e) {
             e.preventDefault();
 
             if (e.which == 27) {
-                let menu = $("#menu");
-                if (menu.hasClass('menu-show')) toggleMenu("hide");
+                if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
                 else if (targetInstance) clearTarget();
 
                 closeForm();
@@ -214,7 +197,9 @@
                     insertAction = instanceIdParts[1];
 
             let url = "{{config('app.base_url')}}admin/api/get-instance-form/";
-            ajaxCall(url, JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), openFormCallback);
+            ajaxCall(url, JSON.stringify(
+                    {'instanceId': instanceId, 'action': action, 'insertAction': insertAction}), openFormCallback
+            );
         }
 
         function closeForm() {

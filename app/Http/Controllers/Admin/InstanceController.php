@@ -175,15 +175,22 @@ class InstanceController extends AdminController
             $instanceId = Input::get('instanceId');
             if (!$instanceId) {
                 $success = false;
-                $formHtml = 'Error, instance id not found in function parameters';
+                $message = 'Error, instance id not found in function parameters';
             } else {
                 $instance = Instance::getInstance($instanceId);
                 if (!$instance) {
                     $success = false;
-                    $formHtml = "Error, could not find instance for id $instanceId";
+                    $message = "Error, could not find instance for id $instanceId";
                 } else {
                     $formHtml = ContextMenu::getContextMenu($instance);
                 }
+            }
+
+            if (!$success) {
+                return [
+                    'success' => $success,
+                    'data'   => ['message' => $message]
+                ];
             }
         } catch (\Exception $e) {
             $message  = $e->getMessage() . ' For more info see log.';

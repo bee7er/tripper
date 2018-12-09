@@ -29,6 +29,14 @@
     color: #d8d8d8;
 }
 
+.menu-container {
+    position: absolute;
+}
+
+.menu {
+    position: relative;
+}
+
 .menu .menu-options .menu-option:hover {
     background: rgba(0, 128, 128, 0.25);
 }

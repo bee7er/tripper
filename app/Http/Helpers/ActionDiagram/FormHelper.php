@@ -20,12 +20,14 @@ class FormHelper
 		switch ($action) {
 			case ContextMenu::CM_ACTION_EDIT:
 				switch ($instance->type) {
-					case Block::BLOCK_TYPE_COMMENT:
-					case Block::BLOCK_TYPE_SEQUENCE:
-						return $this->getTitleForm($instance, $action, $insertAction);
-
 					case Block::BLOCK_TYPE_ACTION:
 						return $this->getActionForm($instance, $action, $insertAction);
+
+					case Block::BLOCK_TYPE_COMMENT:
+					case Block::BLOCK_TYPE_CONDITION:
+					case Block::BLOCK_TYPE_ITERATION:
+					case Block::BLOCK_TYPE_SEQUENCE:
+						return $this->getTitleForm($instance, $action, $insertAction);
 
 					default:
 						break;
@@ -39,6 +41,8 @@ class FormHelper
 				return $this->getActionForm($instance, $action, $insertAction);
 
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
+			case ContextMenu::CM_ACTION_INSERT_CONDITION:
+			case ContextMenu::CM_ACTION_INSERT_ITERATION:
 			case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
 				return $this->getTitleForm($instance, $action, $insertAction);
 
