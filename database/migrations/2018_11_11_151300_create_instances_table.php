@@ -22,6 +22,7 @@ class CreateInstancesTable extends Migration
 			$table->unsignedInteger('question_id')->nullable();
 			$table->unsignedInteger('condition_id')->nullable();
 			$table->unsignedInteger('parent_id')->nullable();
+			$table->unsignedInteger('snippetTrip_id')->nullable();
 			$table->boolean('collapsed');
 			$table->boolean('protected');
 			$table->foreign('trip_id')->references('id')->on('trips')->onDelete('set null');
@@ -30,6 +31,7 @@ class CreateInstancesTable extends Migration
 			$table->foreign('question_id')->references('id')->on('questions')->onDelete('set null');
 			$table->foreign('condition_id')->references('id')->on('conditions')->onDelete('set null');
 			$table->foreign('parent_id')->references('id')->on('instances')->onDelete('set null');
+			$table->foreign('snippetTrip_id')->references('id')->on('trips')->onDelete('set null');
 			$table->timestamps();
             $table->softDeletes();
 		});

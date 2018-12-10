@@ -26,6 +26,7 @@ class ContextMenu
     const CM_ACTION_INSERT_ELSE = 'insert-else';
     const CM_ACTION_INSERT_ITERATION = 'insert-iteration';
     const CM_ACTION_INSERT_SEQUENCE = 'insert-sequence';
+    const CM_ACTION_SELECT_SNIPPET = 'select-snippet';
     const CM_ACTION_ZOOM = 'zoom';
     const CM_ACTION_UNZOOM = 'unzoom';
     const CM_ACTION_DELETE = 'delete';
@@ -40,16 +41,26 @@ class ContextMenu
      * @param $instance
      * @return string
      */
-    public static function getContextMenu($instance)
+    public static function getContextMenu(Instance $instance)
     {
+        $message = null;
         $collapse = 'Collapse';
         if ($instance->collapsed) {
             $collapse = 'Expand';
         }
 
+        // Check for any missing actions; they go first
+        $missingActions = $instance->getMissingActions();
+
         // NB Using a bit map to see which options are appropriate for each block type
         $map = $instance->contextMenuMap;
         $formHtml = '<ul class="menu-options">';
+        if ($missingActions) {
+            $message = 'At least one entry is incomplete';
+            foreach ($missingActions as $missingAction) {
+                $formHtml .= ('<li class="menu-option" id="'.$missingAction.'">' . self::tidy($missingAction) . '</li>');
+            }
+        }
         $formHtml .= ($map & self::CM_EDIT ? '<li class="menu-option" id="'.self::CM_ACTION_EDIT.'">Edit</li>' : '');
         $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . $collapse . '</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
@@ -63,6 +74,15 @@ class ContextMenu
         $formHtml .= ($map & self::CM_DELETE ? '<li class="menu-option" id="'.self::CM_ACTION_DELETE.'">Delete</li>' : '');
         $formHtml .= '</ul>';
 
-        return $formHtml;
+        return [$formHtml, $message];
+    }
+
+    /**
+     * Prepare an action string for external use
+     *
+     * @param $action
+     */
+    private static function tidy($action) {
+        return ucwords(str_replace('-', ' ', $action));
     }
 }

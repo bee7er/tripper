@@ -15,7 +15,7 @@ class CreateSubtypesTable extends Migration
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
 			$table->enum('type', array('act'));
-			$table->enum('subtype', array('img', 'ins', 'qus', 'txt', 'vid'))->unique();
+			$table->enum('subtype', array('img', 'ins', 'qus', 'snp', 'txt', 'vid'))->unique();
 			$table->string('label');
 			$table->timestamps();
             $table->softDeletes();

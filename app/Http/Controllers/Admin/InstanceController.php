@@ -171,6 +171,7 @@ class InstanceController extends AdminController
     public function getInstanceContextMenu()
     {
         $success = true;
+        $message = $formHtml = null;
         try {
             $instanceId = Input::get('instanceId');
             if (!$instanceId) {
@@ -182,7 +183,7 @@ class InstanceController extends AdminController
                     $success = false;
                     $message = "Error, could not find instance for id $instanceId";
                 } else {
-                    $formHtml = ContextMenu::getContextMenu($instance);
+                    list($formHtml, $message) = ContextMenu::getContextMenu($instance);
                 }
             }
 
@@ -208,7 +209,7 @@ class InstanceController extends AdminController
 
         return Response::json(array(
             'success' => $success,
-            'formHtml'   => $formHtml
+            'data'   => ['formHtml' => $formHtml, 'message' => $message]
         ));
     }
 }

@@ -90,7 +90,10 @@
             let menu = $("#menu");
             if (response && response.success === true) {
 
-                menu.html(response.formHtml);
+                menu.html(response.data.formHtml);
+                if (response.data.message) {
+                    $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                }
 
                 $(".menu-option").click(function (e) {
                     e.preventDefault();
@@ -132,7 +135,7 @@
             }
         };
         const toggleMenu = function(command, event) {
-            if (targetInstance) {
+            if ('hide' !== command && targetInstance) {
                 let instanceId = targetInstance.attr('id');
                 let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
                 ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, [command, event]);

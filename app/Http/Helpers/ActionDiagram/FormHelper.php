@@ -4,6 +4,7 @@ namespace App\Http\Helpers\ActionDiagram;
 
 use App\Model\Block;
 use App\Model\ContextMenu;
+use App\Model\Subtype;
 
 class FormHelper
 {
@@ -21,7 +22,7 @@ class FormHelper
 			case ContextMenu::CM_ACTION_EDIT:
 				switch ($instance->type) {
 					case Block::BLOCK_TYPE_ACTION:
-						/////return $this->getActionForm($instance, $action, $insertAction);
+						return $this->getActionForm($instance, $action, $insertAction);
 
 					case Block::BLOCK_TYPE_COMMENT:
 					case Block::BLOCK_TYPE_CONDITION:
@@ -61,13 +62,26 @@ class FormHelper
 	 */
 	private function getActionForm($instance, $action, $insertAction)
 	{
+		$select = '<select name="subtype_id" id="subtype_id">';
+		$subtypeList = Subtype::getSubtypeList();
+		if ($subtypeList) {
+			foreach ($subtypeList as $key => $entry) {
+				$select .= "<option value='$key'>" . $entry . "</option>";
+			}
+		}
+		$select .= '</select>';
+
 		return '<h1>'.ucfirst($action).' Action</h1>
-                <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
+                <label for="title"><strong>Title</strong></label>
                 <input type="text" placeholder="Enter title" name="title" id="title" class="focus"
                  			value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->title) . '">
+                <label for="title"><strong>Type</strong></label>
+                ' . $select . '
+                <hr />
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}

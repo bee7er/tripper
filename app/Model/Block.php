@@ -30,21 +30,7 @@ class Block extends Model
      */
     public static function getBlock($blockId)
     {
-        $block = Block::select(
-            array(
-                'blocks.id',
-                'blocks.type',
-                'blocks.label',
-                'blocks.top1',
-                'blocks.top2',
-                'blocks.side',
-                'blocks.bottom1',
-                'blocks.bottom2',
-                'blocks.color',
-                'blocks.container',
-                'blocks.deleted_at',
-            )
-        )
+        $block = Block::select()
             ->where("id", $blockId)
             ->get();
 

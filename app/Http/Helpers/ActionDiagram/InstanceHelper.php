@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class InstanceHelper
 {
+	private static $validFields = [
+		Block::BLOCK_TYPE_ACTION => ['title', 'subtype_id']
+	];
+
 	/**
 	 * Save an instance, with update or insert
 	 *
@@ -58,7 +62,14 @@ class InstanceHelper
 		$success = $message = null;
 		try {
 			$instance = Instance::find($params['instanceId']);
-			$instance->title = $params['title'];
+			// Save all parameters by name
+			foreach ($params as $field => $param) {
+				// If a valid field then update the instance with each one
+				if (in_array($field, self::$validFields[$params['type']])) {
+					$instance->$field = $params[$field];
+				}
+			}
+
 			$instance->save();
 			$message = "Updated '{$instance->title}'";
 			$success = true;
