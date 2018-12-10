@@ -69,6 +69,8 @@
                         closeForm();
                         checkEventForTarget(e);
                     }
+
+                    $(".in-complete").fadeOut(20).fadeIn(20).delay(50).fadeOut(20).fadeIn(20);
                 }
             } else {
                 displayMessages(response.success, response.data.messages);
@@ -116,6 +118,7 @@
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_CONDITION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ITERATION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_SEQUENCE}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_SELECT_SNIPPET}}':
                                 openForm(action);
                                 break;
                             default:
@@ -179,7 +182,8 @@
         });
 
         // Checks the event target to see if it is a usable entry
-        function checkEventForTarget(e) {
+        function checkEventForTarget(e)
+        {
             let target = $(e.target).parent();
             // Only accept the target if it is one of our entries, i.e. it has an id
             if (target && target.attr('id')) {
@@ -274,7 +278,6 @@
         };
         function sendAction(action)
         {
-
             let targetInstanceId = targetInstance.attr('id'),
                     instanceIdParts = targetInstanceId.split('_'),
                     instanceId = instanceIdParts[0],

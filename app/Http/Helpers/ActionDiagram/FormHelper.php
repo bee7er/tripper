@@ -46,11 +46,34 @@ class FormHelper
 			case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
 				return $this->getTitleForm($instance, $action, $insertAction);
 
+			case ContextMenu::CM_ACTION_SELECT_SNIPPET:
+				return $this->getSelectSnippetForm($instance);
+
 			default:
 				break;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Return the form for selecting a snippet
+	 *
+	 * @param $instance
+	 * @param $action
+	 * @param $insertAction
+	 * @return string
+	 */
+	private function getSelectSnippetForm(Instance $instance)
+	{
+		return '<h1>Whoa dude</h1>
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
+                <label for="title"><strong>Title</strong></label>
+                <label for="title"><strong>Type</strong></label>
+                <hr />
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}
 
 	/**

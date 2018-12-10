@@ -73,7 +73,8 @@ class Instance extends Model
             ->join('blocks', 'blocks.id', '=', 'instances.block_id')
             ->leftjoin('subtypes', 'subtypes.id', '=', 'instances.subtype_id')
             ->select('instances.*',
-                'blocks.type','blocks.label','blocks.top1','blocks.top2','blocks.side','blocks.bottom1','blocks.bottom2','blocks.color','blocks.container','blocks.contextMenuMap',
+                'blocks.type','blocks.label','blocks.top1','blocks.top2','blocks.side','blocks.bottom1',
+                'blocks.bottom2','blocks.color','blocks.container','blocks.contextMenuMap',
                 'subtypes.subtype'
             )
             ->orderBy("instances.seq")
@@ -101,11 +102,6 @@ class Instance extends Model
 
                 $child = $children[$i];
 
-//                $child->block = Block::getBlock($child->block_id);
-//                $child->subtype = null;
-//                if ($child->subtype_id) {
-//                    $child->subtype = Subtype::getSubtype($child->subtype_id);
-//                }
                 $child->entries[] = self::getOpeningLine($child, $depth, $colors);
                 if ($child->container && $child->type !== Block::BLOCK_TYPE_ELSE) {
                     $child->entries[] = self::getContainerLine($child, $depth, $colors);
@@ -119,6 +115,7 @@ class Instance extends Model
                     $child = clone $child;
                     $child->entries = [];
 
+                    // Special check for else block
                     $nextChild = isset($children[$i + 1]) ? $children[$i + 1] : null;
 
                     $colors[] = $child->color;
@@ -175,26 +172,26 @@ class Instance extends Model
         // Insert before for containers but after for non-containers
         $title = 'Insert after';
         $insertAction = ContextMenu::INSERT_AFTER;
-        $collapsed = '';
+        $collapsed = $incomplete = '';
         if ($instance->container) {
             $title = 'Insert before';
             $insertAction = ContextMenu::INSERT_BEFORE;
             if ($instance->collapsed) {
-                $collapsed = "- Collapsed";
+                $collapsed = "- <span class='emphatic'>Collapsed</span>";
             }
         }
 
-        $addCssClass = $instance->isComplete() ? '': 'incomplete';
+        $incomplete = $instance->isComplete() ? '': "- <span class='emphatic'>Incomplete</span>";
 
         return (
-            "<div class='row-selected $addCssClass' id='{$instance->id}_$insertAction'>"
+            "<div class='row-selected' id='{$instance->id}_$insertAction'>"
             . $prefix
             . "<span style='color: #{$instance->color}' title='$title'>"
             . $instance->top1
             . $instance->top2
             . '&nbsp;&nbsp;'
             . $instance->type
-            . ($instance->container ? '' : ': ' . $instance->title) . $collapsed
+            . ($instance->container ? '' : ': ' . $instance->title) . $collapsed . $incomplete
             . "</span></div>"
         );
     }
