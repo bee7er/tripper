@@ -31,7 +31,8 @@
 
     <script type="text/javascript">
 
-        $(function () {
+        $(function ()
+        {
             $('.go_back').click(function () {
                 document.location = "{{config('app.base_url')}}admin/trip";
             });
@@ -41,7 +42,8 @@
         var targetInstance = null;
 
         // Execute the context menu construction and using a callback to receive the result
-        const actionDiagramCallback = function(response, command) {
+        const actionDiagramCallback = function(response)
+        {
 
             let diagram = $("#actionDiagram");
 
@@ -69,11 +71,11 @@
                     }
                 }
             } else {
-                // Display error
-                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             }
         };
-        const loadActionDiagram = function(command) {
+        const loadActionDiagram = function()
+        {
             let tripId = '{!! $trip->id !!}';
             let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
             ajaxCall(url, JSON.stringify({'tripId': tripId}), actionDiagramCallback);
@@ -91,8 +93,8 @@
             if (response && response.success === true) {
 
                 menu.html(response.data.formHtml);
-                if (response.data.message) {
-                    $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                if (response.data.messages) {
+                    displayMessages(response.success, response.data.messages);
                 }
 
                 $(".menu-option").click(function (e) {
@@ -130,19 +132,25 @@
                     menu.offset({left: event.pageX, top: event.pageY});
                 }
             } else {
-                // Display error
-                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             }
         };
-        const toggleMenu = function(command, event) {
-            if ('hide' !== command && targetInstance) {
+        const toggleMenu = function(command, event)
+        {
+            if ('hide' === command) {
+                let menu = $("#menu");
+                // Clear current classes and then set the new one
+                menu.removeClass("menu-show menu-hide");
+                menu.addClass("menu-hide");
+            } else if (targetInstance) {
                 let instanceId = targetInstance.attr('id');
                 let url = "{{config('app.base_url')}}admin/api/get-instance-context-menu/";
                 ajaxCall(url, JSON.stringify({'instanceId': instanceId}), contextMenuCallback, [command, event]);
             }
         };
 
-        window.addEventListener("contextmenu", function(e) {
+        window.addEventListener("contextmenu", function(e)
+        {
             e.preventDefault();
 
             checkEventForTarget(e);
@@ -151,17 +159,19 @@
             toggleMenu('show', e);
         });
 
-        window.addEventListener("click", function(e) {
+        window.addEventListener("click", function(e)
+        {
             e.preventDefault();
 
-            if ($("#menu").hasClass('menu-show')) toggleMenu("hide", e);
+            if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
         });
 
-        window.addEventListener("keyup", function(e) {
+        window.addEventListener("keyup", function(e)
+        {
             e.preventDefault();
 
             if (e.which == 27) {
-                if ($("#menu").hasClass('menu-show')) toggleMenu("hide", e);
+                if ($("#menu").hasClass('menu-show')) toggleMenu("hide");
                 else if (targetInstance) clearTarget();
 
                 closeForm();
@@ -179,27 +189,29 @@
             }
         }
 
-        function clearTarget() {
+        function clearTarget()
+        {
             if (null !== targetInstance) {
                 targetInstance.removeClass('instance-selected');
                 targetInstance = null;
-                toggleMenu("hide", null);
+                toggleMenu("hide");
             }
         }
 
         // Execute the form construction and loading using a callback to receive the result
-        const openFormCallback = function(response) {
+        const openFormCallback = function(response)
+        {
             if (response && response.success === true) {
-                $("#instanceFormData").html(response.formHtml);
+                $("#instanceFormData").html(response.data.formHtml);
                 $("#instanceForm").css('display', 'block');
             } else {
-                // Display error
-                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             }
 
             $(".focus").focus();
         };
-        function openForm(action) {
+        function openForm(action)
+        {
             if (targetInstance) {
                 let targetInstanceId = targetInstance.attr('id'),
                         instanceIdParts = targetInstanceId.split('_'),
@@ -218,24 +230,25 @@
         }
 
         // Execute the form submission and using a callback to receive the result
-        const submitFormCallback = function(response) {
+        const submitFormCallback = function(response)
+        {
             if (response && response.success === true) {
 
                 $("#instanceFormData").html(response.formHtml);
 
                 loadActionDiagram();
 
-                $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             } else {
-                // Display error
-                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             }
 
             setTimeout(function () {
                 closeForm();
             }, 100);
         };
-        function submitForm() {
+        function submitForm()
+        {
             let formData = $("#instanceFormData").serializeArray();
             let action = $("#action").val();
 
@@ -248,18 +261,19 @@
             ajaxCall(url, JSON.stringify(formData), submitFormCallback);
         }
 
-        const sendActionCallback = function(response) {
+        const sendActionCallback = function(response)
+        {
             if (response && response.success === true) {
 
                 loadActionDiagram();
 
-                $("#messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             } else {
-                // Display error
-                $("#error-messages").text(response.data.message).fadeIn(800).delay(3000).fadeOut(800);
+                displayMessages(response.success, response.data.messages);
             }
         };
-        function sendAction(action) {
+        function sendAction(action)
+        {
 
             let targetInstanceId = targetInstance.attr('id'),
                     instanceIdParts = targetInstanceId.split('_'),
@@ -272,6 +286,18 @@
                     JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}),
                     sendActionCallback
             );
+        }
+
+        function displayMessages(success, messages)
+        {
+            if (messages) {
+                let messageStatus = success ? "#info-messages" : "#error-messages";
+                for (let i=0; i<messages.length; i++) {
+                    if (messages[i]) {
+                        $(messageStatus).text(messages[i]).fadeIn(800).delay(3000).fadeOut(800);
+                    }
+                }
+            }
         }
 
     </script>

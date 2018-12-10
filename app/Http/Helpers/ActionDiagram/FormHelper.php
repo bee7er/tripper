@@ -4,6 +4,7 @@ namespace App\Http\Helpers\ActionDiagram;
 
 use App\Model\Block;
 use App\Model\ContextMenu;
+use App\Model\Instance;
 use App\Model\Subtype;
 
 class FormHelper
@@ -16,7 +17,7 @@ class FormHelper
 	 * @param $insertAction
 	 * @return bool|string
 	 */
-	public function getFormByTypeAndAction($instance, $action, $insertAction)
+	public function getFormByTypeAndAction(Instance $instance, $action, $insertAction)
 	{
 		switch ($action) {
 			case ContextMenu::CM_ACTION_EDIT:
@@ -60,13 +61,14 @@ class FormHelper
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getActionForm($instance, $action, $insertAction)
+	private function getActionForm(Instance $instance, $action, $insertAction)
 	{
 		$select = '<select name="subtype_id" id="subtype_id">';
 		$subtypeList = Subtype::getSubtypeList();
 		if ($subtypeList) {
 			foreach ($subtypeList as $key => $entry) {
-				$select .= "<option value='$key'>" . $entry . "</option>";
+				$selected = ($instance->subtype_id == $key ? 'selected': '');
+				$select .= "<option $selected value='$key'>" . $entry . "</option>";
 			}
 		}
 		$select .= '</select>';
@@ -93,7 +95,7 @@ class FormHelper
 	 * @param $action
 	 * @return string
 	 */
-	private function getDeleteForm($instance, $action)
+	private function getDeleteForm(Instance $instance, $action)
 	{
 		return '<h1>' . ucfirst(str_replace('-', '', $action)) . ' Entry</h1>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
@@ -112,7 +114,7 @@ class FormHelper
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getTitleForm($instance, $action, $insertAction)
+	private function getTitleForm(Instance $instance, $action, $insertAction)
 	{
 		$title = $instance->title;
 		if (ContextMenu::CM_ACTION_EDIT !== $action) {
