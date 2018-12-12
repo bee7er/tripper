@@ -123,6 +123,7 @@ class FormHelper
 		return '<h1>' . ucfirst(str_replace('-', '', $action)) . ' Entry</h1>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
                 <div>Are you sure you want to delete the following entry:</div><br>
                 <div><strong>' . $instance->title . '</strong></div><br>
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
@@ -149,6 +150,7 @@ class FormHelper
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
                 <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $title . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';

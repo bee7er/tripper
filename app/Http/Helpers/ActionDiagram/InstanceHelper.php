@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Log;
 class InstanceHelper
 {
 	private static $validFields = [
-		Block::BLOCK_TYPE_ACTION => ['title', 'subtype_id']
+		Block::BLOCK_TYPE_ACTION => ['title', 'subtype_id'],
+		Block::BLOCK_TYPE_COMMENT => ['title'],
+		Block::BLOCK_TYPE_CONDITION => ['title'],
+		Block::BLOCK_TYPE_ITERATION => ['title'],
+		Block::BLOCK_TYPE_SEQUENCE => ['title'],
 	];
 
 	/**
@@ -21,6 +25,7 @@ class InstanceHelper
 	 */
 	public function save($params)
 	{
+//		print '<pre/>'; print_r($params);die;
 		$success = null;
 		switch ($params['action']) {
 			case ContextMenu::CM_ACTION_EDIT:
@@ -29,11 +34,11 @@ class InstanceHelper
 			case ContextMenu::CM_ACTION_INSERT_ACTION:
 				return $this->insert($params, Block::BLOCK_TYPE_ACTION);
 
-			case ContextMenu::CM_ACTION_INSERT_CONDITION:
-				return $this->insert($params, Block::BLOCK_TYPE_CONDITION);
-
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
 				return $this->insert($params, Block::BLOCK_TYPE_COMMENT);
+
+			case ContextMenu::CM_ACTION_INSERT_CONDITION:
+				return $this->insert($params, Block::BLOCK_TYPE_CONDITION);
 
 			case ContextMenu::CM_ACTION_INSERT_ITERATION:
 				return $this->insert($params, Block::BLOCK_TYPE_ITERATION);
@@ -59,8 +64,13 @@ class InstanceHelper
 	 */
 	public function update($params)
 	{
-		$success = $message = null;
+		$success = null;
+		$messages = [];
 		try {
+			if (isset(self::$validFields[$params['type']])) {
+				throw new \Exception('Type not supported for this function');
+			}
+
 			$instance = Instance::find($params['instanceId']);
 			// Save all parameters by name
 			foreach ($params as $field => $param) {
@@ -71,11 +81,10 @@ class InstanceHelper
 			}
 
 			$instance->save();
-			$message = "Updated '{$instance->title}'";
+			$messages[] = "Updated '{$instance->title}'";
 			$success = true;
-			Log::info($message, []);
 		} catch (\Exception $e) {
-			$message  = $e->getMessage() . ' For more info see log.';
+			$messages[]  = $e->getMessage() . ' For more info see log.';
 			$success = false;
 			Log::info("Error updating instance with id {$params['instanceId']}", [
 				$e->getMessage(),
@@ -86,7 +95,7 @@ class InstanceHelper
 
 		return [
 			'success' => $success,
-			'data'   => ['message' => $message]
+			'data'   => ['messages' => $messages]
 		];
 	}
 
@@ -98,7 +107,8 @@ class InstanceHelper
 	 */
 	public function insert($params, $blockType)
 	{
-		$success = $message = null;
+		$success = null;
+		$messages = [];
 		try {
 			$sibling = Instance::find($params['instanceId']);
 			$block = Block::where('type','=',$blockType)->first();
@@ -137,11 +147,10 @@ class InstanceHelper
 			$newInstance->save();
 			// NB AFTER Resequence the siblings so we can keep the order
 			$this->resequenceInstanceChildren($parentId);
-			$message = "Inserted '" . $newInstance->title . "' $where";
+			$messages[] = "Inserted '" . $newInstance->title . "' $where";
 			$success = true;
-			Log::info($message, []);
 		} catch (\Exception $e) {
-			$message  = $e->getMessage() . ' For more info see log.';
+			$messages[]  = $e->getMessage() . ' For more info see log.';
 			$success = false;
 			Log::info('Error inserting data: ' . $params['title'], [
 				$e->getMessage(),
@@ -152,7 +161,7 @@ class InstanceHelper
 
 		return [
 			'success' => $success,
-			'data'   => ['message' => $message]
+			'data'   => ['messages' => $messages]
 		];
 	}
 
@@ -164,26 +173,26 @@ class InstanceHelper
 	 */
 	public function delete($params)
 	{
-		$success = $message = null;
+		$success = null;
+		$messages = [];
 		try {
 			$instance = Instance::find($params['instanceId']);
 			if ($instance) {
 				if ($instance->protected) {
-					$message  = 'This entry cannot be deleted';
+					$messages[]  = 'This entry cannot be deleted';
 					$success = false;
 				} else {
 					// Ok to delete
 					$instance->delete();
-					$message = "Deleted instance '{$instance->title}'";
+					$messages[] = "Deleted instance '{$instance->title}'";
 					$success = true;
 				}
 			} else {
-				$message = "Could not find instance '{$params['instanceId']}'";
+				$messages[] = "Could not find instance '{$params['instanceId']}'";
 				$success = false;
 			}
-			Log::info($message, []);
 		} catch (\Exception $e) {
-			$message  = $e->getMessage() . ' For more info see log.';
+			$messages[]  = $e->getMessage() . ' For more info see log.';
 			$success = false;
 			Log::info("Error deleting instance with id {$params['instanceId']}", [
 				$e->getMessage(),
@@ -194,7 +203,7 @@ class InstanceHelper
 
 		return [
 			'success' => $success,
-			'data'   => ['message' => $message]
+			'data'   => ['messages' => $messages]
 		];
 	}
 
