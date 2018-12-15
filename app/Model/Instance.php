@@ -303,4 +303,20 @@ class Instance extends Model
 
         return $actions;
     }
+
+    /**
+     * Checks if the sequence instance is at the top level
+     *
+     * @return bool
+     */
+    public function isTopLevel()
+    {
+        // Excluding the controller (seq 0.00)
+        $topLevelSeq = Instance::where(['trip_id' => $this->trip_id, 'block_id' => $this->block_id])
+            ->where('seq', '>', '0.00')
+            ->orderBy('seq')
+            ->first();
+
+        return ($topLevelSeq->id === $this->id);
+    }
 }

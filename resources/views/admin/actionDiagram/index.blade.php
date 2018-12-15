@@ -9,7 +9,7 @@
 
     <div class="page-header">
         <h3>
-            {!! trans("admin/actionDiagram.title") !!}: {!! $trip->title !!}
+            {!! trans("admin/actionDiagram.title") !!}: <span id="actionDiagramTitle">&nbsp;</span>
             <div class="pull-right">
                 <div class="pull-right">
                     <button class="btn btn-primary btn-xs go_back">
@@ -41,7 +41,7 @@
         // The selected action diagram instance entry
         var targetInstance = null;
         // A list of action diagrams we have zoomed into
-        var zoomlist = ['{!! $trip->id !!}'];
+        var zoomList = [{tripId: '{!! $trip->id !!}', title: '{!! $trip->title !!}'}];
 
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response)
@@ -80,7 +80,11 @@
         };
         const loadActionDiagram = function()
         {
-            let tripId = zoomlist[zoomlist.length - 1];
+            let tripDetails = zoomList[zoomList.length - 1];
+            let tripId = tripDetails.tripId;
+
+            $('#actionDiagramTitle').text(tripDetails.title);
+
             let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
             ajaxCall(url, JSON.stringify({'tripId': tripId}), actionDiagramCallback);
         };
@@ -110,6 +114,9 @@
                         // Which option was selected?
                         let action = $(e.target).attr('id');
                         switch (action) {
+                            case '{{\App\Model\ContextMenu::CM_ACTION_UNZOOM}}':
+                                unZoom();
+                                break;
                             case '{{\App\Model\ContextMenu::CM_ACTION_ZOOM}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
                                 sendAction(action);
@@ -183,6 +190,14 @@
                 closeForm();
             }
         });
+
+        function unZoom()
+        {
+            // Return to the previous level
+            zoomList.splice(-1, 1);
+
+            loadActionDiagram();
+        }
 
         // Checks the event target to see if it is a usable entry
         function checkEventForTarget(e)
@@ -279,10 +294,9 @@
         {
             if (response && response.success === true) {
 
-                console.log(response);
                 if (response.data.action == 'zoom') {
                     // Zoom to next level
-                    zoomlist[zoomlist.length] = response.data.tripId;
+                    zoomList[zoomList.length] = {tripId: response.data.tripId, title: response.data.title};
                 }
 
                 loadActionDiagram();
