@@ -190,7 +190,7 @@ class Instance extends Model
             . $instance->top1
             . $instance->top2
             . '&nbsp;&nbsp;'
-            . $instance->type
+            . $instance->type . ($instance->subtype ? " {$instance->subtype}: " : '')
             . ($instance->container ? '' : ': ' . $instance->title) . $collapsed . $incomplete
             . "</span></div>"
         );

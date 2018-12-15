@@ -18,6 +18,7 @@ class VerifyCsrfToken extends BaseVerifier
         'admin/api/get-instance-form',
         'admin/api/get-instance-context-menu',
         'admin/api/save-instance',
+        'admin/api/selected-snippet',
         'admin/api/send-action',
     ];
 }

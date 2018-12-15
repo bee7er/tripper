@@ -25,7 +25,6 @@ class InstanceHelper
 	 */
 	public function save($params)
 	{
-//		print '<pre/>'; print_r($params);die;
 		$success = null;
 		switch ($params['action']) {
 			case ContextMenu::CM_ACTION_EDIT:
@@ -67,7 +66,7 @@ class InstanceHelper
 		$success = null;
 		$messages = [];
 		try {
-			if (isset(self::$validFields[$params['type']])) {
+			if (!isset(self::$validFields[$params['type']])) {
 				throw new \Exception('Type not supported for this function');
 			}
 
@@ -87,6 +86,51 @@ class InstanceHelper
 			$messages[]  = $e->getMessage() . ' For more info see log.';
 			$success = false;
 			Log::info("Error updating instance with id {$params['instanceId']}", [
+				$e->getMessage(),
+				$e->getFile(),
+				$e->getLine()
+			]);
+		}
+
+		return [
+			'success' => $success,
+			'data'   => ['messages' => $messages]
+		];
+	}
+
+	/**
+	 * Update an instance to point at a snippet
+	 *
+	 * @param $formData
+	 * @return array
+	 */
+	public function setSnippet($params)
+	{
+		$success = null;
+		$messages = [];
+		try {
+			if (Block::BLOCK_TYPE_ACTION !== $params['type']) {
+				throw new \Exception("Type {$params['type']} not supported for this function");
+			}
+
+			if (!$params['snippetId']) {
+				throw new \Exception("Snippet id not supplied");
+			}
+
+			$snippetInstance = Instance::find($params['snippetId']);
+			if (!$snippetInstance) {
+				throw new \Exception("Snippet instance not found for id {$params['snippetId']}");
+			}
+
+			$instance = Instance::find($params['instanceId']);
+			$instance->snippetTrip_id = $params['snippetId'];
+			$instance->save();
+			$messages[] = "Updated '{$instance->title}'";
+			$success = true;
+		} catch (\Exception $e) {
+			$messages[]  = $e->getMessage() . ' For more info see log.';
+			$success = false;
+			Log::info("Error updating instance id {$params['instanceId']} with snippet id {$params['snippetId']}", [
 				$e->getMessage(),
 				$e->getFile(),
 				$e->getLine()

@@ -54,6 +54,24 @@ class InstanceController extends AdminController
     }
 
     /**
+     * Update an instance to be pointing at an embedded snippet
+     *
+     * @return Response
+     */
+    public function selectedSnippet()
+    {
+        $formData = $this->getFormData();
+
+        $helper = new InstanceHelper;
+        $result = $helper->setSnippet($formData);
+
+        return Response::json(array(
+            'success' => $result['success'],
+            'data'   => $result['data'],
+        ));
+    }
+
+    /**
      * Save an instance, with update or insert
      *
      * @return Response
@@ -137,13 +155,31 @@ class InstanceController extends AdminController
             $instance = Instance::find($params['instanceId']);
             $action = $params['action'];
 
-            if (ContextMenu::CM_ACTION_COLLAPSE === $action) {
-                // Toggle collapsed status
-                $instance->collapsed = !$instance->collapsed;
+            switch ($action) {
+                case ContextMenu::CM_ACTION_COLLAPSE:
+                    // Toggle collapsed status
+                    $instance->collapsed = !$instance->collapsed;
+                    $instance->save();
+                    $messages[] = "'{$instance->title}' " . ($instance->collapsed ? 'collapsed' : 'expanded');
+                    break;
+
+                case ContextMenu::CM_ACTION_ZOOM:
+                    // Respond with the snippet to zoom
+                    return Response::json(array(
+                     'success' => true,
+                     'data'   => [
+                         'action' => ContextMenu::CM_ACTION_ZOOM,
+                         'tripId' => $instance->snippetTrip_id,
+                         'messages' => ['Zoomed to next level']
+                     ]));
+
+                default:
+                    return Response::json(array(
+                        'success' => false,
+                        'data'   => ['messages' => 'Unexpected send action type']
+                    ));
             }
 
-            $instance->save();
-            $messages[] = "'{$instance->title}' " . ($instance->collapsed ? 'collapsed' : 'expanded');
         } catch (\Exception $e) {
             $messages[]  = $e->getMessage() . ' For more info see log.';
             Log::info("Error updating instance with id {$params['instanceId']}", [

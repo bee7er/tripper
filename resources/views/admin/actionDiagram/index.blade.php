@@ -40,6 +40,8 @@
 
         // The selected action diagram instance entry
         var targetInstance = null;
+        // A list of action diagrams we have zoomed into
+        var zoomlist = ['{!! $trip->id !!}'];
 
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response)
@@ -78,7 +80,7 @@
         };
         const loadActionDiagram = function()
         {
-            let tripId = '{!! $trip->id !!}';
+            let tripId = zoomlist[zoomlist.length - 1];
             let url = "{{config('app.base_url')}}admin/api/get-action-diagram/";
             ajaxCall(url, JSON.stringify({'tripId': tripId}), actionDiagramCallback);
         };
@@ -108,6 +110,7 @@
                         // Which option was selected?
                         let action = $(e.target).attr('id');
                         switch (action) {
+                            case '{{\App\Model\ContextMenu::CM_ACTION_ZOOM}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
                                 sendAction(action);
                                 break;
@@ -208,6 +211,16 @@
             if (response && response.success === true) {
                 $("#instanceFormData").html(response.data.formHtml);
                 $("#instanceForm").css('display', 'block');
+
+                // If snippets have been returned listen for events
+                $(".snippet").click(function (e) {
+                    e.preventDefault();
+
+                    if ($(e.target).parent()) {
+                        let selectedId = $(e.target).parent().attr('id').replace('snippet_', '');
+                        selectSnippet(selectedId);
+                    }
+                });
             } else {
                 displayMessages(response.success, response.data.messages);
             }
@@ -241,11 +254,8 @@
                 $("#instanceFormData").html(response.formHtml);
 
                 loadActionDiagram();
-
-                displayMessages(response.success, response.data.messages);
-            } else {
-                displayMessages(response.success, response.data.messages);
             }
+            displayMessages(response.success, response.data.messages);
 
             setTimeout(function () {
                 closeForm();
@@ -269,12 +279,15 @@
         {
             if (response && response.success === true) {
 
-                loadActionDiagram();
+                console.log(response);
+                if (response.data.action == 'zoom') {
+                    // Zoom to next level
+                    zoomlist[zoomlist.length] = response.data.tripId;
+                }
 
-                displayMessages(response.success, response.data.messages);
-            } else {
-                displayMessages(response.success, response.data.messages);
+                loadActionDiagram();
             }
+            displayMessages(response.success, response.data.messages);
         };
         function sendAction(action)
         {
@@ -284,11 +297,42 @@
                     insertAction = instanceIdParts[1];
 
             let url = "{{config('app.base_url')}}admin/api/send-action/";
-            ajaxCall(
-                    url,
+            ajaxCall(url,
                     JSON.stringify({'instanceId': instanceId, 'action': action, 'insertAction': insertAction}),
                     sendActionCallback
             );
+        }
+
+
+        // Execute the selection of a snippet using a callback to receive the result
+        const selectSnippetCallback = function(response)
+        {
+            if (response && response.success === true) {
+
+                $("#instanceFormData").html(response.formHtml);
+
+                loadActionDiagram();
+
+                displayMessages(response.success, response.data.messages);
+            } else {
+                displayMessages(response.success, response.data.messages);
+            }
+
+            setTimeout(function () {
+                closeForm();
+            }, 100);
+        };
+        function selectSnippet(snippetId)
+        {
+            let formData = $("#instanceFormData").serializeArray();
+            formData[formData.length] = {name: 'snippetId', value: snippetId};
+
+            console.log(formData);
+
+            let action = $("#action").val();
+            let url = "{{config('app.base_url')}}admin/api/selected-snippet/";
+
+            ajaxCall(url, JSON.stringify(formData), selectSnippetCallback);
         }
 
         function displayMessages(success, messages)

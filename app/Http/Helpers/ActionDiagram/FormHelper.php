@@ -6,6 +6,7 @@ use App\Model\Block;
 use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Subtype;
+use App\Trip;
 
 class FormHelper
 {
@@ -66,14 +67,30 @@ class FormHelper
 	 */
 	private function getSelectSnippetForm(Instance $instance)
 	{
-		return '<h1>Whoa dude</h1>
+		$trips = Trip::where('id', '!=', $instance->trip_id)->get();
+
+		$html = '<h2>Select Snippet</h2>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
-                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
-                <label for="title"><strong>Title</strong></label>
-                <label for="title"><strong>Type</strong></label>
-                <hr />
-                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
+                <input type="hidden" id="type" name="type" value="' . $instance->type . '">';
+
+		$html .= '<table width="300px"><thead><th>Id</th><th>Title</th></thead>';
+		$html .= '<tbody>';
+		if ($trips) {
+			foreach ($trips as $trip) {
+				$html .= '<tr id="snippet_' . $trip->id . '" class="snippet">';
+				$html .= '<td>' . $trip->id . '</td>';
+				$html .= '<td>' . $trip->title . '</td>';
+				$html .= '</tr>';
+			}
+		} else {
+			$html .= '<tr><td colspan="2">No snippets found</td></tr>';
+		}
+		$html .= '</tbody></table>';
+
+		$html .= '<hr />
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>';
+
+		return $html;
 	}
 
 	/**
