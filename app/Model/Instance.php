@@ -181,6 +181,11 @@ class Instance extends Model
             }
         }
 
+        if (Block::BLOCK_TYPE_ELSE == $instance->type) {
+            $title = 'Insert inside';
+            $insertAction = ContextMenu::INSERT_INSIDE;
+        }
+
         $incomplete = $instance->isComplete() ? '': "- <span class='emphatic'>Incomplete</span>";
 
         return (
