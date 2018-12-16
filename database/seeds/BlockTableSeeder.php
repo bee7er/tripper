@@ -85,7 +85,7 @@ class BlockTableSeeder extends Seeder
         $block->save();
 
         # CM_EDIT,CM_COLLAPSE,CM_INSERT_ACTION,CM_INSERT_COMMENT,CM_INSERT_CONDITION,
-        # CM_INSERT_ITERATION,CM_INSERT_SEQUENCE,CM_UNZOOM,CM_DELETE
+        # CM_INSERT_ITERATION,CM_INSERT_SEQUENCE,CM_DELETE
         $block = new Block();
         $block->type = Block::BLOCK_TYPE_SEQUENCE;
         $block->label = 'Sequence';
@@ -96,7 +96,7 @@ class BlockTableSeeder extends Seeder
         $block->bottom2 = '▗';
         $block->color = 'c200c2';
         $block->container = true;
-        $block->contextMenuMap = 1759;
+        $block->contextMenuMap = 1247;
         $block->save();
     }
 }

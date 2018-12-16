@@ -171,7 +171,7 @@ class InstanceController extends AdminController
                          'action' => ContextMenu::CM_ACTION_ZOOM,
                          'tripId' => $instance->snippetTrip_id,
                          'title' => $instance->title,
-                         'messages' => ['Zoomed to snippet ' . $instance->title]
+                         'messages' => 'Zoomed to snippet ' . $instance->title
                      ]));
 
                 default:

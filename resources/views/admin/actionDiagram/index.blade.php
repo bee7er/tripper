@@ -18,6 +18,9 @@
                 </div>
             </div>
         </h3>
+        <h4>
+            <div id="bcTrail">&nbsp;</div>
+        </h4>
     </div>
 
     @include('partials.action-diagram')
@@ -46,7 +49,6 @@
         // Execute the context menu construction and using a callback to receive the result
         const actionDiagramCallback = function(response)
         {
-
             let diagram = $("#actionDiagram");
 
             if (response && response.success === true) {
@@ -77,6 +79,8 @@
             } else {
                 displayMessages(response.success, response.data.messages);
             }
+
+            buildBreadCrumbTrail();
         };
         const loadActionDiagram = function()
         {
@@ -114,9 +118,6 @@
                         // Which option was selected?
                         let action = $(e.target).attr('id');
                         switch (action) {
-                            case '{{\App\Model\ContextMenu::CM_ACTION_UNZOOM}}':
-                                unZoom();
-                                break;
                             case '{{\App\Model\ContextMenu::CM_ACTION_ZOOM}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_COLLAPSE}}':
                                 sendAction(action);
@@ -191,13 +192,40 @@
             }
         });
 
-        function unZoom()
+        const zoomTo = function(level)
         {
-            // Return to the previous level
-            zoomList.splice(-1, 1);
+            // Go to the nominated level
+            if (level < zoomList.length) {
+                for (let i=(zoomList.length - 1); i > 0; i--) {
+                    if (level < i) {
+                        zoomList.splice(-1, 1);
+                    }
+                }
 
-            loadActionDiagram();
-        }
+                loadActionDiagram();
+            }
+        };
+
+        const buildBreadCrumbTrail = function()
+        {
+            let bcTrail = 'None';
+            if (zoomList && zoomList.length > 0) {
+                bcTrail = '';
+                for (let i=0; i < zoomList.length; i++) {
+                    bcTrail += '<span id="bc_' + i + '" class="bc">' + zoomList[i].title + '</span>/ ';
+                }
+            }
+            $("#bcTrail").html(bcTrail);
+            $(".bc").click(function (e) {
+                e.preventDefault();
+
+                if ($(e.target)) {
+                    let selectedId = $(e.target).attr('id').replace('bc_', '');
+
+                    zoomTo(selectedId);
+                }
+            });
+        };
 
         // Checks the event target to see if it is a usable entry
         function checkEventForTarget(e)
@@ -353,10 +381,14 @@
         {
             if (messages) {
                 let messageStatus = success ? "#info-messages" : "#error-messages";
-                for (let i=0; i<messages.length; i++) {
-                    if (messages[i]) {
-                        $(messageStatus).text(messages[i]).fadeIn(800).delay(3000).fadeOut(800);
+                if (Array.isArray(messages)) {
+                    for (let i=0; i<messages.length; i++) {
+                        if (messages[i]) {
+                            $(messageStatus).text(messages[i]).fadeIn(800).delay(3000).fadeOut(800);
+                        }
                     }
+                } else {
+                    $(messageStatus).text(messages).fadeIn(800).delay(3000).fadeOut(800);
                 }
             }
         }

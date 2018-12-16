@@ -67,21 +67,15 @@ class ContextMenu
             $isComplete = $instance->isComplete();
         }
 
-        $isTopLevel = false;
-        if (Block::BLOCK_TYPE_SEQUENCE == $instance->type) {
-            $isTopLevel = $instance->isTopLevel();
-        }
-
         $formHtml .= ($map & self::CM_EDIT ? '<li class="menu-option" id="'.self::CM_ACTION_EDIT.'">Edit</li>' : '');
         $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . $collapse . '</li>' : '');
+        $formHtml .= ($map & self::CM_ZOOM && $isComplete ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_COMMENT ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_COMMENT.'">Insert Comment</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_CONDITION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_CONDITION.'">Insert Condition</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ELSE ? '<li class="menu-option inactive" id="'.self::CM_ACTION_INSERT_ELSE.'">Insert Else</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ITERATION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ITERATION.'">Insert Iteration</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_SEQUENCE ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_SEQUENCE.'">Insert Sequence</li>' : '');
-        $formHtml .= ($map & self::CM_ZOOM && $isComplete ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
-        $formHtml .= ($map & self::CM_UNZOOM && $isTopLevel ? '<li class="menu-option" id="'.self::CM_ACTION_UNZOOM.'">Unzoom</li>' : '');
         $formHtml .= ($map & self::CM_DELETE ? '<li class="menu-option" id="'.self::CM_ACTION_DELETE.'">Delete</li>' : '');
         $formHtml .= '</ul>';
 

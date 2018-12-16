@@ -125,3 +125,10 @@ body {font-family: Arial, Helvetica, sans-serif;}
 .emphatic {
     color: #c40000;
 }
+
+/* breadcrumb trail entry */
+.bc {
+    color: #029acf;
+    cursor: pointer;
+    font-weight: bold;
+}
