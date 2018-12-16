@@ -63,7 +63,9 @@ class ContextMenu
         }
 
         $isComplete = false;
-        if (Block::BLOCK_TYPE_ACTION == $instance->type) {
+        if (Block::BLOCK_TYPE_ACTION == $instance->type
+            && Subtype::SUBTYPE_SNIPPET == $instance->subtype
+        ) {
             $isComplete = $instance->isComplete();
         }
 
