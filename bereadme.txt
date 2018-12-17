@@ -12,4 +12,14 @@
 
     Add edit form for action so can set the subtype
 
-    Unzoom
+    Show the snippet name on the action line
+
+    Maybe allow selection of the snippet list in the edit action modl
+
+    Edit question, too
+
+    Edit other action types, too
+
+    Position of the form
+
+    Restyle the form

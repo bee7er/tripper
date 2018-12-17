@@ -7,6 +7,7 @@ use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Subtype;
 use App\Trip;
+use Illuminate\Support\Facades\Log;
 
 class FormHelper
 {
@@ -41,6 +42,8 @@ class FormHelper
 				return $this->getDeleteForm($instance, $action);
 
 			case ContextMenu::CM_ACTION_INSERT_ACTION:
+				return $this->getActionForm($instance, $action, $insertAction);
+
 			case ContextMenu::CM_ACTION_INSERT_COMMENT:
 			case ContextMenu::CM_ACTION_INSERT_CONDITION:
 			case ContextMenu::CM_ACTION_INSERT_ITERATION:
@@ -107,7 +110,10 @@ class FormHelper
 		$subtypeList = Subtype::getSubtypeList();
 		if ($subtypeList) {
 			foreach ($subtypeList as $key => $entry) {
-				$selected = ($instance->subtype_id == $key ? 'selected': '');
+				$selected = '';
+				if (ContextMenu::CM_ACTION_EDIT === $action) {
+					$selected = ($instance->subtype_id == $key ? 'selected': '');
+				}
 				$select .= "<option $selected value='$key'>" . $entry . "</option>";
 			}
 		}
@@ -157,12 +163,12 @@ class FormHelper
 	 */
 	private function getTitleForm(Instance $instance, $action, $insertAction)
 	{
-		$title = $instance->title;
+		$title = $instance->label;
 		if (ContextMenu::CM_ACTION_EDIT !== $action) {
 			$title = '';
 		}
 
-		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $instance->label . '</h1>
+		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $title . '</h1>
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">

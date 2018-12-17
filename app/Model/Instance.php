@@ -186,7 +186,7 @@ class Instance extends Model
             $insertAction = ContextMenu::INSERT_INSIDE;
         }
 
-        $incomplete = $instance->isComplete() ? '': "- <span class='emphatic'>Incomplete</span>";
+        $incomplete = $instance->isComplete() ? '': "- <span class='emphatic'>please select a snippet</span>";
 
         return (
             "<div class='row-selected' id='{$instance->id}_$insertAction'>"
