@@ -3,6 +3,7 @@
 use App\Http\Helpers\ActionDiagram\FormHelper;
 use App\Http\Helpers\ActionDiagram\InstanceHelper;
 use App\Model\ContextMenu;
+use App\Model\Factories\InstanceFactory;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\AdminController;
@@ -217,7 +218,7 @@ class InstanceController extends AdminController
                 $success = false;
                 $messages[] = 'Error, instance id not found in function parameters';
             } else {
-                $instance = Instance::getInstance($instanceId);
+                $instance = InstanceFactory::getInstance($instanceId);
                 if (!$instance) {
                     $success = false;
                     $messages[] = "Error, could not find instance for id $instanceId";

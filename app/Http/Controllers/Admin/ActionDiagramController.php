@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Admin;
 
 use App\Model\ContextMenu;
+use App\Model\Factories\InstanceFactory;
 use App\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -52,7 +53,7 @@ class ActionDiagramController extends AdminController
                 $formHtml = "Error, could not find trip for id $tripId";
             } else {
                 $tree = [];
-                $controller = Instance::getController($tripId);
+                $controller = InstanceFactory::getControllerInstance($tripId);
                 if ($controller) {
                     Instance::loadChildren($controller, $tree);
                 }

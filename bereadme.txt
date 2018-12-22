@@ -8,9 +8,10 @@
     http://localhost/tripper/public/
 
 # TODO
-    Pass in the zoom list so we avoid recursion
 
-    Add edit form for action so can set the subtype
+    Introduce lightbox and get the whole form styling right
+
+    Pass in the zoom list so we avoid recursion
 
     Show the snippet name on the action line
 
@@ -23,3 +24,16 @@
     Position of the form
 
     Restyle the form
+
+    If the session has timed out then capture that and return a message or something.  Currently looks awful.
+
+    ==============
+
+    Create instance sub-classes for all types
+
+        isComplete - should return a list of messages for why incomplete
+
+        other functions, put in here
+
+            getInsertAction ; after, before and inside
+

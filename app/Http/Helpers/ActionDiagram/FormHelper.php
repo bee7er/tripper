@@ -137,7 +137,7 @@ class FormHelper
 	/**
 	 * Return the form for deleting an instance
 	 *
-	 * @param null $instance
+	 * @param Instance $instance
 	 * @param $action
 	 * @return string
 	 */
@@ -163,18 +163,18 @@ class FormHelper
 	 */
 	private function getTitleForm(Instance $instance, $action, $insertAction)
 	{
-		$title = $instance->label;
+		$label = $instance->label;
 		if (ContextMenu::CM_ACTION_EDIT !== $action) {
-			$title = '';
+			$label = '';
 		}
 
-		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $title . '</h1>
+		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $label . '</h1>
                 <label for="title"><b>Title</b></label>
                 <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
                 <input type="hidden" id="type" name="type" value="' . $instance->type . '">
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $title . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $instance->title . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}

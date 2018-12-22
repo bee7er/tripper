@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Model\Instances\InstanceInterface;
+
 class ContextMenu
 {
     // Bit map definitions
@@ -41,30 +43,30 @@ class ContextMenu
      * @param $instance
      * @return string
      */
-    public static function getContextMenu(Instance $instance)
+    public static function getContextMenu(InstanceInterface $instance)
     {
         $message = null;
         $collapse = 'Collapse';
-        if ($instance->collapsed) {
+        if ($instance->instance->collapsed) {
             $collapse = 'Expand';
         }
 
         // Check for any missing actions; they go first
-        $missingActions = $instance->getMissingActions();
+        $missingOptions = $instance->getMissingOptions();
 
         // NB Using a bit map to see which options are appropriate for each block type
-        $map = $instance->contextMenuMap;
+        $map = $instance->instance->contextMenuMap;
         $formHtml = '<ul class="menu-options">';
-        if ($missingActions) {
+        if ($missingOptions) {
             $message = 'At least one entry is incomplete';
-            foreach ($missingActions as $missingAction) {
-                $formHtml .= ('<li class="menu-option" id="'.$missingAction.'">' . self::tidy($missingAction) . '</li>');
+            foreach ($missingOptions as $missingOption) {
+                $formHtml .= ('<li class="menu-option" id="'.$missingOption.'">' . self::tidy($missingOption) . '</li>');
             }
         }
 
         $isComplete = false;
-        if (Block::BLOCK_TYPE_ACTION == $instance->type
-            && Subtype::SUBTYPE_SNIPPET == $instance->subtype
+        if (Block::BLOCK_TYPE_ACTION == $instance->instance->type
+            && Subtype::SUBTYPE_SNIPPET == $instance->instance->subtype
         ) {
             $isComplete = $instance->isComplete();
         }

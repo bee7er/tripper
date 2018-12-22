@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Model\Factories\InstanceFactory;
+use App\Model\Instances\InstanceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -22,30 +24,6 @@ class Instance extends Model
     public $entries = [];
 
     /**
-     * Get the parents children
-     *
-     * @return Instance
-     */
-    public static function getController($id = 0)
-    {
-        if (0 !== $id) {
-            return self::where(['trip_id' => $id,'seq' => 0])->firstOrFail();
-        }
-
-        $instances = Instance::first()
-            ->where("instances.id", ">=", $id)
-            ->orderBy("id", "ASC")
-            ->limit(1)
-            ->get();
-
-        if ($instances && count($instances) > 0) {
-            return $instances[0];
-        }
-
-        return null;
-    }
-
-    /**
      * Get the instance
      *
      * @return Instance
@@ -56,7 +34,8 @@ class Instance extends Model
             ->join('blocks', 'blocks.id', '=', 'instances.block_id')
             ->leftjoin('subtypes', 'subtypes.id', '=', 'instances.subtype_id')
             ->select('instances.*',
-                'blocks.label', 'blocks.type', 'blocks.contextMenuMap',
+                'blocks.type','blocks.label','blocks.top1','blocks.top2','blocks.side','blocks.bottom1',
+                'blocks.bottom2','blocks.color','blocks.container','blocks.contextMenuMap',
                 'subtypes.subtype'
             )
             ->first();
@@ -90,222 +69,50 @@ class Instance extends Model
      * @param $tree
      * @param $depth
      */
-    public static function loadChildren($instance, &$tree, $depth = 0, $colors = [])
+    public static function loadChildren(InstanceInterface $instance, &$tree, $depth = 0, $colors = [])
     {
-//        print '<pre/>'; print_r($instance);die;
-
         $depth++;
         if ($instance) {
-            $children = self::getChildren($instance->id);
+            $children = self::getChildren($instance->instance->id);
             $len = count($children);
             for ($i=0; $i<$len; $i++) {
 
                 $child = $children[$i];
+                $childInstance = InstanceFactory::getInstance($child->id);
 
-                $child->entries[] = self::getOpeningLine($child, $depth, $colors);
-                if ($child->container && $child->type !== Block::BLOCK_TYPE_ELSE) {
-                    $child->entries[] = self::getContainerLine($child, $depth, $colors);
+                $childInstance->entries[] = $childInstance->getOpeningLine($depth, $colors);
+
+                if ($childInstance->instance->container && $childInstance->instance->type !== Block::BLOCK_TYPE_ELSE) {
+                    $childInstance->entries[] = $childInstance->getContainerLine($depth, $colors);
                 }
 
-                $tree[$child->id . '_start'] = $child;
+                $tree[$childInstance->instance->id . '_start'] = $childInstance;
 
-                if ($child->container) {
+                if ($childInstance->instance->container) {
 
                     // Let's have a new object
-                    $child = clone $child;
-                    $child->entries = [];
+                    $childInstance = clone $childInstance;
+                    $childInstance->entries = [];
+                    $colors[] = $childInstance->instance->color;
+
+                    if (!$childInstance->instance->collapsed) {
+                        self::loadChildren($childInstance, $tree, $depth, $colors);
+                    }
 
                     // Special check for else block
                     $nextChild = isset($children[$i + 1]) ? $children[$i + 1] : null;
-
-                    $colors[] = $child->color;
-
-                    if (!$child->collapsed) {
-                        self::loadChildren($child, $tree, $depth, $colors);
-                    }
-
                     if ($nextChild && $nextChild->type == Block::BLOCK_TYPE_ELSE) {
                         // Do not include an end entry because the condition continues
-                    } elseif ($child->type == Block::BLOCK_TYPE_ELSE) {
-                        $child->entries[] = self::getElseLine($child, $depth, $colors);
-                        $tree[$child->id . '_else'] = $child;
                     } else {
-                        $child->entries[] = self::getClosingLine($child, $depth, $colors);
-                        $tree[$child->id . '_end'] = $child;
+                        $childInstance->entries[] = $childInstance->getClosingLine($depth, $colors);
+                        $tree[$childInstance->instance->id . '_end'] = $childInstance;
                     }
 
                     array_pop($colors);
                 }
             }
+
+            //print '<pre/>'; print_r($tree);die;
         }
-    }
-
-    /**
-     * Get the current prefix, comprising the depth and colors of previous levels
-     *
-     * @param $depth
-     * @param $colors
-     * @return string
-     */
-    private static function getPrefix($depth, $colors)
-    {
-        $prefix = '';
-        for ($i=0; $i<($depth - 1); $i++) {
-            $prefix .= ("<span style='color: #{$colors[$i]}'>▎</span>");
-        }
-
-        return $prefix;
-    }
-
-    /**
-     * Build and return the string representing the opening line
-     *
-     * @param Instance $instance
-     * @param $depth
-     * @param $colors
-     * @return string
-     */
-    public static function getOpeningLine(Instance $instance, $depth, $colors)
-    {
-        $prefix = self::getPrefix($depth, $colors);
-
-        // Insert before for containers but after for non-containers
-        $title = 'Insert after';
-        $insertAction = ContextMenu::INSERT_AFTER;
-        $collapsed = $incomplete = '';
-        if ($instance->container) {
-            $title = 'Insert before';
-            $insertAction = ContextMenu::INSERT_BEFORE;
-            if ($instance->collapsed) {
-                $collapsed = "- <span class='emphatic'>Collapsed</span>";
-            }
-        }
-
-        if (Block::BLOCK_TYPE_ELSE == $instance->type) {
-            $title = 'Insert inside';
-            $insertAction = ContextMenu::INSERT_INSIDE;
-        }
-
-        $incomplete = $instance->isComplete() ? '': "- <span class='emphatic'>please select a snippet</span>";
-
-        return (
-            "<div class='row-selected' id='{$instance->id}_$insertAction'>"
-            . $prefix
-            . "<span style='color: #{$instance->color}' title='$title'>"
-            . $instance->top1
-            . $instance->top2
-            . '&nbsp;&nbsp;'
-            . $instance->type . ($instance->subtype ? " {$instance->subtype}: " : '')
-            . ($instance->container ? '' : ': ' . $instance->title) . $collapsed . $incomplete
-            . "</span></div>"
-        );
-    }
-
-    /**
-     * Build and return the string representing the first line of a container
-     *
-     * @param $instance
-     * @param $depth
-     * @param $colors
-     * @return string
-     */
-    public static function getContainerLine($instance, $depth, $colors)
-    {
-        $prefix = self::getPrefix($depth, $colors);
-
-        return (
-            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_INSIDE . "'>"
-            . $prefix
-            . "<span style='color: #{$instance->color}' title='Insert inside'>"
-            . $instance->side
-            . '-&nbsp;&nbsp;'
-            . $instance->title
-            . "</span></div>"
-        );
-    }
-
-    /**
-     * Build and return the string representing the closing of an else
-     *
-     * @param $instance
-     * @param $depth
-     * @param $colors
-     * @return string
-     */
-    public static function getElseLine($instance, $depth, $colors)
-    {
-        $prefix = self::getPrefix($depth, $colors);
-
-        return (
-            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_AFTER . "'>"
-            . $prefix
-            . "<span style='color: #{$instance->color}' title='Insert after'>"
-            . $instance->bottom1
-            . $instance->bottom2
-            . '&nbsp;&nbsp;'
-            . Block::BLOCK_TYPE_CONDITION
-            . ': End '
-            . "</span></div>"
-        );
-    }
-
-    /**
-     * Build and return the string representing the closing line
-     *
-     * @param $instance
-     * @param $depth
-     * @param $colors
-     * @return string
-     */
-    public static function getClosingLine($instance, $depth, $colors)
-    {
-        $prefix = self::getPrefix($depth, $colors);
-
-        return (
-            "<div class='row-selected' id='{$instance->id}_" . ContextMenu::INSERT_AFTER . "'>"
-            . $prefix
-            . "<span style='color: #{$instance->color}' title='Insert after'>"
-            . $instance->bottom1
-            . $instance->bottom2
-            . '&nbsp;&nbsp;'
-            . $instance->type
-            . ': End '
-            . $instance->title
-            . "</span></div>"
-        );
-    }
-
-    /**
-     * Checks that the instance is not missing anything vital
-     *
-     * @return bool
-     */
-    public function isComplete()
-    {
-        if (($missingActions = $this->getMissingActions())) {
-            // At least one missing action
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks what is missing and returns an appropriate ContextMenu option
-     * for each additional action that is needed
-     *
-     * @return bool
-     */
-    public function getMissingActions()
-    {
-        $actions = [];
-        if (Subtype::SUBTYPE_SNIPPET === $this->subtype
-            && !isset($this->snippetTrip_id)
-        ) {
-            // A snippet action but no referenced trip
-            $actions[] = ContextMenu::CM_ACTION_SELECT_SNIPPET;
-        }
-
-        return $actions;
     }
 }
