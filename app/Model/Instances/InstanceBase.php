@@ -12,7 +12,7 @@ abstract class InstanceBase implements InstanceInterface
      * The instance object
      * @var object
      */
-    public $instance;
+    public $obj;
 
     /**
      * The instance object
@@ -26,7 +26,7 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function __construct(Instance $instance)
     {
-        $this->instance = $instance;
+        $this->obj = $instance;
         $this->entries = [];
     }
 
@@ -70,15 +70,15 @@ abstract class InstanceBase implements InstanceInterface
         $title = 'Insert after';
         $insertAction = ContextMenu::INSERT_AFTER;
         $collapsed = $incomplete = '';
-        if ($this->instance->container) {
+        if ($this->obj->container) {
             $title = 'Insert before';
             $insertAction = ContextMenu::INSERT_BEFORE;
-            if ($this->instance->collapsed) {
+            if ($this->obj->collapsed) {
                 $collapsed = " - <span class='emphatic'>*collapsed</span>";
             }
         }
 
-        if (Block::BLOCK_TYPE_ELSE == $this->instance->type) {
+        if (Block::BLOCK_TYPE_ELSE == $this->obj->type) {
             $title = 'Insert inside';
             $insertAction = ContextMenu::INSERT_INSIDE;
         }
@@ -86,14 +86,14 @@ abstract class InstanceBase implements InstanceInterface
         $incomplete = $this->isComplete() ? '': " - <span class='emphatic'>*please select a snippet</span>";
 
         return (
-            "<div class='row-selected' id='{$this->instance->id}_$insertAction'>"
+            "<div class='row-selected' id='{$this->obj->id}_$insertAction'>"
             . $prefix
-            . "<span style='color: #{$this->instance->color}' title='$title'>"
-            . $this->instance->top1
-            . $this->instance->top2
+            . "<span style='color: #{$this->obj->color}' title='$title'>"
+            . $this->obj->top1
+            . $this->obj->top2
             . '&nbsp;&nbsp;'
-            . $this->instance->type . ($this->instance->subtype ? " {$this->instance->subtype}: " : '')
-            . ($this->instance->container ? '' : ': ' . $this->instance->title) . $collapsed . $incomplete
+            . $this->obj->type . ($this->obj->subtype ? " {$this->obj->subtype}: " : '')
+            . ($this->obj->container ? '' : ': ' . $this->obj->title) . $collapsed . $incomplete
             . "</span></div>"
         );
     }
@@ -110,12 +110,12 @@ abstract class InstanceBase implements InstanceInterface
         $prefix = $this->getPrefix($depth, $colors);
 
         return (
-            "<div class='row-selected' id='{$this->instance->id}_" . ContextMenu::INSERT_INSIDE . "'>"
+            "<div class='row-selected' id='{$this->obj->id}_" . ContextMenu::INSERT_INSIDE . "'>"
             . $prefix
-            . "<span style='color: #{$this->instance->color}' title='Insert inside'>"
-            . $this->instance->side
+            . "<span style='color: #{$this->obj->color}' title='Insert inside'>"
+            . $this->obj->side
             . '-&nbsp;&nbsp;'
-            . $this->instance->title
+            . $this->obj->title
             . "</span></div>"
         );
     }
@@ -134,19 +134,19 @@ abstract class InstanceBase implements InstanceInterface
         $prefix = $this->getPrefix($depth, $colors);
 
         if (null === $blockType) {
-            $blockType = $this->instance->type;
+            $blockType = $this->obj->type;
         }
 
         if (null === $title) {
-            $title = $this->instance->title;
+            $title = $this->obj->title;
         }
 
         return (
-            "<div class='row-selected' id='{$this->instance->id}_" . ContextMenu::INSERT_AFTER . "'>"
+            "<div class='row-selected' id='{$this->obj->id}_" . ContextMenu::INSERT_AFTER . "'>"
             . $prefix
-            . "<span style='color: #{$this->instance->color}' title='Insert after'>"
-            . $this->instance->bottom1
-            . $this->instance->bottom2
+            . "<span style='color: #{$this->obj->color}' title='Insert after'>"
+            . $this->obj->bottom1
+            . $this->obj->bottom2
             . '&nbsp;&nbsp;'
             . $blockType
             . ': End '

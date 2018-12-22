@@ -31,8 +31,8 @@ class Action extends InstanceBase implements InstanceInterface
     public function getMissingOptions()
     {
         $actions = [];
-        if (Subtype::SUBTYPE_SNIPPET === $this->instance->subtype
-            && !isset($this->instance->snippetTrip_id)
+        if (Subtype::SUBTYPE_SNIPPET === $this->obj->subtype
+            && !isset($this->obj->snippetTrip_id)
         ) {
             // A snippet action but no referenced trip
             $actions[] = ContextMenu::CM_ACTION_SELECT_SNIPPET;

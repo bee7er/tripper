@@ -5,8 +5,6 @@ namespace App\Model;
 use App\Model\Factories\InstanceFactory;
 use App\Model\Instances\InstanceInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Instance extends Model
@@ -16,12 +14,6 @@ class Instance extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded  = array('id');
-
-    /**
-     * Action diagram entries
-     * @var array
-     */
-    public $entries = [];
 
     /**
      * Get the instance
@@ -42,24 +34,13 @@ class Instance extends Model
     }
 
     /**
-     * Get the parents children
+     * Get the children of the parent specified by the parent id parameter
      *
      * @return array
      */
     public static function getChildren($parentId)
     {
-        $instances = Instance::where("instances.parent_id", $parentId)
-            ->join('blocks', 'blocks.id', '=', 'instances.block_id')
-            ->leftjoin('subtypes', 'subtypes.id', '=', 'instances.subtype_id')
-            ->select('instances.*',
-                'blocks.type','blocks.label','blocks.top1','blocks.top2','blocks.side','blocks.bottom1',
-                'blocks.bottom2','blocks.color','blocks.container','blocks.contextMenuMap',
-                'subtypes.subtype'
-            )
-            ->orderBy("instances.seq")
-            ->get();
-
-        return $instances;
+        return Instance::where("instances.parent_id", $parentId)->orderBy("instances.seq")->get();
     }
 
     /**
@@ -73,46 +54,43 @@ class Instance extends Model
     {
         $depth++;
         if ($instance) {
-            $children = self::getChildren($instance->instance->id);
+            $children = self::getChildren($instance->obj->id);
             $len = count($children);
             for ($i=0; $i<$len; $i++) {
 
-                $child = $children[$i];
-                $childInstance = InstanceFactory::getInstance($child->id);
+                $childInstance = InstanceFactory::getInstance($children[$i]->id);
 
                 $childInstance->entries[] = $childInstance->getOpeningLine($depth, $colors);
 
-                if ($childInstance->instance->container && $childInstance->instance->type !== Block::BLOCK_TYPE_ELSE) {
+                if ($childInstance->obj->container && $childInstance->obj->type !== Block::BLOCK_TYPE_ELSE) {
                     $childInstance->entries[] = $childInstance->getContainerLine($depth, $colors);
                 }
 
-                $tree[$childInstance->instance->id . '_start'] = $childInstance;
+                $tree[$childInstance->obj->id . '_start'] = $childInstance;
 
-                if ($childInstance->instance->container) {
-
+                if ($childInstance->obj->container) {
                     // Let's have a new object
                     $childInstance = clone $childInstance;
                     $childInstance->entries = [];
-                    $colors[] = $childInstance->instance->color;
 
-                    if (!$childInstance->instance->collapsed) {
+                    $colors[] = $childInstance->obj->color;
+
+                    if (!$childInstance->obj->collapsed) {
                         self::loadChildren($childInstance, $tree, $depth, $colors);
                     }
 
                     // Special check for else block
                     $nextChild = isset($children[$i + 1]) ? $children[$i + 1] : null;
-                    if ($nextChild && $nextChild->type == Block::BLOCK_TYPE_ELSE) {
+                    if ($nextChild && Block::BLOCK_TYPE_ELSE === $nextChild->type) {
                         // Do not include an end entry because the condition continues
                     } else {
                         $childInstance->entries[] = $childInstance->getClosingLine($depth, $colors);
-                        $tree[$childInstance->instance->id . '_end'] = $childInstance;
+                        $tree[$childInstance->obj->id . '_end'] = $childInstance;
                     }
 
                     array_pop($colors);
                 }
             }
-
-            //print '<pre/>'; print_r($tree);die;
         }
     }
 }

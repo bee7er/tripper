@@ -47,7 +47,7 @@ class ContextMenu
     {
         $message = null;
         $collapse = 'Collapse';
-        if ($instance->instance->collapsed) {
+        if ($instance->obj->collapsed) {
             $collapse = 'Expand';
         }
 
@@ -55,7 +55,7 @@ class ContextMenu
         $missingOptions = $instance->getMissingOptions();
 
         // NB Using a bit map to see which options are appropriate for each block type
-        $map = $instance->instance->contextMenuMap;
+        $map = $instance->obj->contextMenuMap;
         $formHtml = '<ul class="menu-options">';
         if ($missingOptions) {
             $message = 'At least one entry is incomplete';
@@ -65,8 +65,8 @@ class ContextMenu
         }
 
         $isComplete = false;
-        if (Block::BLOCK_TYPE_ACTION == $instance->instance->type
-            && Subtype::SUBTYPE_SNIPPET == $instance->instance->subtype
+        if (Block::BLOCK_TYPE_ACTION == $instance->obj->type
+            && Subtype::SUBTYPE_SNIPPET == $instance->obj->subtype
         ) {
             $isComplete = $instance->isComplete();
         }
