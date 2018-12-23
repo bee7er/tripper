@@ -3,6 +3,7 @@
 namespace App\Model\Factories;
 
 use App\Model\Block;
+use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Instances\Action;
 use App\Model\Instances\Comment;
@@ -10,6 +11,7 @@ use App\Model\Instances\Condition;
 use App\Model\Instances\ElseInstance;
 use App\Model\Instances\Iteration;
 use App\Model\Instances\Sequence;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class InstanceFactory
@@ -26,11 +28,11 @@ class InstanceFactory
     public static function getControllerInstance($tripId = 0)
     {
         if (0 !== $tripId) {
-            $instance = Instance::where(['trip_id' => $tripId, 'seq' => 0])->firstOrFail();
+            $instance = Instance::where(['trip_id' => $tripId, 'controller' => true])->firstOrFail();
         } else {
             // Just find the first one in the db
             $instances = Instance::first()
-                ->where("instances.id", ">=", $tripId)
+                ->where("instances.controller", true)
                 ->orderBy("id", "ASC")
                 ->limit(1)
                 ->get();
@@ -58,6 +60,9 @@ class InstanceFactory
     public static function getInstance($id)
     {
         $instance = Instance::getInstance($id);
+        if (!$instance) {
+            throw new \Exception("Factory could not find instance for id $id");
+        }
 
         switch ($instance->type) {
             case Block::BLOCK_TYPE_ACTION:
@@ -84,5 +89,57 @@ class InstanceFactory
         }
 
         return null;
+    }
+
+    /**
+     * Get the instance template
+     *
+     * @param $action
+     * @return int
+     * @throws \Exception
+     */
+    public static function getInstanceTemplate($action)
+    {
+        $blockType = null;
+        switch ($action) {
+            case ContextMenu::CM_ACTION_INSERT_ACTION:
+                $blockType = Block::BLOCK_TYPE_ACTION;
+                break;
+
+            case ContextMenu::CM_ACTION_INSERT_COMMENT:
+                $blockType = Block::BLOCK_TYPE_COMMENT;
+                break;
+
+            case ContextMenu::CM_ACTION_INSERT_CONDITION:
+                $blockType = Block::BLOCK_TYPE_CONDITION;
+                break;
+
+            case ContextMenu::CM_ACTION_INSERT_ELSE:
+                $blockType = Block::BLOCK_TYPE_ELSE;
+                break;
+
+            case ContextMenu::CM_ACTION_INSERT_ITERATION:
+                $blockType = Block::BLOCK_TYPE_ITERATION;
+                break;
+
+            case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
+                $blockType = Block::BLOCK_TYPE_SEQUENCE;
+                break;
+
+            default:
+                throw new \Exception("Unexpected action $action");
+                break;
+        }
+
+        $templateInstance = DB::table('instances')
+            ->join('blocks', function($join) use ($blockType)
+            {
+                $join->on('instances.block_id', '=', 'blocks.id')
+                    ->where('blocks.type', '=', strtoupper($blockType));
+            })
+            ->select('instances.*')
+            ->first();
+
+        return self::getInstance($templateInstance->id);
     }
 }

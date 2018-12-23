@@ -53,6 +53,7 @@ class ActionDiagramController extends AdminController
                 $formHtml = "Error, could not find trip for id $tripId";
             } else {
                 $tree = [];
+
                 $controller = InstanceFactory::getControllerInstance($tripId);
                 if ($controller) {
                     Instance::loadChildren($controller, $tree);

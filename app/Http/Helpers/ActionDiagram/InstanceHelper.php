@@ -29,6 +29,7 @@ class InstanceHelper
 	 */
 	public function save($params)
 	{
+		die('should not call this');
 		$success = null;
 		switch ($params['action']) {
 			case ContextMenu::CM_ACTION_EDIT:
@@ -67,6 +68,7 @@ class InstanceHelper
 	 */
 	public function update($params)
 	{
+		die('should not call this');
 		$success = null;
 		$messages = [];
 		try {
@@ -110,6 +112,7 @@ class InstanceHelper
 	 */
 	public function setSnippet($params)
 	{
+		die('should not call this');
 		$success = null;
 		$messages = [];
 		try {
@@ -155,6 +158,7 @@ class InstanceHelper
 	 */
 	public function insert($params, $blockType)
 	{
+		die('should not call this');
 		$success = null;
 		$messages = [];
 		try {
@@ -221,6 +225,7 @@ class InstanceHelper
 	 */
 	public function delete($params)
 	{
+		die('should not call this');
 		$success = null;
 		$messages = [];
 		try {
@@ -263,6 +268,7 @@ class InstanceHelper
 	 */
 	private function resequenceInstanceChildren($parentId)
 	{
+		die('should not call this');
 		try {
 			$children = Instance::getChildren($parentId);
 

@@ -25,6 +25,8 @@ class CreateInstancesTable extends Migration
 			$table->unsignedInteger('snippetTrip_id')->nullable();
 			$table->boolean('collapsed');
 			$table->boolean('protected');
+			$table->boolean('controller');
+			$table->boolean('template');
 			$table->foreign('trip_id')->references('id')->on('trips')->onDelete('set null');
 			$table->foreign('block_id')->references('id')->on('blocks')->onDelete('set null');
 			$table->foreign('subtype_id')->references('id')->on('subtypes')->onDelete('set null');

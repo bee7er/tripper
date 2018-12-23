@@ -69,6 +69,7 @@ class TripController extends AdminController
         $controller->block_id = $block->id;
         $controller->title = 'Controller';
         $controller->protected = true;;
+        $controller->controller = true;;
         $controller->save();
         // And now the first instance in the new trip, another sequence block
         // These first two instances cannot be deleted

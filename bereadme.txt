@@ -9,6 +9,8 @@
 
 # TODO
 
+    Allow user to reselect the snippet id
+
     Introduce lightbox and get the whole form styling right
 
     Pass in the zoom list so we avoid recursion

@@ -1,14 +1,13 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Http\Helpers\ActionDiagram\FormHelper;
-use App\Http\Helpers\ActionDiagram\InstanceHelper;
-use App\Model\ContextMenu;
-use App\Model\Factories\InstanceFactory;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\AdminController;
-use App\Model\Instance;
 use Illuminate\Support\Facades\Response;
+
+use App\Model\ContextMenu;
+use App\Model\Factories\InstanceFactory;
+use App\Model\Instance;
+use App\Http\Controllers\AdminController;
 
 class InstanceController extends AdminController
 {
@@ -29,22 +28,53 @@ class InstanceController extends AdminController
     {
         $success = true;
         $instanceId = Input::get('instanceId');
+        $action = Input::get('action');
         $messages = [];
         $formHtml = null;
         if (!$instanceId) {
             $success = false;
             $messages[] = 'Error, instance id not found in function parameters';
         } else {
-            $instance = InstanceFactory::getInstance($instanceId);
+            $instance = InstanceFactory::getInstance($instanceId, $action);
 
             if (!$instance) {
                 $success = false;
                 $messages[] = "Error, could not find instance for id $instanceId";
             } else {
-                $action = Input::get('action');
                 $insertAction = Input::get('insertAction');
 
-                $formHtml = (new FormHelper())->getFormByTypeAndAction($instance, $action, $insertAction);
+                $formHtml = '';
+                switch ($action) {
+                    case ContextMenu::CM_ACTION_EDIT:
+                        $formHtml = $instance->getEditForm($action, $insertAction);
+                        break;
+
+                    case ContextMenu::CM_ACTION_INSERT_ACTION:
+                    case ContextMenu::CM_ACTION_INSERT_COMMENT:
+                    case ContextMenu::CM_ACTION_INSERT_CONDITION:
+                    case ContextMenu::CM_ACTION_INSERT_ELSE:
+                    case ContextMenu::CM_ACTION_INSERT_ITERATION:
+                    case ContextMenu::CM_ACTION_INSERT_SEQUENCE:
+                        // For new instances we use a template object
+                        $instanceTemplate = InstanceFactory::getInstanceTemplate($action);
+                        if (!$instanceTemplate) {
+                            throw new \Exception("Could not find instance template for action $action");
+                        }
+
+                        $formHtml = $instanceTemplate->getEditForm($action, $insertAction, $instance->obj->id);
+                        break;
+
+                    case ContextMenu::CM_ACTION_DELETE:
+                        $formHtml = $instance->getDeleteForm($action);
+                        break;
+
+                    case ContextMenu::CM_ACTION_SELECT_SNIPPET:
+                        $formHtml = $instance->getSelectSnippetForm();
+
+                    default:
+                        break;
+                }
+
             }
         }
 
@@ -61,10 +91,31 @@ class InstanceController extends AdminController
      */
     public function selectedSnippet()
     {
-        $formData = $this->getFormData();
+        $result = [];
+        try {
+            $formData = $this->getFormData();
 
-        $helper = new InstanceHelper;
-        $result = $helper->setSnippet($formData);
+            if (!isset($formData['instanceId'])) {
+                throw new \Exception('Instance id not supplied for set snippet function');
+            }
+
+            $instance = InstanceFactory::getInstance($formData['instanceId']);
+            if (!$instance) {
+                throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
+            }
+
+            $result = $instance->setSnippet($formData);
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
+
+            Log::info("Error setting snippet", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                print_r($formData, true)
+            ]);
+        }
 
         return Response::json(array(
             'success' => $result['success'],
@@ -79,10 +130,31 @@ class InstanceController extends AdminController
      */
     public function saveInstance()
     {
-        $formData = $this->getFormData();
+        $result = [];
+        try {
+            $formData = $this->getFormData();
 
-        $helper = new InstanceHelper;
-        $result = $helper->save($formData);
+            if (!isset($formData['instanceId'])) {
+                throw new \Exception('Instance id not supplied for save function');
+            }
+
+            $instance = InstanceFactory::getInstance($formData['instanceId']);
+            if (!$instance) {
+                throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
+            }
+
+            $result = $instance->save($formData);
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
+
+            Log::info("Error saving instance", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                print_r($formData, true)
+            ]);
+        }
 
         return Response::json(array(
             'success' => $result['success'],
@@ -97,14 +169,15 @@ class InstanceController extends AdminController
      */
     public function insertInstance()
     {
-        $formData = $this->getFormData();
-
-        $result = (new InstanceHelper)->insert($formData);
-
-        return Response::json(array(
-            'success' => $result['success'],
-            'data'   => $result['data'],
-        ));
+        die('should not be used insert');
+//        $formData = $this->getFormData();
+//
+//        $result = (new InstanceHelper)->insert($formData);
+//
+//        return Response::json(array(
+//            'success' => $result['success'],
+//            'data'   => $result['data'],
+//        ));
     }
 
     /**
@@ -114,14 +187,15 @@ class InstanceController extends AdminController
      */
     public function updateInstance()
     {
-        $formData = $this->getFormData();
-
-        $result = (new InstanceHelper)->update($formData);
-
-        return Response::json(array(
-            'success' => $result['success'],
-            'data'   => $result['data'],
-        ));
+        die('should not be used update');
+//        $formData = $this->getFormData();
+//
+//        $result = (new InstanceHelper)->update($formData);
+//
+//        return Response::json(array(
+//            'success' => $result['success'],
+//            'data'   => $result['data'],
+//        ));
     }
 
     /**
@@ -131,9 +205,32 @@ class InstanceController extends AdminController
      */
     public function deleteInstance()
     {
-        $formData = $this->getFormData();
+        $result = [];
+        try {
+            $formData = $this->getFormData();
 
-        $result = (new InstanceHelper)->delete($formData);
+            if (!isset($formData['instanceId'])) {
+                throw new \Exception('Instance id not supplied for save function');
+            }
+
+            $instance = InstanceFactory::getInstance($formData['instanceId']);
+
+            if (!$instance) {
+                throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
+            }
+
+            $result = $instance->delete($formData);
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
+
+            Log::info("Error saving instance", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                print_f($formData, true)
+            ]);
+        }
 
         return Response::json(array(
             'success' => $result['success'],
@@ -213,11 +310,13 @@ class InstanceController extends AdminController
         $formHtml = null;
         $messages = [];
         try {
-            $instanceId = Input::get('instanceId');
-            if (!$instanceId) {
+            $instanceIdDtls = Input::get('instanceId');
+
+            if (!$instanceIdDtls) {
                 $success = false;
                 $messages[] = 'Error, instance id not found in function parameters';
             } else {
+                $instanceId = explode('_', $instanceIdDtls)[0];
                 $instance = InstanceFactory::getInstance($instanceId);
                 if (!$instance) {
                     $success = false;

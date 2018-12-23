@@ -36,6 +36,50 @@ class InstanceTableSeeder extends Seeder
         $loanAmountQuestion = Question::where('label', 'Determine loan amount')->firstOrFail();
         $repaymentTypeQuestion = Question::where('label', 'Determine repayment type')->firstOrFail();
 
+        // Template objects.  One of each type, used when creating a new instance of that type.
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $actBlock->id;
+        $templateInstance->title = 'New action';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $cmtBlock->id;
+        $templateInstance->title = 'New comment';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $cndBlock->id;
+        $templateInstance->title = 'New condition';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $elsBlock->id;
+        $templateInstance->title = 'New else';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $itrBlock->id;
+        $templateInstance->title = 'New iteration';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+        
+        $templateInstance = new Instance();
+        $templateInstance->block_id = $seqBlock->id;
+        $templateInstance->title = 'New sequence';
+        $templateInstance->protected = true;
+        $templateInstance->template = true;
+        $templateInstance->save();
+
+        // Default action diagram for testing
         $ctrlSeqInstance = new Instance();
         $ctrlSeqInstance->block_id = $seqBlock->id;
         $ctrlSeqInstance->trip_id = $trip->id;
@@ -43,6 +87,7 @@ class InstanceTableSeeder extends Seeder
         $ctrlSeqInstance->seq = 0;
         $ctrlSeqInstance->title = 'Controller';
         $ctrlSeqInstance->protected = true;
+        $ctrlSeqInstance->controller = true;
         $ctrlSeqInstance->save();
 
         $seqInstance = new Instance();
