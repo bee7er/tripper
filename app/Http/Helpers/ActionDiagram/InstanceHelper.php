@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class InstanceHelper
 {
+	/**
+	 * Those fields that are allowed o be updated
+	 * @var array
+	 */
 	private static $validFields = [
 		Block::BLOCK_TYPE_ACTION => ['title', 'subtype_id'],
 		Block::BLOCK_TYPE_COMMENT => ['title'],

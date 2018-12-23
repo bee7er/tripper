@@ -5,6 +5,7 @@ namespace App\Http\Helpers\ActionDiagram;
 use App\Model\Block;
 use App\Model\ContextMenu;
 use App\Model\Instance;
+use App\Model\Instances\InstanceInterface;
 use App\Model\Subtype;
 use App\Trip;
 use Illuminate\Support\Facades\Log;
@@ -19,11 +20,11 @@ class FormHelper
 	 * @param $insertAction
 	 * @return bool|string
 	 */
-	public function getFormByTypeAndAction(Instance $instance, $action, $insertAction)
+	public function getFormByTypeAndAction(InstanceInterface $instance, $action, $insertAction)
 	{
 		switch ($action) {
 			case ContextMenu::CM_ACTION_EDIT:
-				switch ($instance->type) {
+				switch ($instance->obj->type) {
 					case Block::BLOCK_TYPE_ACTION:
 						return $this->getActionForm($instance, $action, $insertAction);
 
@@ -68,13 +69,13 @@ class FormHelper
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getSelectSnippetForm(Instance $instance)
+	private function getSelectSnippetForm(InstanceInterface $instance)
 	{
-		$trips = Trip::where('id', '!=', $instance->trip_id)->get();
+		$trips = Trip::where('id', '!=', $instance->obj->trip_id)->get();
 
 		$html = '<h2>Select Snippet</h2>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
-                <input type="hidden" id="type" name="type" value="' . $instance->type . '">';
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->obj->id : '') . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->obj->type . '">';
 
 		$html .= '<table width="300px"><thead><th>Id</th><th>Title</th></thead>';
 		$html .= '<tbody>';
@@ -104,7 +105,7 @@ class FormHelper
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getActionForm(Instance $instance, $action, $insertAction)
+	private function getActionForm(InstanceInterface $instance, $action, $insertAction)
 	{
 		$select = '<select name="subtype_id" id="subtype_id">';
 		$subtypeList = Subtype::getSubtypeList();
@@ -112,7 +113,7 @@ class FormHelper
 			foreach ($subtypeList as $key => $entry) {
 				$selected = '';
 				if (ContextMenu::CM_ACTION_EDIT === $action) {
-					$selected = ($instance->subtype_id == $key ? 'selected': '');
+					$selected = ($instance->obj->subtype_id == $key ? 'selected': '');
 				}
 				$select .= "<option $selected value='$key'>" . $entry . "</option>";
 			}
@@ -120,13 +121,13 @@ class FormHelper
 		$select .= '</select>';
 
 		return '<h1>'.ucfirst($action).' Action</h1>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
-                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->obj->id : '') . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->obj->type . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
                 <label for="title"><strong>Title</strong></label>
                 <input type="text" placeholder="Enter title" name="title" id="title" class="focus"
-                 			value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->title) . '">
+                 			value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $instance->obj->title) . '">
                 <label for="title"><strong>Type</strong></label>
                 ' . $select . '
                 <hr />
@@ -137,18 +138,18 @@ class FormHelper
 	/**
 	 * Return the form for deleting an instance
 	 *
-	 * @param Instance $instance
+	 * @param InstanceInterface $instance
 	 * @param $action
 	 * @return string
 	 */
-	private function getDeleteForm(Instance $instance, $action)
+	private function getDeleteForm(InstanceInterface $instance, $action)
 	{
 		return '<h1>' . ucfirst(str_replace('-', '', $action)) . ' Entry</h1>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->obj->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
-                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->obj->type . '">
                 <div>Are you sure you want to delete the following entry:</div><br>
-                <div><strong>' . $instance->title . '</strong></div><br>
+                <div><strong>' . $instance->obj->title . '</strong></div><br>
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}
@@ -161,20 +162,20 @@ class FormHelper
 	 * @param $insertAction
 	 * @return string
 	 */
-	private function getTitleForm(Instance $instance, $action, $insertAction)
+	private function getTitleForm(InstanceInterface $instance, $action, $insertAction)
 	{
-		$label = $instance->label;
+		$label = $instance->obj->label;
 		if (ContextMenu::CM_ACTION_EDIT !== $action) {
 			$label = '';
 		}
 
 		return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $label . '</h1>
                 <label for="title"><b>Title</b></label>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->id : '') . '">
+                <input type="hidden" id="instanceId" name="instanceId" value="' . ($instance ? $instance->obj->id : '') . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <input type="hidden" id="type" name="type" value="' . $instance->type . '">
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $instance->title . '">
+                <input type="hidden" id="type" name="type" value="' . $instance->obj->type . '">
+                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $instance->obj->title . '">
                 <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
                 <button type="button" class="btn" onclick="submitForm()">Submit</button>';
 	}

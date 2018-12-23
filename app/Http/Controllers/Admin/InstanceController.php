@@ -35,7 +35,7 @@ class InstanceController extends AdminController
             $success = false;
             $messages[] = 'Error, instance id not found in function parameters';
         } else {
-            $instance = Instance::getInstance($instanceId);
+            $instance = InstanceFactory::getInstance($instanceId);
 
             if (!$instance) {
                 $success = false;
