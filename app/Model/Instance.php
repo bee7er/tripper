@@ -80,8 +80,12 @@ class Instance extends Model
                     }
 
                     // Special check for else block
-                    $nextChild = isset($children[$i + 1]) ? $children[$i + 1] : null;
-                    if ($nextChild && Block::BLOCK_TYPE_ELSE === $nextChild->type) {
+                    $nextChildInstance = null;
+                    if (isset($children[$i + 1])) {
+                        $nextChildInstance = InstanceFactory::getInstance($children[$i + 1]->id);
+                    }
+
+                    if ($nextChildInstance && Block::BLOCK_TYPE_ELSE === $nextChildInstance->obj->type) {
                         // Do not include an end entry because the condition continues
                     } else {
                         $childInstance->entries[] = $childInstance->getClosingLine($depth, $colors);
