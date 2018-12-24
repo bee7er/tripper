@@ -2,6 +2,7 @@
 /.DS*
 /vendor
 /node_modules
+/docs/enra_js
 .env
 .env_live
 composer.lock

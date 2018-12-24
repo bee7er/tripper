@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Log;
 
 abstract class InstanceBase implements InstanceInterface
 {
+    const COLLAPSED_HTML = " - <span class='emphatic'>*collapsed</span>";
+    const SELECT_SNIPPET_HTML = " - <span class='emphatic'>*please select a snippet</span>";
+
     /**
      * The instance object
      * @var object
@@ -317,6 +320,26 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
+     * Build and return the string representing the opening line text
+     *
+     * @return string
+     */
+    public function getOpeningLineText()
+    {
+        return ": {$this->obj->title}";
+    }
+
+    /**
+     * Where do we insert new instances?  It depends.
+     *
+     * @return array
+     */
+    public function getInsertAction()
+    {
+        return ['Insert after', ContextMenu::INSERT_AFTER];
+    }
+
+    /**
      * Build and return the string representing the opening line
      *
      * @param $depth
@@ -327,24 +350,7 @@ abstract class InstanceBase implements InstanceInterface
     {
         $prefix = $this->getPrefix($depth, $colors);
 
-        // Insert before for containers but after for non-containers
-        $title = 'Insert after';
-        $insertAction = ContextMenu::INSERT_AFTER;
-        $collapsed = $incomplete = '';
-        if ($this->obj->container) {
-            $title = 'Insert before';
-            $insertAction = ContextMenu::INSERT_BEFORE;
-            if ($this->obj->collapsed) {
-                $collapsed = " - <span class='emphatic'>*collapsed</span>";
-            }
-        }
-
-        if (Block::BLOCK_TYPE_ELSE == $this->obj->type) {
-            $title = 'Insert inside';
-            $insertAction = ContextMenu::INSERT_INSIDE;
-        }
-
-        $incomplete = $this->isComplete() ? '': " - <span class='emphatic'>*please select a snippet</span>";
+        list($title, $insertAction) = $this->getInsertAction();
 
         return (
             "<div class='row-selected' id='{$this->obj->id}_$insertAction'>"
@@ -354,7 +360,7 @@ abstract class InstanceBase implements InstanceInterface
             . $this->obj->top2
             . '&nbsp;&nbsp;'
             . $this->obj->type . ($this->obj->subtype ? " {$this->obj->subtype}: " : '')
-            . ($this->obj->container ? '' : ': ' . $this->obj->title) . $collapsed . $incomplete
+            . $this->getOpeningLineText()
             . "</span></div>"
         );
     }

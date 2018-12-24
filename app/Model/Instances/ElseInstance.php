@@ -22,4 +22,14 @@ class ElseInstance extends InstanceBase
         // Override the block type to condition, as that is where the else occurs
         return parent::getClosingLine($depth, $colors, Block::BLOCK_TYPE_CONDITION, '');
     }
+
+    /**
+     * Where do we insert new instances?  It depends.
+     *
+     * @return array
+     */
+    public function getInsertAction()
+    {
+        return ['Insert inside', ContextMenu::INSERT_INSIDE];
+    }
 }

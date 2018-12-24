@@ -20,6 +20,16 @@ class Action extends InstanceBase implements InstanceInterface
     }
 
     /**
+     * Build and return the string representing the opening line text
+     *
+     * @return string
+     */
+    public function getOpeningLineText()
+    {
+        return ": {$this->obj->title} " . ($this->isComplete() ? '' : self::SELECT_SNIPPET_HTML);
+    }
+
+    /**
      * Checks that the instance is not missing anything vital
      *
      * @return bool
