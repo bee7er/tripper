@@ -13,6 +13,7 @@ abstract class InstanceBase implements InstanceInterface
 {
     const COLLAPSED_HTML = " - <span class='emphatic'>*collapsed</span>";
     const SELECT_SNIPPET_HTML = " - <span class='emphatic'>*please select a snippet</span>";
+    const SELECT_QUESTION_HTML = " - <span class='emphatic'>*please select a question</span>";
 
     const MAX_LENGTH_LINE = 84;
 

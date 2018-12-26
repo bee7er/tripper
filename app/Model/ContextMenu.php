@@ -28,6 +28,7 @@ class ContextMenu
     const CM_ACTION_INSERT_ELSE = 'insert-else';
     const CM_ACTION_INSERT_ITERATION = 'insert-iteration';
     const CM_ACTION_INSERT_SEQUENCE = 'insert-sequence';
+    const CM_ACTION_SELECT_QUESTION = 'select-question';
     const CM_ACTION_SELECT_SNIPPET = 'select-snippet';
     const CM_ACTION_ZOOM = 'zoom';
     const CM_ACTION_UNZOOM = 'unzoom';

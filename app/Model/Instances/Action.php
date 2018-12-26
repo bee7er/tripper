@@ -27,8 +27,17 @@ class Action extends InstanceBase implements InstanceInterface
     public function getOpeningLineText()
     {
         return ": " .
-            trunc($this->obj->title, self::MAX_LENGTH_LINE) .
-            ($this->isComplete() ? '' : self::SELECT_SNIPPET_HTML);
+            trunc($this->obj->title, self::MAX_LENGTH_LINE) . $this->getOpeningLineNotices();
+    }
+
+    /**
+     * Return any notifications in the opening line text
+     *
+     * @return string
+     */
+    public function getOpeningLineNotices()
+    {
+        return '';
     }
 
     /**

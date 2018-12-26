@@ -29,6 +29,16 @@ class ActionSnippet extends Action
     }
 
     /**
+     * Return any notifications in the opening line text
+     *
+     * @return string
+     */
+    public function getOpeningLineNotices()
+    {
+        return $this->isComplete() ? '' : ": " . self::SELECT_SNIPPET_HTML;
+    }
+
+    /**
      * Checks that the instance is not missing anything vital
      *
      * @return bool
