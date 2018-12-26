@@ -52,6 +52,10 @@
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
 
+​textarea {
+    vertical-align: top;
+}​
+
 /* Button used to open the contact form - fixed at the bottom of the page */
 .open-button {
     background-color: #555;

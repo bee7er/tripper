@@ -17,3 +17,18 @@ if (!function_exists('removeWhiteSpace')) {
         return str_replace("\t", '', $str);
     }
 }
+
+if (!function_exists('trunc')) {
+    /**
+     * Removes leading and trailing spaces and other white space.
+     */
+    function trunc($str, $maxlen) {
+        $str = trim($str);
+        $maxStr = substr($str, 0, $maxlen);
+        if ($str !== $maxStr) {
+            return $maxStr . ' ...';
+        }
+
+        return $str;
+    }
+}

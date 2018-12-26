@@ -6,11 +6,18 @@ use App\Model\Block;
 use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Instances\Action;
+use App\Model\Instances\ActionImage;
+use App\Model\Instances\ActionInstruction;
+use App\Model\Instances\ActionQuestion;
+use App\Model\Instances\ActionSnippet;
+use App\Model\Instances\ActionText;
+use App\Model\Instances\ActionVideo;
 use App\Model\Instances\Comment;
 use App\Model\Instances\Condition;
 use App\Model\Instances\ElseInstance;
 use App\Model\Instances\Iteration;
 use App\Model\Instances\Sequence;
+use App\Model\Subtype;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -66,7 +73,29 @@ class InstanceFactory
 
         switch ($instance->type) {
             case Block::BLOCK_TYPE_ACTION:
-                return new Action($instance);
+                // Check the subtype for action
+                switch ($instance->subtype) {
+                    case Subtype::SUBTYPE_IMAGE:
+                        return new ActionImage($instance);
+
+                    case Subtype::SUBTYPE_INSTRUCTION:
+                        return new ActionInstruction($instance);
+
+                    case Subtype::SUBTYPE_QUESTION:
+                        return new ActionQuestion($instance);
+
+                    case Subtype::SUBTYPE_SNIPPET:
+                        return new ActionSnippet($instance);
+
+                    case Subtype::SUBTYPE_TEXT:
+                        return new ActionText($instance);
+
+                    case Subtype::SUBTYPE_VIDEO:
+                        return new ActionVideo($instance);
+
+                    default:
+                        return new Action($instance);
+                }
 
             case Block::BLOCK_TYPE_COMMENT:
                 return new Comment($instance);

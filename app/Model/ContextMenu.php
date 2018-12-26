@@ -58,7 +58,6 @@ class ContextMenu
         $map = $instance->obj->contextMenuMap;
         $formHtml = '<ul class="menu-options">';
         if ($missingOptions) {
-            $message = 'At least one entry is incomplete';
             foreach ($missingOptions as $missingOption) {
                 $formHtml .= ('<li class="menu-option" id="'.$missingOption.'">' . self::tidy($missingOption) . '</li>');
             }

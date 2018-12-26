@@ -14,6 +14,8 @@ abstract class InstanceBase implements InstanceInterface
     const COLLAPSED_HTML = " - <span class='emphatic'>*collapsed</span>";
     const SELECT_SNIPPET_HTML = " - <span class='emphatic'>*please select a snippet</span>";
 
+    const MAX_LENGTH_LINE = 84;
+
     /**
      * The instance object
      * @var object
@@ -326,7 +328,7 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function getOpeningLineText()
     {
-        return ": {$this->obj->title}";
+        return ": " . substr($this->obj->title, 0, self::MAX_LENGTH_LINE);
     }
 
     /**
@@ -444,6 +446,39 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
+     * Returns the title label for the edit form
+     *
+     * @param $action
+     * @return string
+     */
+    public function getEditFormTitle($action)
+    {
+        $label = $this->obj->label;
+        if (ContextMenu::CM_ACTION_EDIT !== $action) {
+            // Insert mode
+            $label = '';
+        }
+
+        return $label;
+    }
+
+    /**
+     * Returns the content for the edit form
+     *
+     * @param $action
+     * @return string
+     */
+    public function getEditFormBody($action)
+    {
+        return '
+            <div class="md-form mb-5">
+              <label for="title"><strong>Title</strong></label>
+              <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $this->obj->title . '">
+            </div>
+        ';
+    }
+
+    /**
      * Return the form for editing / inserting an instance
      * This base class funciton allows just the title only to be maintained
      *
@@ -454,22 +489,17 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function getEditForm($action, $insertAction, $targetInstanceId = null)
     {
-        $label = $this->obj->label;
-        if (ContextMenu::CM_ACTION_EDIT !== $action) {
-            // Insert mode
-            $label = '';
-        }
 
-        return '<h1>' . ucfirst(str_replace('-', ' ', $action)) . ' ' . $label . '</h1>
-                <label for="title"><b>Title</b></label>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
+        $title =  ucwords(str_replace('-', ' ', $action) . ' ' . $this->getEditFormTitle($action));
+        $html = '<input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
                 <input type="hidden" id="targetInstanceId" name="targetInstanceId" value="' . $targetInstanceId . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $this->obj->title . '">
-                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
+                <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">';
+        $html .= $this->getEditFormBody($action);
+
+
+        return $this->getFormWrapper($title, $html);
     }
 
     /**
@@ -480,14 +510,14 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function getDeleteForm($action)
     {
-        return '<h1>' . ucfirst(str_replace('-', '', $action)) . ' Entry</h1>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
+        $title = ucfirst(str_replace('-', '', $action)) . ' Entry';
+        $html = '<input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
                 <input type="hidden" id="action" name="action" value="' . $action . '">
                 <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">
                 <div>Are you sure you want to delete the following entry:</div><br>
-                <div><strong>' . $this->obj->title . '</strong></div><br>
-                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
+                <div><strong>' . $this->obj->title . '</strong></div>';
+
+        return $this->getFormWrapper($title, $html);
     }
 
     /**
@@ -499,14 +529,12 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function getSelectSnippetForm()
     {
-        $trips = Trip::where('id', '!=', $this->obj->trip_id)->get();
-
-        $html = '<h2>Select Snippet</h2>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
-                <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">';
-
+        $html = '<input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
+                    <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">';
         $html .= '<table width="300px"><thead><th>Id</th><th>Title</th></thead>';
         $html .= '<tbody>';
+
+        $trips = Trip::where('id', '!=', $this->obj->trip_id)->get();
 
         if (count($trips)) {
             foreach ($trips as $trip) {
@@ -520,8 +548,40 @@ abstract class InstanceBase implements InstanceInterface
         }
         $html .= '</tbody></table>';
 
-        $html .= '<hr />
-                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>';
+        return $this->getFormWrapper('Select Snippet', $html);
+    }
+
+    /**
+     * Wraps the content in the various lightbox blocks
+     *
+     * @param $action
+     * @param $insertAction
+     * @return string
+     */
+    public function getFormWrapper($formTitle, $body)
+    {
+        $html = '<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">' . $formTitle . '</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body mx-3">' .
+
+            $body .
+
+        '</div>
+              <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn" onclick="submitForm()">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>';
 
         return $html;
     }

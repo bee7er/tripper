@@ -252,8 +252,9 @@
         const openFormCallback = function(response)
         {
             if (response && response.success === true) {
-                $("#instanceFormData").html(response.data.formHtml);
-                $("#instanceForm").css('display', 'block');
+                $("#instanceFormData").html(response.data.formHtml).css('display', 'block');
+
+                $('#modalForm').modal('show');
 
                 // If snippets have been returned listen for events
                 $(".snippet").click(function (e) {
@@ -286,7 +287,7 @@
         }
 
         function closeForm() {
-            $("#instanceForm").css('display', 'none');
+            $("#instanceFormData").css('display', 'none');
         }
 
         // Execute the form submission and using a callback to receive the result
@@ -308,6 +309,8 @@
         {
             let formData = $("#instanceFormData").serializeArray();
             let action = $("#action").val();
+
+            $('#modalForm').modal('hide');
 
             // Defaulting to edit / insert
             let url = "{{config('app.base_url')}}admin/api/save-instance/";
@@ -351,6 +354,7 @@
         {
             if (response && response.success === true) {
 
+                $('#modalForm').modal('hide');
                 $("#instanceFormData").html(response.formHtml);
 
                 loadActionDiagram();
@@ -368,8 +372,6 @@
         {
             let formData = $("#instanceFormData").serializeArray();
             formData[formData.length] = {name: 'snippetId', value: snippetId};
-
-            console.log(formData);
 
             let action = $("#action").val();
             let url = "{{config('app.base_url')}}admin/api/selected-snippet/";

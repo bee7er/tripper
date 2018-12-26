@@ -26,7 +26,9 @@ class Action extends InstanceBase implements InstanceInterface
      */
     public function getOpeningLineText()
     {
-        return ": {$this->obj->title} " . ($this->isComplete() ? '' : self::SELECT_SNIPPET_HTML);
+        return ": " .
+            trunc($this->obj->title, self::MAX_LENGTH_LINE) .
+            ($this->isComplete() ? '' : self::SELECT_SNIPPET_HTML);
     }
 
     /**
@@ -62,15 +64,25 @@ class Action extends InstanceBase implements InstanceInterface
 
         return $actions;
     }
+
     /**
-     * Return the form for editing / inserting an action
+     * Returns the title label for the edit form
      *
      * @param $action
-     * @param $insertAction
-     * @param $targetInstanceId - the initiator of the event on insert
      * @return string
      */
-    public function getEditForm($action, $insertAction, $targetInstanceId = null)
+    public function getEditFormTitle($action)
+    {
+        return (ContextMenu::CM_ACTION_EDIT === $action ? 'action' : '');
+    }
+
+    /**
+     * Returns the content for the edit form
+     *
+     * @param $action
+     * @return string
+     */
+    public function getEditFormBody($action)
     {
         $select = '<select name="subtype_id" id="subtype_id">';
         $subtypeList = Subtype::getSubtypeList();
@@ -85,19 +97,30 @@ class Action extends InstanceBase implements InstanceInterface
         }
         $select .= '</select>';
 
-        return '<h1>'.ucfirst($action).'</h1>
-                <input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
-                <input type="hidden" id="targetInstanceId" name="targetInstanceId" value="' . $targetInstanceId . '">
-                <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">
-                <input type="hidden" id="action" name="action" value="' . $action . '">
-                <input type="hidden" id="insertAction" name="insertAction" value="' . $insertAction . '">
-                <label for="title"><strong>Title</strong></label>
-                <input type="text" placeholder="Enter title" name="title" id="title" class="focus"
-                 			value="' . ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $this->obj->title) . '">
-                <label for="title"><strong>Type</strong></label>
+        return '
+            <div class="md-form mb-5">' .
+
+                $this->getTitleHtml($action) .
+
+                '<br>
+                <label for="type"><strong>Type</strong></label>:&nbsp;
                 ' . $select . '
                 <hr />
-                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-                <button type="button" class="btn" onclick="submitForm()">Submit</button>';
+            </div>
+        ';
+    }
+
+    /**
+     * Returns the html content for the action
+     *
+     * @param $action
+     * @return string
+     */
+    public function getTitleHtml($action)
+    {
+        return '<label for="title"><strong>Title</strong></label>:&nbsp;
+        <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' .
+            ($action === ContextMenu::CM_ACTION_INSERT_ACTION ? '' : $this->obj->title) .
+        '">';
     }
 }
