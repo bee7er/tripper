@@ -38,7 +38,7 @@ class Action extends InstanceBase implements InstanceInterface
      */
     public function isComplete()
     {
-        if (($missingActions = $this->getMissingOptions())) {
+        if (($missingActions = $this->getAdditionalOptions())) {
             // At least one missing action
             return false;
         }
@@ -52,17 +52,9 @@ class Action extends InstanceBase implements InstanceInterface
      *
      * @return bool
      */
-    public function getMissingOptions()
+    public function getAdditionalOptions()
     {
-        $actions = [];
-        if (Subtype::SUBTYPE_SNIPPET === $this->obj->subtype
-            && !isset($this->obj->snippetTrip_id)
-        ) {
-            // A snippet action but no referenced trip
-            $actions[] = ContextMenu::CM_ACTION_SELECT_SNIPPET;
-        }
-
-        return $actions;
+        return [];
     }
 
     /**

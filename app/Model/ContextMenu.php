@@ -46,33 +46,22 @@ class ContextMenu
     public static function getContextMenu(InstanceInterface $instance)
     {
         $message = null;
-        $collapse = 'Collapse';
-        if ($instance->obj->collapsed) {
-            $collapse = 'Expand';
-        }
-
-        // Check for any missing actions; they go first
-        $missingOptions = $instance->getMissingOptions();
 
         // NB Using a bit map to see which options are appropriate for each block type
         $map = $instance->obj->contextMenuMap;
         $formHtml = '<ul class="menu-options">';
+
+        // Check for any missing actions; they go first
+        $missingOptions = $instance->getAdditionalOptions();
         if ($missingOptions) {
             foreach ($missingOptions as $missingOption) {
                 $formHtml .= ('<li class="menu-option" id="'.$missingOption.'">' . self::tidy($missingOption) . '</li>');
             }
         }
 
-        $isComplete = false;
-        if (Block::BLOCK_TYPE_ACTION == $instance->obj->type
-            && Subtype::SUBTYPE_SNIPPET == $instance->obj->subtype
-        ) {
-            $isComplete = $instance->isComplete();
-        }
-
         $formHtml .= ($map & self::CM_EDIT ? '<li class="menu-option" id="'.self::CM_ACTION_EDIT.'">Edit</li>' : '');
-        $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . $collapse . '</li>' : '');
-        $formHtml .= ($map & self::CM_ZOOM && $isComplete ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
+        $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . $instance->obj->collapsed ? 'Expand' : 'Collapse' . '</li>' : '');
+        $formHtml .= ($map & self::CM_ZOOM ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_COMMENT ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_COMMENT.'">Insert Comment</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_CONDITION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_CONDITION.'">Insert Condition</li>' : '');

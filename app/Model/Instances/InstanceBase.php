@@ -95,8 +95,8 @@ abstract class InstanceBase implements InstanceInterface
                 throw new \Exception("Snippet id not supplied");
             }
 
-            $snippetInstance = Instance::find($formData['snippetId']);
-            if (!$snippetInstance) {
+            $snippetTrip = Trip::find($formData['snippetId']);
+            if (!$snippetTrip) {
                 throw new \Exception("Snippet instance not found for id {$formData['snippetId']}");
             }
 
@@ -440,7 +440,7 @@ abstract class InstanceBase implements InstanceInterface
      *
      * @return bool
      */
-    public function getMissingOptions()
+    public function getAdditionalOptions()
     {
         return [];
     }
