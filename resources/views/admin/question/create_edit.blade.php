@@ -1,33 +1,28 @@
 @extends('admin.layouts.modal')
 {{-- Content --}}
 @section('content')
-        <!-- Tabs -->
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#tab-general" data-toggle="tab"> {{
-			trans("admin/modal.general") }}</a></li>
-</ul>
-<!-- ./ tabs -->
-@if (isset($notice))
-{!! Form::model($notice, array('url' => url('admin/notice') . '/' . $notice->id, 'method' => 'put','class' => 'bf')) !!}
+
+@if (isset($question))
+{!! Form::model($question, array('url' => url('admin/question') . '/' . $question->id, 'method' => 'put','id'=>'fupload')) !!}
 @else
-{!! Form::open(array('url' => url('admin/notice'), 'method' => 'post', 'class' => 'bf')) !!}
+{!! Form::open(array('url' => url('admin/question'), 'method' => 'post', 'id'=>'fupload')) !!}
 @endif
         <!-- Tabs Content -->
 <div class="tab-content">
     <!-- General tab -->
     <div class="tab-pane active" id="tab-general">
-        <div class="form-group  {{ $errors->has('notice') ? 'has-error' : '' }}">
-            {!! Form::label('notice', trans("admin/notice.notice"), array('class' => 'control-label')) !!}
+        <div class="form-group  {{ $errors->has('label') ? 'has-error' : '' }}">
+            {!! Form::label('label', trans("admin/question.label"), array('class' => 'control-label')) !!}
             <div class="controls">
-                {!! Form::textarea('notice', null, array('class' => 'form-control')) !!}
-                <span class="help-block">{{ $errors->first('notice', ':message') }}</span>
+                {!! Form::text('label', null, array('class' => 'form-control')) !!}
+                <span class="help-block">{{ $errors->first('label', ':message') }}</span>
             </div>
         </div>
-        <div class="form-group  {{ $errors->has('url') ? 'has-error' : '' }}">
-            {!! Form::label('url', trans("admin/notice.url"), array('class' => 'control-label')) !!}
+        <div class="form-group  {{ $errors->has('question') ? 'has-error' : '' }}">
+            {!! Form::label('question', trans("admin/question.question"), array('class' => 'control-label')) !!}
             <div class="controls">
-                {!! Form::text('url', null, array('class' => 'form-control')) !!}
-                <span class="help-block">{{ $errors->first('url', ':message') }}</span>
+                {!! Form::text('question', null, array('class' => 'form-control')) !!}
+                <span class="help-block">{{ $errors->first('question', ':message') }}</span>
             </div>
         </div>
         <!-- ./ general tab -->
@@ -48,7 +43,7 @@
             </button>
             <button type="submit" class="btn btn-sm btn-success">
                 <span class="glyphicon glyphicon-ok-circle"></span>
-                @if	(isset($notice))
+                @if	(isset($question))
                     {{ trans("admin/modal.edit") }}
                 @else
                     {{trans("admin/modal.create") }}
@@ -59,4 +54,5 @@
     <!-- ./ form actions -->
 {!! Form::close() !!}
 </div>
+
 @endsection

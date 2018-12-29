@@ -31,7 +31,7 @@ class ActionDiagramController extends AdminController
         $trip = $request->trip;
 
         // Show the page
-        return view('admin.actionDiagram.index', compact('tree', 'trip'));
+        return view('admin.actionDiagram.index', compact('trip'));
     }
 
     /**

@@ -17,24 +17,4 @@ class PagesController extends Controller {
 		return view('pages.about');
 	}
 
-	public function contact()
-	{
-		return view('pages.contact');
-	}
-
-	public function merch()
-	{
-		return view('pages.merch');
-	}
-
-	public function template()
-	{
-		return view('pages.template');
-	}
-
-	public function movin()
-	{
-		return view('pages.movin');
-	}
-
 }

@@ -2,6 +2,7 @@
 
 /****************   Model binding into route **************************/
 Route::model('trip', 'App\Trip');
+Route::model('question', 'App\Model\Question');
 Route::model('language', 'App\Language');
 Route::model('template', 'App\Template');
 Route::model('resource', 'App\Resource');
@@ -33,6 +34,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::get('trip/{trip}/edit', 'Admin\TripController@edit');
     Route::get('trip/{trip}/delete', 'Admin\TripController@delete');
     Route::resource('trip', 'Admin\TripController');
+    # Question
+    Route::get('question/data', 'Admin\QuestionController@data');
+    Route::get('question/{question}/show', 'Admin\QuestionController@show');
+    Route::get('question/{question}/edit', 'Admin\QuestionController@edit');
+    Route::get('question/{question}/delete', 'Admin\QuestionController@delete');
+    Route::resource('question', 'Admin\QuestionController');
 
     Route::get('actionDiagram/{trip}/editActionDiagram', 'Admin\ActionDiagramController@index');
     Route::get('actionDiagram/{instance}/updateinstance', 'Admin\ActionDiagramController@updateinstance');

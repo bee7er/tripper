@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'trip' => 'Trip',
+    'trip' => 'Trips',
     'title' => 'Title',
 ];

@@ -25,23 +25,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('admin/question')}}">
+                        <i class="glyphicon glyphicon-screenshot"></i> Questions
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('admin/language')}}">
                         <i class="fa fa-language"></i> Languages
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/template')}}">
-                        <i class="glyphicon glyphicon-eye-open"></i> Templates
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/resource')}}">
-                        <i class="glyphicon glyphicon-eye-open"></i> Resources
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/notice')}}">
-                        <i class="glyphicon glyphicon-eye-open"></i> Notices
                     </a>
                 </li>
                 <li>

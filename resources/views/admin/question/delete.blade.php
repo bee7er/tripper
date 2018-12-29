@@ -1,9 +1,9 @@
 @extends('admin.layouts.modal')
 @section('content')
-	{!! Form::model($template, array('url' => url('admin/template') . '/' . $template->id, 'method' => 'delete', 'class' => 'bf', 'files'=> true)) !!}
+	{!! Form::model($question, array('url' => url('admin/question') . '/' . $question->id, 'method' => 'delete')) !!}
 	<div class="form-group">
 		<div class="controls">
-			<div style="margin-bottom:10px;font-weight:bold;font-size:14px;">{!! $template->name !!}</div>
+			<div style="margin-bottom:10px;font-weight:bold;font-size:14px;">{!! $question->label !!}</div>
 
 			{{ trans("admin/modal.delete_message") }}<br>
 			<element class="btn btn-warning btn-sm close_popup">

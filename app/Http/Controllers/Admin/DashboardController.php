@@ -2,9 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Language;
-use App\Template;
-use App\Notice;
-use App\Resource;
+use App\Model\Question;
 use App\Trip;
 use App\User;
 
@@ -22,10 +20,8 @@ class DashboardController extends AdminController {
 
         $users = User::count();
         $languages = Language::count();
-        $template = Template::count();
-        $resource = Resource::count();
-        $notice = Notice::count();
-        $trip = Trip::count();
-		return view('admin.dashboard.index',  compact('title','trip','resource','notice','template','languages','users'));
+        $questions = Question::count();
+        $trips = Trip::count();
+		return view('admin.dashboard.index',  compact('title','trips','questions','languages','users'));
 	}
 }
