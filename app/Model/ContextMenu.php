@@ -61,8 +61,8 @@ class ContextMenu
         }
 
         $formHtml .= ($map & self::CM_EDIT ? '<li class="menu-option" id="'.self::CM_ACTION_EDIT.'">Edit</li>' : '');
-        $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . $instance->obj->collapsed ? 'Expand' : 'Collapse' . '</li>' : '');
-        $formHtml .= ($map & self::CM_ZOOM ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
+        $formHtml .= ($map & self::CM_COLLAPSE ? '<li class="menu-option" id="'.self::CM_ACTION_COLLAPSE.'">' . ($instance->obj->collapsed ? 'Expand' : 'Collapse') .  '</li>' : '');
+        $formHtml .= ($map & self::CM_ZOOM && $instance->isComplete() ? '<li class="menu-option" id="'.self::CM_ACTION_ZOOM.'">Zoom</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_ACTION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_ACTION.'">Insert Action</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_COMMENT ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_COMMENT.'">Insert Comment</li>' : '');
         $formHtml .= ($map & self::CM_INSERT_CONDITION ? '<li class="menu-option" id="'.self::CM_ACTION_INSERT_CONDITION.'">Insert Condition</li>' : '');

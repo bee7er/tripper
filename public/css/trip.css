@@ -52,10 +52,6 @@
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
 
-​textarea {
-    vertical-align: top;
-}​
-
 /* Button used to open the contact form - fixed at the bottom of the page */
 .open-button {
     background-color: #555;
@@ -104,20 +100,20 @@ body {font-family: Arial, Helvetica, sans-serif;}
 }
 
 /* Set a style for the submit/login button */
-.form-container .btn {
-    background-color: #4CAF50;
-    color: white;
+.form-container .btn.submit, .form-container .btn.cancel  {
     padding: 16px 20px;
     border: none;
     cursor: pointer;
-    width: 100%;
     margin-bottom:10px;
     opacity: 0.8;
 }
-
-/* Add a red background color to the cancel button */
-.form-container .cancel {
+.form-container .btn.submit  {
+    background-color: #4CAF50;
+    color: white;
+}
+.form-container .btn.cancel  {
     background-color: red;
+    color: white;
 }
 
 /* Add some hover effects to buttons */

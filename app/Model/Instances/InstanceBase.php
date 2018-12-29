@@ -78,50 +78,6 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
-     * Update an instance to point at a snippet
-     *
-     * @param $formData
-     * @return array
-     */
-    public function setSnippet($formData)
-    {
-        $success = null;
-        $messages = [];
-        try {
-            if (Block::BLOCK_TYPE_ACTION !== $this->obj->type) {
-                throw new \Exception("Type {$this->obj->type} not supported for this function");
-            }
-
-            if (!$formData['snippetId']) {
-                throw new \Exception("Snippet id not supplied");
-            }
-
-            $snippetTrip = Trip::find($formData['snippetId']);
-            if (!$snippetTrip) {
-                throw new \Exception("Snippet instance not found for id {$formData['snippetId']}");
-            }
-
-            $this->obj->snippetTrip_id = $formData['snippetId'];
-            $this->obj->save();
-            $messages[] = "Updated '{$this->obj->title}'";
-            $success = true;
-        } catch (\Exception $e) {
-            $messages[]  = $e->getMessage() . ' For more info see log.';
-            $success = false;
-            Log::info("Error updating instance id {$formData['instanceId']} with snippet id {$formData['snippetId']}", [
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine()
-            ]);
-        }
-
-        return [
-            'success' => $success,
-            'data'   => ['messages' => $messages]
-        ];
-    }
-
-    /**
      * Update an instance
      *
      * @param $formData
@@ -323,6 +279,16 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
+     * Where do we insert new instances?  It depends.
+     *
+     * @return array
+     */
+    public function getInsertAction()
+    {
+        return ['Insert after', ContextMenu::INSERT_AFTER];
+    }
+
+    /**
      * Build and return the string representing the opening line text
      *
      * @return string
@@ -333,13 +299,13 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
-     * Where do we insert new instances?  It depends.
+     * Return any notifications in the opening line text
      *
-     * @return array
+     * @return string
      */
-    public function getInsertAction()
+    public function getOpeningLineNotices()
     {
-        return ['Insert after', ContextMenu::INSERT_AFTER];
+        return '';
     }
 
     /**
@@ -363,7 +329,7 @@ abstract class InstanceBase implements InstanceInterface
             . $this->obj->top2
             . '&nbsp;&nbsp;'
             . $this->obj->type . ($this->obj->subtype ? " {$this->obj->subtype}: " : '')
-            . $this->getOpeningLineText()
+            . $this->getOpeningLineText() .  $this->getOpeningLineNotices()
             . "</span></div>"
         );
     }
@@ -522,34 +488,19 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
-     * Return the form for selecting a snippet
+     * Return the form for selecting an instance
      *
      * @param $action
      * @param $insertAction
      * @return string
      */
-    public function getSelectSnippetForm()
+    public function getSelectForm()
     {
         $html = '<input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
                     <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">';
-        $html .= '<table width="300px"><thead><th>Id</th><th>Title</th></thead>';
-        $html .= '<tbody>';
+        $html .= 'Nothing to select';
 
-        $trips = Trip::where('id', '!=', $this->obj->trip_id)->get();
-
-        if (count($trips)) {
-            foreach ($trips as $trip) {
-                $html .= '<tr id="snippet_' . $trip->id . '" class="snippet">';
-                $html .= '<td>' . $trip->id . '</td>';
-                $html .= '<td>' . $trip->title . '</td>';
-                $html .= '</tr>';
-            }
-        } else {
-            $html .= '<tr><td colspan="2">No snippets found</td></tr>';
-        }
-        $html .= '</tbody></table>';
-
-        return $this->getFormWrapper('Select Snippet', $html);
+        return $this->getFormWrapper('Select Instance', $html);
     }
 
     /**
@@ -561,12 +512,13 @@ abstract class InstanceBase implements InstanceInterface
      */
     public function getFormWrapper($formTitle, $body)
     {
+        // From: https://mdbootstrap.com/docs/jquery/modals/forms/
         $html = '<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
           aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">' . $formTitle . '</h4>
+                <h4 class="modal-title w-100 font-weight-bold"><strong>' . $formTitle . '</strong></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -575,10 +527,10 @@ abstract class InstanceBase implements InstanceInterface
 
             $body .
 
-        '</div>
+             '</div>
               <div class="modal-footer d-flex justify-content-center">
                 <button type="button" class="btn cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn" onclick="submitForm()">Submit</button>
+                <button type="button" class="btn submit" onclick="submitForm()">Submit</button>
               </div>
             </div>
           </div>

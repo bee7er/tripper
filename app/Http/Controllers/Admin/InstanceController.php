@@ -68,8 +68,13 @@ class InstanceController extends AdminController
                         $formHtml = $instance->getDeleteForm($action);
                         break;
 
+                    case ContextMenu::CM_ACTION_SELECT_QUESTION:
+                        $formHtml = $instance->getSelectForm();
+                        break;
+
                     case ContextMenu::CM_ACTION_SELECT_SNIPPET:
-                        $formHtml = $instance->getSelectSnippetForm();
+                        $formHtml = $instance->getSelectForm();
+                        break;
 
                     default:
                         break;
@@ -81,6 +86,49 @@ class InstanceController extends AdminController
         return Response::json(array(
             'success' => $success,
             'data'   => ['formHtml' => $formHtml, 'messages' => $messages]
+        ));
+    }
+
+    /**
+     * Update an instance to be pointing at an embedded question
+     *
+     * @return Response
+     */
+    public function selectedQuestion()
+    {
+        $result = [];
+        try {
+            $formData = $this->getFormData();
+
+            if (!isset($formData['instanceId'])) {
+                throw new \Exception('Instance id not supplied for set question function');
+            }
+
+            $instance = InstanceFactory::getInstance($formData['instanceId']);
+            if (!$instance) {
+                throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
+            }
+
+            if (!is_a($instance, 'App\Model\Instances\ActionQuestion')) {
+                throw new \Exception("Error, instance is the wrong type for a question reference");
+            }
+
+            $result = $instance->setQuestion($formData);
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
+
+            Log::info("Error setting snippet", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                print_r($formData, true)
+            ]);
+        }
+
+        return Response::json(array(
+            'success' => $result['success'],
+            'data'   => $result['data'],
         ));
     }
 
@@ -102,6 +150,10 @@ class InstanceController extends AdminController
             $instance = InstanceFactory::getInstance($formData['instanceId']);
             if (!$instance) {
                 throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
+            }
+
+            if (!is_a($instance, 'App\Model\Instances\ActionSnippet')) {
+                throw new \Exception("Error, instance is the wrong type for a snippet reference");
             }
 
             $result = $instance->setSnippet($formData);

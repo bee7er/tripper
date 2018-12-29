@@ -129,6 +129,7 @@
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_CONDITION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_ITERATION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_INSERT_SEQUENCE}}':
+                            case '{{\App\Model\ContextMenu::CM_ACTION_SELECT_QUESTION}}':
                             case '{{\App\Model\ContextMenu::CM_ACTION_SELECT_SNIPPET}}':
                                 openForm(action);
                                 break;
@@ -265,6 +266,16 @@
                         selectSnippet(selectedId);
                     }
                 });
+
+                // If questions have been returned listen for events
+                $(".question").click(function (e) {
+                    e.preventDefault();
+
+                    if ($(e.target).parent()) {
+                        let selectedId = $(e.target).parent().attr('id').replace('question_', '');
+                        selectQuestion(selectedId);
+                    }
+                });
             } else {
                 displayMessages(response.success, response.data.messages);
             }
@@ -349,12 +360,11 @@
         }
 
 
-        // Execute the selection of a snippet using a callback to receive the result
-        const selectSnippetCallback = function(response)
+        // Execute the selection of another instance using a callback to receive the result
+        const selectInstanceCallback = function(response)
         {
             if (response && response.success === true) {
 
-                $('#modalForm').modal('hide');
                 $("#instanceFormData").html(response.formHtml);
 
                 loadActionDiagram();
@@ -364,10 +374,22 @@
                 displayMessages(response.success, response.data.messages);
             }
 
+            $('#modalForm').modal('hide');
+
             setTimeout(function () {
                 closeForm();
             }, 100);
         };
+        function selectQuestion(questionId)
+        {
+            let formData = $("#instanceFormData").serializeArray();
+            formData[formData.length] = {name: 'questionId', value: questionId};
+
+            let action = $("#action").val();
+            let url = "{{config('app.base_url')}}admin/api/selected-question/";
+
+            ajaxCall(url, JSON.stringify(formData), selectInstanceCallback);
+        }
         function selectSnippet(snippetId)
         {
             let formData = $("#instanceFormData").serializeArray();
@@ -376,7 +398,7 @@
             let action = $("#action").val();
             let url = "{{config('app.base_url')}}admin/api/selected-snippet/";
 
-            ajaxCall(url, JSON.stringify(formData), selectSnippetCallback);
+            ajaxCall(url, JSON.stringify(formData), selectInstanceCallback);
         }
 
         function displayMessages(success, messages)

@@ -26,18 +26,7 @@ class Action extends InstanceBase implements InstanceInterface
      */
     public function getOpeningLineText()
     {
-        return ": " .
-            trunc($this->obj->title, self::MAX_LENGTH_LINE) . $this->getOpeningLineNotices();
-    }
-
-    /**
-     * Return any notifications in the opening line text
-     *
-     * @return string
-     */
-    public function getOpeningLineNotices()
-    {
-        return '';
+        return ": " . trunc($this->obj->title, self::MAX_LENGTH_LINE);
     }
 
     /**
@@ -47,11 +36,6 @@ class Action extends InstanceBase implements InstanceInterface
      */
     public function isComplete()
     {
-        if (($missingActions = $this->getAdditionalOptions())) {
-            // At least one missing action
-            return false;
-        }
-
         return true;
     }
 
@@ -59,7 +43,7 @@ class Action extends InstanceBase implements InstanceInterface
      * Checks what is missing and returns an appropriate ContextMenu option
      * for each additional action that is needed
      *
-     * @return bool
+     * @return array
      */
     public function getAdditionalOptions()
     {

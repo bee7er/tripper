@@ -116,6 +116,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                 ]
             );
             Route::post(
+                '/selected-question',
+                [
+                    'as' => 'api-selected-question-route',
+                    'uses' => 'Admin\InstanceController@selectedQuestion'
+                ]
+            );
+            Route::post(
                 '/selected-snippet',
                 [
                     'as' => 'api-selected-snippet-route',

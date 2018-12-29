@@ -9,33 +9,26 @@
 
 # TODO
 
-    Allow user to reselect the snippet id
+    Edit question:
 
-    Introduce lightbox and get the whole form styling right
+        The text for the question is just a comment in the action diagram
 
-    Pass in the zoom list so we avoid recursion
+        Response:
 
-    Show the snippet name on the action line
+            free-format - text
+            currency - 10,2
+            percentage - 0 to 100
 
-    Maybe allow selection of the snippet list in the edit action modl
+            list - of discrete conditions
 
-    Edit question, too
+        Have a response type and subclass that
 
     Edit other action types, too
 
-    Position of the form
+    Pass in the zoom list so we avoid recursion
 
-    Restyle the form
+    Maybe allow selection of the snippet list in the edit action modal
 
     If the session has timed out then capture that and return a message or something.  Currently looks awful.
 
-    ==============
-
-    Create instance sub-classes for all types
-
-        isComplete - should return a list of messages for why incomplete
-
-        other functions, put in here
-
-            getInsertAction ; after, before and inside
 

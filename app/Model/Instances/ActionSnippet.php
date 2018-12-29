@@ -7,11 +7,11 @@ use App\Trip;
 
 class ActionSnippet extends Action
 {
-
     /**
      * Build and return the string representing the opening line text
      *
      * @return string
+     * @throws \Exception
      */
     public function getOpeningLineText()
     {
@@ -45,18 +45,93 @@ class ActionSnippet extends Action
      */
     public function isComplete()
     {
-        return ($this->obj->snippetTrip_id > 0);
+        return (null !== $this->obj->snippetTrip_id && $this->obj->snippetTrip_id > 0);
     }
+
     /**
-     * Checks what is missing and returns an appropriate ContextMenu option
-     * for each additional action that is needed
+     * Returns an appropriate ContextMenu option for each additional action that is supported
      *
-     * @return bool
+     * @return array
      */
     public function getAdditionalOptions()
     {
         return [
             ContextMenu::CM_ACTION_SELECT_SNIPPET
+        ];
+    }
+
+    /**
+     * Return the form for selecting an instance
+     *
+     * @param $action
+     * @param $insertAction
+     * @return string
+     */
+    public function getSelectForm()
+    {
+        $html = '<input type="hidden" id="instanceId" name="instanceId" value="' . $this->obj->id . '">
+                    <input type="hidden" id="type" name="type" value="' . $this->obj->type . '">';
+        $html .= '<table width="300px"><thead><th>Id</th><th>Title</th></thead>';
+        $html .= '<tbody>';
+
+        $trips = Trip::where('id', '!=', $this->obj->trip_id ? : 0)->get();
+
+        if (count($trips)) {
+            foreach ($trips as $trip) {
+                $html .= '<tr id="snippet_' . $trip->id . '" class="snippet">';
+                $html .= '<td>' . $trip->id . '</td>';
+                $html .= '<td>' . $trip->title . '</td>';
+                $html .= '</tr>';
+            }
+        } else {
+            $html .= '<tr><td colspan="2">No snippets found</td></tr>';
+        }
+        $html .= '</tbody></table>';
+
+        return $this->getFormWrapper('Select Snippet', $html);
+    }
+
+    /**
+     * Update an instance to point at a snippet
+     *
+     * @param $formData
+     * @return array
+     */
+    public function setSnippet($formData)
+    {
+        $success = null;
+        $messages = [];
+        try {
+            if (Block::BLOCK_TYPE_ACTION !== $this->obj->type) {
+                throw new \Exception("Type {$this->obj->type} not supported for this function");
+            }
+
+            if (!$formData['snippetId']) {
+                throw new \Exception("Snippet id not supplied");
+            }
+
+            $snippetTrip = Trip::find($formData['snippetId']);
+            if (!$snippetTrip) {
+                throw new \Exception("Snippet instance not found for id {$formData['snippetId']}");
+            }
+
+            $this->obj->snippetTrip_id = $formData['snippetId'];
+            $this->obj->save();
+            $messages[] = "Updated '{$this->obj->title}'";
+            $success = true;
+        } catch (\Exception $e) {
+            $messages[]  = $e->getMessage() . ' For more info see log.';
+            $success = false;
+            Log::info("Error updating instance id {$formData['instanceId']} with snippet id {$formData['snippetId']}", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
+        }
+
+        return [
+            'success' => $success,
+            'data'   => ['messages' => $messages]
         ];
     }
 }

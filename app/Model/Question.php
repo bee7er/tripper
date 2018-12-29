@@ -10,6 +10,8 @@ class Question extends Model
 {
     use SoftDeletes;
 
+    // Currency response
+    const QUESTION_TYPE_CURRENCY = 'cur';
     // Date response
     const QUESTION_TYPE_DATE = 'dte';
     // Datetime response
@@ -17,7 +19,9 @@ class Question extends Model
     // Numeric response
     const QUESTION_TYPE_NUMERIC = 'nbr';
     // Yes/No, High/Low, etc
-    const QUESTION_TYPE_SELECT = 'sel';
+    const QUESTION_TYPE_SELECT = 'lst';
+    // Percentage
+    const QUESTION_TYPE_PERCENTAGE = 'per';
     // Textual response, free format
     const QUESTION_TYPE_TEXT = 'txt';
 
