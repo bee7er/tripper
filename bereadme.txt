@@ -9,11 +9,9 @@
 
 # TODO
 
-    Add just creates the Action
+    Zoom not working
 
-        On edit the user cannot change the action type
-
-        Only on edit then we allow selection of the subtype
+    Add response and required details to edit question
 
     Edit question:
 

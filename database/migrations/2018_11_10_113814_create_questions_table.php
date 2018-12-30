@@ -14,7 +14,7 @@ class CreateQuestionsTable extends Migration
 		Schema::create('questions', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
-			$table->enum('type', array('cur','dte','dtm','lst','lst','per','txt'));
+			$table->enum('type', array('cur','dte','dtm','lst','nbr','per','txt'));
 			$table->string('label');
 			$table->string('question');
 			$table->boolean('required');

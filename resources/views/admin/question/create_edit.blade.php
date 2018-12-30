@@ -11,6 +11,13 @@
 <div class="tab-content">
     <!-- General tab -->
     <div class="tab-pane active" id="tab-general">
+        <div class="form-group  {{ $errors->has('type') ? 'has-error' : '' }}">
+            {!! Form::label('type', trans("admin/question.type"), array('class' => 'control-label')) !!}
+            <div class="controls">
+                {!! App_Model_Question::getTypes($question->type) !!}
+                <span class="help-block">{{ $errors->first('type', ':message') }}</span>
+            </div>
+        </div>
         <div class="form-group  {{ $errors->has('label') ? 'has-error' : '' }}">
             {!! Form::label('label', trans("admin/question.label"), array('class' => 'control-label')) !!}
             <div class="controls">
@@ -23,6 +30,16 @@
             <div class="controls">
                 {!! Form::text('question', null, array('class' => 'form-control')) !!}
                 <span class="help-block">{{ $errors->first('question', ':message') }}</span>
+            </div>
+        </div>
+        <div class="form-group  {{ $errors->has('required') ? 'has-error' : '' }}">
+            {!! Form::label('equired', trans("admin/question.required"), array('class' => 'control-label')) !!}
+            <div class="controls">
+                <select class="form-control" name="required" id="required">
+                    <option value="1" {{ $question->required ? 'selected' : '' }}>Yes</option>
+                    <option value="0" {{ !$question->required ? 'selected' : '' }}>No</option>
+                </select>
+                <span class="help-block">{{ $errors->first('required', ':message') }}</span>
             </div>
         </div>
         <!-- ./ general tab -->

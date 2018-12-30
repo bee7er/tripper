@@ -28,4 +28,35 @@ class Question extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded  = array('id');
+
+    /**
+     * @var array
+     */
+    private static $types = [
+        'Currency' => self::QUESTION_TYPE_CURRENCY,
+        'Date' => self::QUESTION_TYPE_DATE,
+        'DateTime' => self::QUESTION_TYPE_DATETIME,
+        'Numeric' => self::QUESTION_TYPE_NUMERIC,
+        'Select' => self::QUESTION_TYPE_SELECT,
+        'Percentage' => self::QUESTION_TYPE_PERCENTAGE,
+        'Text' => self::QUESTION_TYPE_TEXT
+    ];
+
+    /**
+     * Builds and returns a select listbox of Question types
+     *
+     * @param $selectedType
+     * @return string
+     */
+    public static function getTypes($selectedType)
+    {
+        $html = '<select class="form-control" name="type" id="type">';
+        foreach (self::$types as $name => $type) {
+            $selected = ($type == $selectedType ? 'selected' : '');
+            $html .= "<option value='$type' $selected>$name</option>";
+        }
+        $html .= "</select>";
+
+        return $html;
+    }
 }

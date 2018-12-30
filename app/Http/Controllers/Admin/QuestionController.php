@@ -50,11 +50,11 @@ class QuestionController extends AdminController
     {
         Log::info('Saving new data', [$request->get('label'), $request->get('question')]);
 
-        $label = $request->get('label');
-        $question = $request->get('question');
         $questionObj = new Question([
-            'label' => $label,
-            'question' => $question
+            'type' => $request->get('type'),
+            'label' => $request->get('label'),
+            'question' => $request->get('question'),
+            'required' => $request->get('required')
         ]);
         $questionObj->save();
     }
@@ -77,19 +77,19 @@ class QuestionController extends AdminController
      * @param  int $id
      * @return Response
      */
-    public function update(QuestionRequest $request, Question $questionObj)
+    public function update(QuestionRequest $request, Question $question)
     {
         try {
             Log::info('Update question', []);
-            $label = $request->get('label');
-            $question = $request->get('question');
 
-            $questionObj->update([
-                'label' => $label,
-                'question' => $question
+            $question->update([
+                'type' => $request->get('type'),
+                'label' => $request->get('label'),
+                'question' => $request->get('question'),
+                'required' => $request->get('required')
             ]);
         } catch (\Exception $e) {
-            Log::info('Error updating data: ' . $questionObj->id, [
+            Log::info('Error updating data: ' . $question->id, [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()

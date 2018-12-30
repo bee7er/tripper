@@ -20,8 +20,6 @@ class DatabaseSeeder extends Seeder
 //        $this->command->info('Test User created with username user@user.com and password user');
 
 		$this->call(LanguageTableSeeder::class);
-		$this->call(TemplateTableSeeder::class);
-		$this->call(ResourceTableSeeder::class);
 
         $this->call(OperatorTableSeeder::class);
         $this->call(ContextTableSeeder::class);
