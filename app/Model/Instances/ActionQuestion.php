@@ -4,10 +4,23 @@ namespace App\Model\Instances;
 
 use App\Model\Block;
 use App\Model\ContextMenu;
+use App\Model\Instance;
 use App\Model\Question;
+use Illuminate\Support\Facades\Log;
 
 class ActionQuestion extends Action
 {
+    /**
+     * Action constructor
+     * @param Instance $instance
+     */
+    public function __construct(Instance $instance)
+    {
+        parent::__construct($instance);
+
+        $this->validFields[] = 'question_id';
+    }
+
     /**
      * Build and return the string representing the opening line text
      *
@@ -58,6 +71,29 @@ class ActionQuestion extends Action
         return [
             ContextMenu::CM_ACTION_SELECT_QUESTION
         ];
+    }
+
+    /**
+     * In edit mode we can allow more fields to be edited, according to type
+     *
+     * @return string
+     */
+    public function getAdditionalEditForm()
+    {
+        // Allow the user to select a question
+        $questions = Question::get();
+
+        $select = '<br><label for="question_id"><strong>Question</strong></label>:&nbsp;';
+        if (count($questions)) {
+            $select .= '<select name="question_id" id="question_id">';
+            foreach ($questions as $entry) {
+                $selected = ($this->obj->question_id == $entry->id ? 'selected': '');
+                $select .= "<option $selected value='$entry->id'>" . $entry->label . "</option>";
+            }
+            $select .= '</select>';
+        }
+
+        return "<div>$select</div>";
     }
 
     /**

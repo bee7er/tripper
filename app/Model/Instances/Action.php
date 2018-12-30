@@ -16,7 +16,7 @@ class Action extends InstanceBase implements InstanceInterface
     {
         parent::__construct($instance);
 
-        $this->validFields = ['title', 'subtype_id'];
+        $this->validFields[] = 'subtype_id';
     }
 
     /**
@@ -51,6 +51,16 @@ class Action extends InstanceBase implements InstanceInterface
     }
 
     /**
+     * In edit mode we can allow more fields to be edited, according to type
+     *
+     * @return string
+     */
+    public function getAdditionalEditForm()
+    {
+        return '';
+    }
+
+    /**
      * Returns the title label for the edit form
      *
      * @param $action
@@ -69,7 +79,13 @@ class Action extends InstanceBase implements InstanceInterface
      */
     public function getEditFormBody($action)
     {
-        $select = '<select name="subtype_id" id="subtype_id">';
+        $additionalEditForm = $disabled = '';
+        if (ContextMenu::CM_ACTION_EDIT === $action) {
+            $additionalEditForm = $this->getAdditionalEditForm();
+            $disabled = "disabled='disabled'";
+        }
+
+        $select = '<select name="subtype_id" id="subtype_id" ' . $disabled . '>';
         $subtypeList = Subtype::getSubtypeList();
         if ($subtypeList) {
             foreach ($subtypeList as $key => $entry) {
@@ -90,6 +106,7 @@ class Action extends InstanceBase implements InstanceInterface
                 '<br>
                 <label for="type"><strong>Type</strong></label>:&nbsp;
                 ' . $select . '
+                ' . $additionalEditForm . '
                 <hr />
             </div>
         ';

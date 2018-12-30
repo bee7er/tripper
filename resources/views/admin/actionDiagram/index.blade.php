@@ -262,7 +262,7 @@
                     e.preventDefault();
 
                     if ($(e.target).parent()) {
-                        let selectedId = $(e.target).parent().attr('id').replace('snippet_', '');
+                        let selectedId = $(e.target).parent().attr('id').replace('snippetTrip_', '');
                         selectSnippet(selectedId);
                     }
                 });
@@ -368,11 +368,9 @@
                 $("#instanceFormData").html(response.formHtml);
 
                 loadActionDiagram();
-
-                displayMessages(response.success, response.data.messages);
-            } else {
-                displayMessages(response.success, response.data.messages);
             }
+
+            displayMessages(response.success, response.data.messages);
 
             $('#modalForm').modal('hide');
 
@@ -393,7 +391,7 @@
         function selectSnippet(snippetId)
         {
             let formData = $("#instanceFormData").serializeArray();
-            formData[formData.length] = {name: 'snippetId', value: snippetId};
+            formData[formData.length] = {name: 'snippetTrip_id', value: snippetId};
 
             let action = $("#action").val();
             let url = "{{config('app.base_url')}}admin/api/selected-snippet/";

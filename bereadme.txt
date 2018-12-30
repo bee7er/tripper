@@ -9,6 +9,12 @@
 
 # TODO
 
+    Add just creates the Action
+
+        On edit the user cannot change the action type
+
+        Only on edit then we allow selection of the subtype
+
     Edit question:
 
         The text for the question is just a comment in the action diagram

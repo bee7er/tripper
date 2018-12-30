@@ -2,11 +2,25 @@
 
 namespace App\Model\Instances;
 
+use App\Model\Block;
 use App\Model\ContextMenu;
+use App\Model\Instance;
 use App\Trip;
+use Illuminate\Support\Facades\Log;
 
 class ActionSnippet extends Action
 {
+    /**
+     * Action constructor
+     * @param Instance $instance
+     */
+    public function __construct(Instance $instance)
+    {
+        parent::__construct($instance);
+
+        $this->validFields[] = 'snippetTrip_id';
+    }
+
     /**
      * Build and return the string representing the opening line text
      *
@@ -61,6 +75,29 @@ class ActionSnippet extends Action
     }
 
     /**
+     * In edit mode we can allow more fields to be edited, according to type
+     *
+     * @return string
+     */
+    public function getAdditionalEditForm()
+    {
+        // Allow the user to select a snippet
+        $trips = Trip::get();
+
+        $select = '<br><label for="snippetTrip_id"><strong>Snippet</strong></label>:&nbsp;';
+        if (count($trips)) {
+            $select .= '<select name="snippetTrip_id" id="snippetTrip_id">';
+            foreach ($trips as $entry) {
+                $selected = ($this->obj->snippetTrip_id == $entry->id ? 'selected': '');
+                $select .= "<option $selected value='$entry->id'>" . $entry->title . "</option>";
+            }
+            $select .= '</select>';
+        }
+
+        return "<div>$select</div>";
+    }
+
+    /**
      * Return the form for selecting an instance
      *
      * @param $action
@@ -78,7 +115,7 @@ class ActionSnippet extends Action
 
         if (count($trips)) {
             foreach ($trips as $trip) {
-                $html .= '<tr id="snippet_' . $trip->id . '" class="snippet">';
+                $html .= '<tr id="snippetTrip_' . $trip->id . '" class="snippet">';
                 $html .= '<td>' . $trip->id . '</td>';
                 $html .= '<td>' . $trip->title . '</td>';
                 $html .= '</tr>';
@@ -106,23 +143,23 @@ class ActionSnippet extends Action
                 throw new \Exception("Type {$this->obj->type} not supported for this function");
             }
 
-            if (!$formData['snippetId']) {
+            if (!$formData['snippetTrip_id']) {
                 throw new \Exception("Snippet id not supplied");
             }
 
-            $snippetTrip = Trip::find($formData['snippetId']);
+            $snippetTrip = Trip::find($formData['snippetTrip_id']);
             if (!$snippetTrip) {
-                throw new \Exception("Snippet instance not found for id {$formData['snippetId']}");
+                throw new \Exception("Snippet instance not found for id {$formData['snippetTrip_id']}");
             }
 
-            $this->obj->snippetTrip_id = $formData['snippetId'];
+            $this->obj->snippetTrip_id = $formData['snippetTrip_id'];
             $this->obj->save();
             $messages[] = "Updated '{$this->obj->title}'";
             $success = true;
         } catch (\Exception $e) {
             $messages[]  = $e->getMessage() . ' For more info see log.';
             $success = false;
-            Log::info("Error updating instance id {$formData['instanceId']} with snippet id {$formData['snippetId']}", [
+            Log::info("Error updating instance id {$formData['instanceId']} with snippet id {$formData['snippetTrip_id']}", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()
