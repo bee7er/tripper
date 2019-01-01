@@ -3,10 +3,8 @@
 /****************   Model binding into route **************************/
 Route::model('trip', 'App\Trip');
 Route::model('question', 'App\Model\Question');
+Route::model('clist', 'App\Model\Clist');
 Route::model('language', 'App\Language');
-Route::model('template', 'App\Template');
-Route::model('resource', 'App\Resource');
-Route::model('notice', 'App\Notice');
 Route::model('user', 'App\User');
 Route::pattern('id', '[0-9]+');
 Route::pattern('slug', '[0-9a-z-_]+');
@@ -40,6 +38,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::get('question/{question}/edit', 'Admin\QuestionController@edit');
     Route::get('question/{question}/delete', 'Admin\QuestionController@delete');
     Route::resource('question', 'Admin\QuestionController');
+    # Clist
+    Route::get('clist/data', 'Admin\ClistController@data');
+    Route::get('clist/{clist}/show', 'Admin\ClistController@show');
+    Route::get('clist/{clist}/edit', 'Admin\ClistController@edit');
+    Route::get('clist/{clist}/delete', 'Admin\ClistController@delete');
+    Route::resource('clist', 'Admin\ClistController');
 
     Route::get('actionDiagram/{trip}/editActionDiagram', 'Admin\ActionDiagramController@index');
     Route::get('actionDiagram/{instance}/updateinstance', 'Admin\ActionDiagramController@updateinstance');

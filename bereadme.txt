@@ -9,7 +9,11 @@
 
 # TODO
 
-    Zoom not working
+    Add Constants to Lists
+
+    Maintain Constants separately too?
+
+    Add lists to the Question type list
 
     Add response and required details to edit question
 

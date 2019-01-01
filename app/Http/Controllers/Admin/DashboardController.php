@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Language;
+use App\Model\Clist;
 use App\Model\Question;
 use App\Trip;
 use App\User;
@@ -20,8 +21,9 @@ class DashboardController extends AdminController {
 
         $users = User::count();
         $languages = Language::count();
-        $questions = Question::count();
         $trips = Trip::count();
-		return view('admin.dashboard.index',  compact('title','trips','questions','languages','users'));
+        $questions = Question::count();
+        $clists = Clist::count();
+		return view('admin.dashboard.index',  compact('title','trips','questions','clists','languages','users'));
 	}
 }
