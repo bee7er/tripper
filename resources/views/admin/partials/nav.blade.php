@@ -30,6 +30,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{url('admin/clist')}}">
+                        <i class="glyphicon glyphicon-screenshot"></i> Lists
+                    </a>
+                </li>
+                <li>
                     <a href="{{url('admin/language')}}">
                         <i class="fa fa-language"></i> Languages
                     </a>

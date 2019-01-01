@@ -13,5 +13,4 @@ return [
     'no' => 'No',
     'roles' => 'Roles',
     'roles_info' => 'Adding the role to user, be assigned all privileges for a given role.'
-
 ];

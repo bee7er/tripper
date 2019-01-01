@@ -3,6 +3,5 @@
 return [
     'code' => 'Code',
     'icon' => 'Icon',
-    'languages' => 'Languages',
-
+    'languages' => 'Languages'
 ];

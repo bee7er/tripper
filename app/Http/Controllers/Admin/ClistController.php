@@ -63,7 +63,9 @@ class ClistController extends AdminController
     public function edit(Clist $clist)
     {
         // Show the page
-        return view('admin.clist.create_edit', compact('clist'));
+        $constants = Clist::getListEntries($clist->id);
+
+        return view('admin.clist.create_edit', compact('clist', 'constants'));
     }
 
     /**

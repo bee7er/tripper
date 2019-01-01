@@ -17,4 +17,16 @@ class Clist extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded  = array('id');
+
+    /**
+     * Get the constants for the specified list
+     *
+     * @return array
+     */
+    public static function getListEntries($listId)
+    {
+        return ClistConstant::where("clist_constants.clist_id", $listId)
+            ->join('constants', 'constants.id', '=', 'clist_constants.constant_id')
+            ->orderBy("constants.label")->get();
+    }
 }

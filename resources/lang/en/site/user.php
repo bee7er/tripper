@@ -4,7 +4,6 @@ return [
 	'login' => 'Login',
 	'login_to_account' => 'Login into your account',
 	'submit' => 'Submit',
-	'register' => 'Create a new account',
 	'remember' => 'Remember',
 	'password' => 'Password',
 	'e_mail' => 'E-Mail Address',

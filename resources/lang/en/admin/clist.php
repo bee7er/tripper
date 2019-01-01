@@ -1,8 +1,7 @@
 <?php
 
 return [
-    'clists' => 'Clists',
-    'clist' => 'Clist',
-    'label' => 'Label',
-    'container' => 'Container'
+    'clists' => 'Lists',
+    'clist' => 'Lists',
+    'label' => 'Label'
 ];

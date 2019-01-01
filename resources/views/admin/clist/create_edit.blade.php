@@ -22,8 +22,42 @@
     </div>
     <!-- ./ tabs content -->
 
-    <!-- Form Actions -->
+    <table id="table" class="table table-sclisted table-hover">
+        <thead>
+        <tr>
+            <th>{!! trans("admin/constant.label") !!}</th>
+            <th>{!! trans("admin/constant.value") !!}</th>
+            <th>{!! trans("admin/admin.created_at") !!}</th>
+            <th>{!! trans("admin/admin.updated_at") !!}</th>
+            <th>{!! trans("admin/admin.action") !!}</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if(count($constants)>0)
+            @foreach ($constants as $constant)
+                <tr>
+                    <td>{!! $constant->label !!}</td>
+                    <td>{!! $constant->value !!}</td>
+                    <td>{!! $constant->created_at !!}</td>
+                    <td>{!! $constant->updated_at !!}</td>
+                    <th>
+                        <button type="submit" id="edit_{!! $constant->id !!}" class="btn btn-sm btn-success row-action">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            {!! trans("admin/admin.edit") !!}
+                        </button>
+                        <button type="submit" id="delete_{!! $constant->id !!}" class="btn btn-sm btn-danger row-action">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            {!! trans("admin/admin.delete") !!}
+                        </button>
+                    </th>
+                </tr>
+            @endforeach
+        @endif
 
+        </tbody>
+    </table>
+
+    <!-- Form Actions -->
     <div class="form-group">
         <div class="col-md-12">
             <button type="reset" class="btn btn-sm btn-warning close_popup">
@@ -42,10 +76,41 @@
                     {{trans("admin/modal.create") }}
                 @endif
             </button>
+            <button type="submit" id="addConstant" class="btn btn-sm btn-primary">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+                    {{ trans("admin/constant.add") }}
+            </button>
         </div>
     </div>
     <!-- ./ form actions -->
 {!! Form::close() !!}
 </div>
 
+@endsection
+{{-- Scripts --}}
+@section('scripts')
+    <script type="text/javascript">
+
+        $('#addConstant').click(function (e) {
+            e.preventDefault();
+
+            let target = $(e.target);
+            if (target) {
+                let id = target.attr('id');
+                alert('table action for id: ' + id);
+            }
+        });
+
+        $('.row-action').click(function (e) {
+            e.preventDefault();
+
+            let target = $(e.target);
+            if (target) {
+                let idParts = target.attr('id').split('_');
+                let id = idParts[1];
+                alert('row action for id: ' + id);
+            }
+        });
+
+    </script>
 @endsection
