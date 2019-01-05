@@ -4,7 +4,9 @@ use App\Http\Controllers\AdminController;
 use App\Model\Clist;
 use App\Http\Requests\Admin\ClistRequest;
 use Datatables;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 
 class ClistController extends AdminController
 {
@@ -129,6 +131,38 @@ class ClistController extends AdminController
                     'created_at' => $clist->created_at->format('d/m/Y'),
                 ];
             });
+    }
+
+    /**
+     * Build and return the form for editing a constant
+     *
+     * @return Response
+     */
+    public function getConstantForm()
+    {
+        $success = true;
+        $clistId = Input::get('clistId');
+        $action = Input::get('action');
+        $messages = [];
+        $formHtml = null;
+        if (!$clistId) {
+            $success = false;
+            $messages[] = 'Error, clist id not found in function parameters';
+        } else {
+            $clist = Clist::find($clistId);
+
+            if (!$clist) {
+                $success = false;
+                $messages[] = "Error, could not find instance for id $clistId";
+            } else {
+                $formHtml = $clist->getEditForm($action, $clistId);
+            }
+        }
+
+        return Response::json(array(
+            'success' => $success,
+            'data'   => ['formHtml' => $formHtml, 'messages' => $messages]
+        ));
     }
 
     /**

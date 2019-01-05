@@ -22,6 +22,7 @@
     </div>
     <!-- ./ tabs content -->
 
+    <input type="hidden" name="clistId" id="clistId" value="{{ $clist->id }}">
     <table id="table" class="table table-sclisted table-hover">
         <thead>
         <tr>
@@ -86,31 +87,11 @@
 {!! Form::close() !!}
 </div>
 
+@include('partials.forms')
+@include('partials.clist-js')
+
 @endsection
 {{-- Scripts --}}
 @section('scripts')
-    <script type="text/javascript">
 
-        $('#addConstant').click(function (e) {
-            e.preventDefault();
-
-            let target = $(e.target);
-            if (target) {
-                let id = target.attr('id');
-                alert('table action for id: ' + id);
-            }
-        });
-
-        $('.row-action').click(function (e) {
-            e.preventDefault();
-
-            let target = $(e.target);
-            if (target) {
-                let idParts = target.attr('id').split('_');
-                let id = idParts[1];
-                alert('row action for id: ' + id);
-            }
-        });
-
-    </script>
 @endsection

@@ -140,6 +140,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                     'uses' => 'Admin\InstanceController@selectedSnippet'
                 ]
             );
+            Route::post(
+                '/get-constant-form',
+                [
+                    'as' => 'api-get-constant-form-route',
+                    'uses' => 'Admin\ClistController@getConstantForm'
+                ]
+            );
         }
     );
 
