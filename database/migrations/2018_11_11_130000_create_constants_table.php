@@ -33,8 +33,8 @@ class CreateConstantsTable extends Migration
 			$table->increments('id')->unsigned();
 			$table->unsignedInteger('clist_id')->nullable();
 			$table->unsignedInteger('constant_id')->nullable();
-			$table->foreign('clist_id')->references('id')->on('clists')->onDelete('set null');
-			$table->foreign('constant_id')->references('id')->on('constants')->onDelete('set null');
+//			$table->foreign('clist_id')->references('id')->on('clists')->onDelete('set null');
+//			$table->foreign('constant_id')->references('id')->on('constants')->onDelete('set null');
 			$table->timestamps();
             $table->softDeletes();
 		});

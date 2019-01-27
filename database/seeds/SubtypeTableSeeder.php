@@ -10,13 +10,6 @@ class SubtypeTableSeeder extends Seeder
     {
         DB::table('subtypes')->delete();
 
-        // Displays an image to the user
-        $subtype = new Subtype();
-        $subtype->type = Block::BLOCK_TYPE_ACTION;
-        $subtype->subtype = Subtype::SUBTYPE_IMAGE;
-        $subtype->label = 'Image';
-        $subtype->save();
-
         // Displays a message to the user, warning, error or completion
         $subtype = new Subtype();
         $subtype->type = Block::BLOCK_TYPE_ACTION;
@@ -43,13 +36,6 @@ class SubtypeTableSeeder extends Seeder
         $subtype->type = Block::BLOCK_TYPE_ACTION;
         $subtype->subtype = Subtype::SUBTYPE_TEXT;
         $subtype->label = 'Text';
-        $subtype->save();
-
-        // Presents a video to the user
-        $subtype = new Subtype();
-        $subtype->type = Block::BLOCK_TYPE_ACTION;
-        $subtype->subtype = Subtype::SUBTYPE_VIDEO;
-        $subtype->label = 'Video';
         $subtype->save();
     }
 }

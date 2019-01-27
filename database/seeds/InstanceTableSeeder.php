@@ -28,7 +28,6 @@ class InstanceTableSeeder extends Seeder
         $itrBlock = Block::where('type', Block::BLOCK_TYPE_ITERATION)->firstOrFail();
         $seqBlock = Block::where('type', Block::BLOCK_TYPE_SEQUENCE)->firstOrFail();
 
-        $imgSubtype = Subtype::where('subtype', Subtype::SUBTYPE_IMAGE)->firstOrFail();
         $insSubtype = Subtype::where('subtype', Subtype::SUBTYPE_INSTRUCTION)->firstOrFail();
         $qusSubtype = Subtype::where('subtype', Subtype::SUBTYPE_QUESTION)->firstOrFail();
         $txtSubtype = Subtype::where('subtype', Subtype::SUBTYPE_TEXT)->firstOrFail();
