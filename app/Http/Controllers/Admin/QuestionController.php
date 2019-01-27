@@ -37,8 +37,10 @@ class QuestionController extends AdminController
      */
     public function create()
     {
+        // Use an empty new object
+        $question = new Question;
         // Show the page
-        return view('admin.question.create_edit', compact([]));
+        return view('admin.question.create_edit', compact(['question']));
     }
 
     /**

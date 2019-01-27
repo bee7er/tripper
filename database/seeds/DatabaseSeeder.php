@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
+
+        //disable foreign key check for this connection before running seeders
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Add calls to Seeders here
         $this->call(UserTableSeeder::class);
@@ -34,6 +38,8 @@ class DatabaseSeeder extends Seeder
         $this->call(InstanceTableSeeder::class);
 
         $this->call(JourneyTableSeeder::class);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         Model::reguard();
     }

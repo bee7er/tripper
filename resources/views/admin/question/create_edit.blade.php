@@ -2,7 +2,7 @@
 {{-- Content --}}
 @section('content')
 
-@if (isset($question))
+@if (isset($question) && $question->id)
 {!! Form::model($question, array('url' => url('admin/question') . '/' . $question->id, 'method' => 'put','id'=>'fupload')) !!}
 @else
 {!! Form::open(array('url' => url('admin/question'), 'method' => 'post', 'id'=>'fupload')) !!}
@@ -60,7 +60,7 @@
             </button>
             <button type="submit" class="btn btn-sm btn-success">
                 <span class="glyphicon glyphicon-ok-circle"></span>
-                @if	(isset($question))
+                @if	(isset($question) && $question->id)
                     {{ trans("admin/modal.edit") }}
                 @else
                     {{trans("admin/modal.create") }}

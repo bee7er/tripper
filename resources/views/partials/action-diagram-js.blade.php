@@ -244,8 +244,6 @@
         } else {
             displayMessages(response.success, response.data.messages);
         }
-
-        $(".focus").focus();
     };
     function openForm(action)
     {
