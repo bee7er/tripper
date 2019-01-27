@@ -402,6 +402,16 @@ abstract class InstanceBase implements InstanceInterface
     }
 
     /**
+     * Checks that the instance is zoomable
+     *
+     * @return bool
+     */
+    public function isZoomable()
+    {
+        return false;
+    }
+
+    /**
      * Checks what is missing and returns an appropriate ContextMenu option
      * for each additional action that is needed
      *

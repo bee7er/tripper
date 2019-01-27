@@ -1,12 +1,9 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Model\ContextMenu;
 use App\Model\Factories\InstanceFactory;
 use App\Trip;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\AdminController;
 use App\Model\Instance;
 use Illuminate\Support\Facades\Response;
@@ -18,6 +15,7 @@ class ActionDiagramController extends AdminController
      */
     public function __construct()
     {
+        parent::__construct();
         view()->share('type', 'actionDiagram');
     }
 

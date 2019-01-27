@@ -40,6 +40,16 @@ class Action extends InstanceBase
     }
 
     /**
+     * Checks that the instance is zoomable
+     *
+     * @return bool
+     */
+    public function isZoomable()
+    {
+        return $this->obj->subtype === Subtype::SUBTYPE_SNIPPET;
+    }
+
+    /**
      * Checks what is missing and returns an appropriate ContextMenu option
      * for each additional action that is needed
      *

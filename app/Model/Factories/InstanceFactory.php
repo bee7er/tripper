@@ -15,6 +15,7 @@ use App\Model\Instances\ActionVideo;
 use App\Model\Instances\Comment;
 use App\Model\Instances\Condition;
 use App\Model\Instances\ElseInstance;
+use App\Model\Instances\InstanceInterface;
 use App\Model\Instances\Iteration;
 use App\Model\Instances\Sequence;
 use App\Model\Subtype;
@@ -30,7 +31,7 @@ class InstanceFactory
     /**
      * Get a controller instance; a sequence
      *
-     * @return Instance
+     * @return InstanceInterface
      */
     public static function getControllerInstance($tripId = 0)
     {
@@ -52,6 +53,7 @@ class InstanceFactory
         if (!$instance) {
             throw new \Exception('Could not instantiate controller instance');
         }
+        /** @noinspection PhpUndefinedFieldInspection */
         $controller = self::getInstance($instance->id);
 
         return $controller;
@@ -61,7 +63,7 @@ class InstanceFactory
      * Get an instance of a particular type
      *
      * @param $id
-     * @return Action|Comment|Condition|ElseInstance|Iteration|Sequence|null
+     * @return Action|Comment|Condition|ElseInstance|Iteration|Sequence
      * @throws \Exception
      */
     public static function getInstance($id)
@@ -116,8 +118,6 @@ class InstanceFactory
                 throw new \Exception("Unexpected instance type '{$instance->type}'");
                 break;
         }
-
-        return null;
     }
 
     /**
