@@ -31,24 +31,29 @@ class Clist extends Model
     }
 
     /**
-     * Return the form for editing / inserting an instance
-     * This base class funciton allows just the title only to be maintained
+     * Return the form for editing / inserting a constant
      *
+     * @param $constant
      * @param $action
-     * @param $insertAction
-     * @param $targetInstanceId - the initiator of the event on insert
      * @return string
      */
-    public function getEditForm($action, $clistId = null)
+    public function getEditForm($constant, $action)
     {
 
-        $title =  ucwords(str_replace('-', ' ', $action) . ' Constant');
+        $title =  ucwords(str_replace('-', ' ', $action));
+        $label =  $constant ? $constant->label : '';
+        $value =  $constant ? $constant->value : '';
+
         $html = '
-            <input type="hidden" id="instanceId" name="clistId" value="' . $clistId . '">
+            <input type="hidden" id="clistId" name="clistId" value="' . $this->id . '">
             <input type="hidden" id="action" name="action" value="' . $action . '">
             <div class="md-form mb-5">
-              <label for="title"><strong>Title</strong></label>
-              <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $title . '">
+              <label for="label"><strong>Label</strong></label>
+              <input type="text" placeholder="Enter label" name="label" id="label" class="focus" value="' . $label . '">
+            </div>
+            <div class="md-form mb-5">
+              <label for="label"><strong>Value</strong></label>
+              <input type="text" placeholder="Enter value" name="label" id="value" class="focus" value="' . $value . '">
             </div>';
 
 

@@ -7,7 +7,7 @@
      * @param callback
      * @param params - any additional parameters to pass on to the callback
      */
-    function ajaxCall(url, data, callback, params) {                     alert('xxxx');
+    function ajaxCall(url, data, callback, params) {
 
         $.ajax({
             type: 'post',

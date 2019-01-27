@@ -60,7 +60,6 @@ class InstanceController extends AdminController
                         if (!$instanceTemplate) {
                             throw new \Exception("Could not find instance template for action $action");
                         }
-
                         $formHtml = $instanceTemplate->getEditForm($action, $insertAction, $instance->obj->id);
                         break;
 

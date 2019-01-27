@@ -39,42 +39,42 @@ class InstanceTableSeeder extends Seeder
         // Template objects.  One of each type, used when creating a new instance of that type.
         $templateInstance = new Instance();
         $templateInstance->block_id = $actBlock->id;
-        $templateInstance->title = 'New action';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();
 
         $templateInstance = new Instance();
         $templateInstance->block_id = $cmtBlock->id;
-        $templateInstance->title = 'New comment';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();
 
         $templateInstance = new Instance();
         $templateInstance->block_id = $cndBlock->id;
-        $templateInstance->title = 'New condition';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();
 
         $templateInstance = new Instance();
         $templateInstance->block_id = $elsBlock->id;
-        $templateInstance->title = 'New else';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();
 
         $templateInstance = new Instance();
         $templateInstance->block_id = $itrBlock->id;
-        $templateInstance->title = 'New iteration';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();
         
         $templateInstance = new Instance();
         $templateInstance->block_id = $seqBlock->id;
-        $templateInstance->title = 'New sequence';
+        $templateInstance->title = '';
         $templateInstance->protected = true;
         $templateInstance->template = true;
         $templateInstance->save();

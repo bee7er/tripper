@@ -6,7 +6,7 @@ use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Subtype;
 
-class Action extends InstanceBase implements InstanceInterface
+class Action extends InstanceBase
 {
     /**
      * Action constructor

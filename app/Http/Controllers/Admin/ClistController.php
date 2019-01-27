@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Model\Clist;
 use App\Http\Requests\Admin\ClistRequest;
+use App\Model\Constant;
 use Datatables;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
@@ -142,6 +143,7 @@ class ClistController extends AdminController
     {
         $success = true;
         $clistId = Input::get('clistId');
+        $constantId = Input::get('constantId');
         $action = Input::get('action');
         $messages = [];
         $formHtml = null;
@@ -151,11 +153,16 @@ class ClistController extends AdminController
         } else {
             $clist = Clist::find($clistId);
 
+            $constant = null;
+            if ($constantId) {
+                $constant = Constant::find($constantId);
+            }
+
             if (!$clist) {
                 $success = false;
                 $messages[] = "Error, could not find instance for id $clistId";
             } else {
-                $formHtml = $clist->getEditForm($action, $clistId);
+                $formHtml = $clist->getEditForm($constant, $action);
             }
         }
 

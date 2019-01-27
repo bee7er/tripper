@@ -4,7 +4,7 @@ namespace App\Model\Instances;
 
 use App\Model\ContextMenu;
 
-class Condition extends InstanceBase implements InstanceInterface
+class Condition extends InstanceBase
 {
     /**
      * Build and return the string representing the opening line text
