@@ -129,7 +129,8 @@
         }
     };
 
-    window.addEventListener("contextmenu", function(e)
+    // NB Attaching the context menu just to the action diagram
+    $('#actionDiagram').get(0).addEventListener("contextmenu", function(e)
     {
         e.preventDefault();
 
