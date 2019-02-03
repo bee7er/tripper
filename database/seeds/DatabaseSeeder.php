@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(OperatorTableSeeder::class);
         $this->call(ContextTableSeeder::class);
-        $this->call(StatusTableSeeder::class);
         $this->call(ConstantTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
         $this->call(TripTableSeeder::class);

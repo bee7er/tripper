@@ -11,6 +11,7 @@ class CreateQuestionsTable extends Migration
 	 */
 	public function up()
 	{
+		// NB The label is how the response is identified in the action diagram
 		Schema::create('questions', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();

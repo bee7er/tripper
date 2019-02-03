@@ -38,8 +38,13 @@ class ClistController extends AdminController
      */
     public function create()
     {
+        // Use an empty new object
+        $clist = new Clist();
         // Show the page
-        return view('admin.clist.create_edit', compact([]));
+        $constants = Clist::getListEntries($clist->id);
+
+        // Show the page
+        return view('admin.clist.create_edit', compact(['clist', 'constants']));
     }
 
     /**

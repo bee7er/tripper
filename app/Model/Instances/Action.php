@@ -92,21 +92,26 @@ class Action extends InstanceBase
         $additionalEditForm = $disabled = '';
         if (ContextMenu::CM_ACTION_EDIT === $action) {
             $additionalEditForm = $this->getAdditionalEditForm();
-            $disabled = "disabled='disabled'";
+            $disabled = true;
         }
 
-        $select = '<select name="subtype_id" id="subtype_id" ' . $disabled . '>';
-        $subtypeList = Subtype::getSubtypeList();
-        if ($subtypeList) {
-            foreach ($subtypeList as $key => $entry) {
-                $selected = '';
-                if (ContextMenu::CM_ACTION_EDIT === $action) {
-                    $selected = ($this->obj->subtype_id == $key ? 'selected': '');
+        if ($disabled) {
+            $subtype = Subtype::getSubtype($this->obj->subtype_id);
+            $select = $subtype->label;
+        } else {
+            $select = '<select name="subtype_id" id="subtype_id">';
+            $subtypeList = Subtype::getSubtypeList();
+            if ($subtypeList) {
+                foreach ($subtypeList as $key => $entry) {
+                    $selected = '';
+                    if (ContextMenu::CM_ACTION_EDIT === $action) {
+                        $selected = ($this->obj->subtype_id == $key ? 'selected': '');
+                    }
+                    $select .= "<option $selected value='$key'>" . $entry . "</option>";
                 }
-                $select .= "<option $selected value='$key'>" . $entry . "</option>";
             }
+            $select .= '</select>';
         }
-        $select .= '</select>';
 
         return '
             <div class="md-form mb-5">' .

@@ -9,7 +9,6 @@ use App\Model\Context;
 use App\Model\Instance;
 use App\Model\Operator;
 use App\Model\Question;
-use App\Model\Status;
 use App\Model\Subtype;
 use App\Trip;
 
@@ -32,8 +31,8 @@ class InstanceTableSeeder extends Seeder
         $qusSubtype = Subtype::where('subtype', Subtype::SUBTYPE_QUESTION)->firstOrFail();
         $txtSubtype = Subtype::where('subtype', Subtype::SUBTYPE_TEXT)->firstOrFail();
 
-        $loanAmountQuestion = Question::where('label', 'Determine loan amount')->firstOrFail();
-        $repaymentTypeQuestion = Question::where('label', 'Determine repayment type')->firstOrFail();
+        $loanAmountQuestion = Question::where('label', 'Loan amount')->firstOrFail();
+        $repaymentTypeQuestion = Question::where('label', 'Repayment type')->firstOrFail();
 
         // Template objects.  One of each type, used when creating a new instance of that type.
         $templateInstance = new Instance();
@@ -128,7 +127,6 @@ class InstanceTableSeeder extends Seeder
         $cmpCondition = new Condition();
         $cmpCondition->operator_id = $gtOperator->id;
         $cmpCondition->context_id = $conContext->id;
-        $cmpCondition->status_id = null;
         $cmpCondition->constant_id = $loanLimitConstant->id;
         $cmpCondition->save();
 
@@ -167,17 +165,15 @@ class InstanceTableSeeder extends Seeder
         $response->response = 'repayment';
 
         $eqOperator = Operator::where('operator', Operator::OPERATOR_EQ)->firstOrFail();
-        $stsContext = Context::where('context', Context::CONTEXT_STATUS)->firstOrFail();
-        $repaymentTypeStatus = Status::where('label', 'Repayment')->firstOrFail();
+        $stsContext = Context::where('context', Context::CONTEXT_CONSTANT)->firstOrFail();
+        $repaymentTypeConstant = Constant::where('label', 'Repayment')->firstOrFail();
 
         $cmpCondition = new Condition();
         $cmpCondition->operator_id = $eqOperator->id;
         $cmpCondition->context_id = $stsContext->id;
-        $cmpCondition->status_id = $repaymentTypeStatus->id;
-        $cmpCondition->constant_id = null;
+        $cmpCondition->constant_id = $repaymentTypeConstant->id;
         $cmpCondition->save();
 
-        // TODO Status condition
         $stsInstance = new Instance();
         $stsInstance->block_id = $cndBlock->id;
         $stsInstance->trip_id = $trip->id;

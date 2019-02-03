@@ -161,6 +161,9 @@
 
     const zoomTo = function(level)
     {
+        if (level === 'back') {
+            level = zoomList.length - 2;
+        }
         // Go to the nominated level
         if (level < zoomList.length) {
             for (let i=(zoomList.length - 1); i > 0; i--) {
@@ -177,7 +180,7 @@
     {
         let bcTrail = 'None';
         if (zoomList && zoomList.length > 0) {
-            bcTrail = '';
+            bcTrail = '<span id="bc_back" class="bc">◀</span>';
             for (let i=0; i < zoomList.length; i++) {
                 bcTrail += '<span id="bc_' + i + '" class="bc">' + zoomList[i].title + '</span>/ ';
             }

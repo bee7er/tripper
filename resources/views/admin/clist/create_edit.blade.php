@@ -2,7 +2,7 @@
 {{-- Content --}}
 @section('content')
 
-@if (isset($clist))
+@if (isset($clist) && $clist->id)
 {!! Form::model($clist, array('url' => url('admin/clist') . '/' . $clist->id, 'method' => 'put','id'=>'fupload')) !!}
 @else
 {!! Form::open(array('url' => url('admin/clist'), 'method' => 'post', 'id'=>'fupload')) !!}
@@ -71,7 +71,7 @@
             </button>
             <button type="submit" class="btn btn-sm btn-success">
                 <span class="glyphicon glyphicon-ok-circle"></span>
-                @if	(isset($clist))
+                @if	(isset($clist) && $clist->id)
                     {{ trans("admin/modal.edit") }}
                 @else
                     {{trans("admin/modal.create") }}

@@ -11,14 +11,14 @@ class QuestionTableSeeder extends Seeder
 
         $question = new Question();
         $question->type = Question::QUESTION_TYPE_TEXT;
-        $question->label = 'Determine loan amount';
+        $question->label = 'Loan amount';
         $question->question = 'How much do you want to borrow?';
         $question->required = true;
         $question->save();
 
         $question = new Question();
         $question->type = Question::QUESTION_TYPE_TEXT;
-        $question->label = 'Determine repayment type';
+        $question->label = 'Repayment type';
         $question->question = 'Do you want a repayment or interest only mortgage?';
         $question->required = true;
         $question->save();

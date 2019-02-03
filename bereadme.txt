@@ -13,6 +13,13 @@
 
     Maintain Constants separately too?
 
+    Make it so that once an action has been created that its type cannot be changed.  In this way the editing of the
+    action can be actioned correctly.
+
+    Create the action and then edit it to complete the details.
+
+    When selecting a snippet do not include the calling function
+
     Add lists to the Question type list
 
     Add response and required details to edit question
@@ -30,8 +37,6 @@
             list - of discrete conditions
 
         Have a response type and subclass that
-
-    Edit other action types, too
 
     Pass in the zoom list so we avoid recursion
 

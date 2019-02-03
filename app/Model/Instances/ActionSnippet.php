@@ -88,7 +88,10 @@ class ActionSnippet extends Action
         if (count($trips)) {
             $select .= '<select name="snippetTrip_id" id="snippetTrip_id">';
             foreach ($trips as $entry) {
-                $selected = ($this->obj->snippetTrip_id == $entry->id ? 'selected': '');
+                if ($this->obj->trip_id === $entry->id) {
+                    continue;
+                }
+                $selected = ($this->obj->snippetTrip_id === $entry->id ? 'selected': '');
                 $select .= "<option $selected value='$entry->id'>" . $entry->title . "</option>";
             }
             $select .= '</select>';

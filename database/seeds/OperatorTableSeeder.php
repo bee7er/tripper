@@ -17,7 +17,7 @@ class OperatorTableSeeder extends Seeder
         $operator->save();
 
         $operator = new Operator();
-        $operator->operator = Operator::OPERATOR_LE;
+        $operator->operator = Operator::OPERATOR_NE;
         $operator->save();
 
         $operator = new Operator();
@@ -25,11 +25,19 @@ class OperatorTableSeeder extends Seeder
         $operator->save();
 
         $operator = new Operator();
-        $operator->operator = Operator::OPERATOR_GE;
+        $operator->operator = Operator::OPERATOR_LE;
         $operator->save();
 
         $operator = new Operator();
         $operator->operator = Operator::OPERATOR_GT;
+        $operator->save();
+
+        $operator = new Operator();
+        $operator->operator = Operator::OPERATOR_GE;
+        $operator->save();
+
+        $operator = new Operator();
+        $operator->operator = Operator::OPERATOR_IN;
         $operator->save();
     }
 }
