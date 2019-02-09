@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Admin;
 
+use App\Trip;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -314,13 +315,15 @@ class InstanceController extends AdminController
 
                 case ContextMenu::CM_ACTION_ZOOM:
                     // Respond with the snippet to zoom
+                    $snippetInstance = Trip::find($instance->snippetTrip_id);
+
                     return Response::json(array(
                      'success' => true,
                      'data'   => [
                          'action' => ContextMenu::CM_ACTION_ZOOM,
-                         'tripId' => $instance->snippetTrip_id,
-                         'title' => $instance->title,
-                         'messages' => 'Zoomed to snippet ' . $instance->title
+                         'tripId' => $snippetInstance->id,
+                         'title' => $snippetInstance->title,
+                         'messages' => 'Zoomed to snippet ' . $snippetInstance->title
                      ]));
 
                 default:
