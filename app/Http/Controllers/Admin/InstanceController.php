@@ -195,7 +195,7 @@ class InstanceController extends AdminController
                 throw new \Exception("Error, could not find instance for id {$formData['instanceId']}");
             }
 
-            $result = $instance->save($formData);
+            $result = $instance->insertOrUpdate($formData);
         } catch (\Exception $e) {
             $result['success'] = false;
             $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
@@ -276,7 +276,7 @@ class InstanceController extends AdminController
             $result['success'] = false;
             $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
 
-            Log::info("Error saving instance", [
+            Log::info("Error deleting instance", [
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine(),

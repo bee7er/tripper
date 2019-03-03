@@ -70,9 +70,9 @@
 
         $('#modalForm').modal('hide');
 
-        let url = "{{config('app.base_url')}}admin/api/save-instance/";
+        let url = "{{config('app.base_url')}}admin/api/save-clist/";
         if (action === '{{ \App\Model\ContextMenu::CM_ACTION_DELETE }}') {
-            url = "{{config('app.base_url')}}admin/api/delete-instance/";
+            url = "{{config('app.base_url')}}admin/api/delete-clist/";
         }
 
         ajaxCall(url, JSON.stringify(formData), submitFormCallback);

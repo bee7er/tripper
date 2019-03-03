@@ -14,7 +14,9 @@ class CreateContextsTable extends Migration
 		Schema::create('contexts', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
+			$table->integer('seq')->unsigned();
 			$table->char('context', 3);
+			$table->string('tooltip');
 			$table->timestamps();
             $table->softDeletes();
 		});

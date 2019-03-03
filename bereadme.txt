@@ -9,7 +9,20 @@
 
 # TODO
 
+    What does a condition look like?
+
+        if CTX1.field REL CTX2.field
+
+            CTX1 = CON, LST, VAR
+
+            CTX2 = CON, LST, VAR
+
+
     Add Constants to Lists
+
+    After Add Constant to list then reload the list so we can see it
+
+    Allow constants to be deleted from the list
 
     Maintain Constants separately too?
 
@@ -20,23 +33,7 @@
 
     When selecting a snippet do not include the calling function
 
-    Add lists to the Question type list
-
     Add response and required details to edit question
-
-    Edit question:
-
-        The text for the question is just a comment in the action diagram
-
-        Response:
-
-            free-format - text
-            currency - 10,2
-            percentage - 0 to 100
-
-            list - of discrete conditions
-
-        Have a response type and subclass that
 
     Pass in the zoom list so we avoid recursion
 

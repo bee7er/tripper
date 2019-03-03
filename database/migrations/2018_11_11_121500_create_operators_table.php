@@ -14,7 +14,9 @@ class CreateOperatorsTable extends Migration
 		Schema::create('operators', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
 			$table->increments('id')->unsigned();
+			$table->integer('seq')->unsigned();
 			$table->char('operator', 2);
+			$table->string('tooltip');
 			$table->timestamps();
             $table->softDeletes();
 		});

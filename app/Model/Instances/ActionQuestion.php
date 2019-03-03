@@ -3,6 +3,8 @@
 namespace App\Model\Instances;
 
 use App\Model\Block;
+use App\Model\Clist;
+use App\Model\ClistConstant;
 use App\Model\ContextMenu;
 use App\Model\Instance;
 use App\Model\Question;
@@ -10,6 +12,23 @@ use Illuminate\Support\Facades\Log;
 
 class ActionQuestion extends Action
 {
+    const LIST_TYPE_CURRENCY = 'cur';
+    const LIST_TYPE_DATE = 'dte';
+    const LIST_TYPE_DATETIME = 'dtm';
+    const LIST_TYPE_LIST = 'lst';
+    const LIST_TYPE_NUMBER = 'nbr';
+    const LIST_TYPE_PERCENTAGE = 'per';
+    const LIST_TYPE_TEXT = 'txt';
+
+    const LIST_TYPE_DESCRIPTIONS = [
+        self::LIST_TYPE_CURRENCY => 'User response is a currency amount',
+        self::LIST_TYPE_DATE => 'User response is a Date',
+        self::LIST_TYPE_DATETIME => 'User response is a DateTime',
+        self::LIST_TYPE_LIST => 'User response is to select from a list',
+        self::LIST_TYPE_NUMBER => 'User response is a number',
+        self::LIST_TYPE_PERCENTAGE => 'User response is a percentage',
+        self::LIST_TYPE_TEXT => 'User response is to enter some text',
+    ];
     /**
      * Action constructor
      * @param Instance $instance
@@ -83,7 +102,8 @@ class ActionQuestion extends Action
         // Allow the user to select a question
         $questions = Question::get();
 
-        $select = '<br><label for="question_id"><strong>Question</strong></label>:&nbsp;';
+        $html = '';
+        $select = '<br><label for="question_id"><strong>Questions</strong></label>:&nbsp;';
         if (count($questions)) {
             $select .= '<select name="question_id" id="question_id">';
             foreach ($questions as $entry) {
@@ -93,7 +113,29 @@ class ActionQuestion extends Action
             $select .= '</select>';
         }
 
-        return "<div>$select</div>";
+        $html .= "<div>$select</div>";
+
+        if ($this->obj->question_id) {
+            $question = Question::find($this->obj->question_id);
+            // Add a description of what the reponse type is
+            $html .= "<br><div><strong>" . self::LIST_TYPE_DESCRIPTIONS[$question->type] . "</strong></div>";
+            // If it is a list, then add the possible responses
+            if ($question->clist_id) {
+                $clistConstants = Clist::where('clists.id', $question->clist_id)
+                    ->join("clist_constants", "clist_constants.clist_id", '=', 'clists.id')
+                    ->join('constants', 'constants.id', '=', 'clist_constants.constant_id')
+                    ->orderBy("constants.label")->get();
+
+                if ($clistConstants) {
+                    foreach ($clistConstants as $clistConstant) {
+                        $html .= '<div>'  . $clistConstant->label .  '</div>';
+                    }
+                }
+
+            }
+        }
+
+        return $html;
     }
 
     /**

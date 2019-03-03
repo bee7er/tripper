@@ -2,9 +2,12 @@
 
 namespace App\Model\Instances;
 
+use App\Model\Context;
 use App\Model\ContextMenu;
+use App\Model\Operator;
+use App\Model\Response;
 
-class Condition extends InstanceBase
+class Condition extends AbstractInstance
 {
     /**
      * Build and return the string representing the opening line text
@@ -62,13 +65,23 @@ class Condition extends InstanceBase
      */
     public function getEditCondition($action)
     {
-        return '
-            <div class="md-form mb-5">
-              <label for="title"><strong>Title</strong></label>
-              <input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $this->obj->title . '">
-              <div>Other bits and pieces</div>
-            </div>
-        ';
+        $html = '<div class="md-form mb-5">';
+        $html .= '<label for="title"><strong>Title</strong></label>';
+        $html .= '<input type="text" placeholder="Enter title" name="title" id="title" class="focus" value="' . $this->obj->title . '">';
+        $html .= '<div>';
+        $html .= 'if&nbsp;&nbsp;';
+        $html .= 'RSP&nbsp;<strong>.</strong>&nbsp;';
+        $html .= Response::getResponsesList();
+        $html .= '&nbsp;&nbsp;';
+        $html .= Operator::getOperatorsList();
+        $html .= '&nbsp;&nbsp;';
+        $html .= Context::getContextsList();
+        $html .= '&nbsp;<strong>.</strong>&nbsp;';
+        $html .= Response::getResponsesList();
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
     }
 
 }

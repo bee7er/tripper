@@ -5,7 +5,7 @@ namespace App\Model\Instances;
 use App\Model\Block;
 use App\Model\ContextMenu;
 
-class ElseInstance extends InstanceBase
+class ElseInstance extends AbstractInstance
 {
     /**
      * Build and return the string representing the closing line

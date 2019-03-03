@@ -4,7 +4,7 @@ namespace App\Model\Instances;
 
 use App\Model\ContextMenu;
 
-class Sequence extends InstanceBase
+class Sequence extends AbstractInstance
 {
     /**
      * Build and return the string representing the opening line text

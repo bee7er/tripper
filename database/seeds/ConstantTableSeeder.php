@@ -53,7 +53,7 @@ class ConstantTableSeeder extends Seeder
         $clistConstant->save();
 
         $clist = new Clist();
-        $clist->label = 'Payment type';
+        $clist->label = 'Repayment type';
         $clist->save();
 
         $clistConstant = new ClistConstant();

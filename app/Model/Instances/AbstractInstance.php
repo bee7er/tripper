@@ -7,7 +7,7 @@ use App\Model\FormTrait;
 use App\Model\Instance;
 use Illuminate\Support\Facades\Log;
 
-abstract class InstanceBase implements InstanceInterface
+abstract class AbstractInstance implements InstanceInterface
 {
     use FormTrait;
 
@@ -36,7 +36,7 @@ abstract class InstanceBase implements InstanceInterface
     public $validFields;
 
     /**
-     * InstanceBase constructor.
+     * AbstractInstance constructor.
      * @param Instance $instance
      */
     public function __construct(Instance $instance)
@@ -52,7 +52,7 @@ abstract class InstanceBase implements InstanceInterface
      * @param $formData
      * @return array
      */
-    public function save($formData)
+    public function insertOrUpdate($formData)
     {
         $success = null;
         switch ($formData['action']) {

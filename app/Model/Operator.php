@@ -21,4 +21,35 @@ class Operator extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded  = array('id');
+
+    /**
+     * Get all the operators
+     *
+     * @return array
+     */
+    public static function getOperators()
+    {
+        return self::select()
+            ->orderBy("operators.seq")
+            ->get();
+    }
+
+    /**
+     * Builds and returns a select listbox of Operators
+     *
+     * @param $selectedOperator
+     * @return string
+     */
+    public static function getOperatorsList($selectedOperator = null)
+    {
+        $operators = self::getOperators();
+        $html = '<select name="operator" id="operator">';
+        foreach ($operators as $operator) {
+            $selected = ($operator == $selectedOperator ? 'selected' : '');
+            $html .= "<option value='{$operator->id}' $selected>" . strtoupper($operator->operator) . "</option>";
+        }
+        $html .= "</select>";
+
+        return $html;
+    }
 }

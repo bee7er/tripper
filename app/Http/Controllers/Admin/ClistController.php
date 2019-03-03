@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Model\Clist;
 use App\Http\Requests\Admin\ClistRequest;
+use App\Model\ClistConstant;
 use App\Model\Constant;
 use Datatables;
 use Illuminate\Support\Facades\Input;
@@ -156,6 +157,7 @@ class ClistController extends AdminController
             $success = false;
             $messages[] = 'Error, clist id not found in function parameters';
         } else {
+            /** @var Clist $clist */
             $clist = Clist::find($clistId);
 
             $constant = null;
@@ -174,6 +176,41 @@ class ClistController extends AdminController
         return Response::json(array(
             'success' => $success,
             'data'   => ['formHtml' => $formHtml, 'messages' => $messages]
+        ));
+    }
+
+    /**
+     * Save a clist
+     *
+     * @return Response
+     */
+    public function saveAction()
+    {
+        $result = [];
+        try {
+            $formData = $this->getFormData();
+            if (!isset($formData['clistId'])) {
+                throw new \Exception('Clist id not supplied for save function');
+            }
+
+            $clistConstant = new ClistConstant();
+
+            $result = $clistConstant->insertOrUpdate($formData);
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['data'] = ['messages' => [$e->getMessage() . ' For more info see log.']];
+
+            Log::info("Error saving clist constant", [
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                print_r($formData, true)
+            ]);
+        }
+
+        return Response::json(array(
+            'success' => $result['success'],
+            'data'   => $result['data'],
         ));
     }
 

@@ -22,5 +22,6 @@ class VerifyCsrfToken extends BaseVerifier
         'admin/api/selected-question',
         'admin/api/selected-snippet',
         'admin/api/send-action',
+        'admin/api/save-clist',
     ];
 }

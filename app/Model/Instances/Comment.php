@@ -2,7 +2,7 @@
 
 namespace App\Model\Instances;
 
-class Comment extends InstanceBase
+class Comment extends AbstractInstance
 {
 
 }

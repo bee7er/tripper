@@ -147,6 +147,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
                     'uses' => 'Admin\ClistController@getConstantForm'
                 ]
             );
+            Route::post(
+                '/save-clist',
+                [
+                    'as' => 'api-save-clist-route',
+                    'uses' => 'Admin\ClistController@saveAction'
+                ]
+            );
         }
     );
 

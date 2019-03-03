@@ -53,7 +53,7 @@ class Clist extends Model
             </div>
             <div class="md-form mb-5">
               <label for="label"><strong>Value</strong></label>
-              <input type="text" placeholder="Enter value" name="label" id="value" class="focus" value="' . $value . '">
+              <input type="text" placeholder="Enter value" name="value" id="value" class="focus" value="' . $value . '">
             </div>';
 
 

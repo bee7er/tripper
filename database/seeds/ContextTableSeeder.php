@@ -14,18 +14,20 @@ class ContextTableSeeder extends Seeder
 
         $context = new Context();
         $context->context = Context::CONTEXT_RESPONSE;     // Responses
-        $context->save();
-
-        $context = new Context();
-        $context->context = Context::CONTEXT_STATUS;     // Status
+        $context->seq = 1;
+        $context->tooltip = 'Response fields';
         $context->save();
 
         $context = new Context();
         $context->context = Context::CONTEXT_CONSTANT;     // Constant
+        $context->seq = 3;
+        $context->tooltip = 'Constant value';
         $context->save();
 
         $context = new Context();
         $context->context = Context::CONTEXT_LIST;     // Lists
+        $context->seq = 4;
+        $context->tooltip = 'List of values';
         $context->save();
     }
 }
