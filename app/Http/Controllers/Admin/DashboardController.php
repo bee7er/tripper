@@ -17,6 +17,11 @@ class DashboardController extends AdminController {
 
 	public function index()
 	{
+        //phpinfo();
+
+        //die('in dashoard controller');
+
+
         $title = "Dashboard";
 
         $users = User::count();

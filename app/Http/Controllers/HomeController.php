@@ -51,6 +51,6 @@ class HomeController extends Controller
 			Instance::loadChildren($controller, $tree, 0);
 		}
 
-		return view('pages.home', compact('resources', 'notices', 'loggedIn', 'user', 'tree'));
+		return view('pages.home', compact('loggedIn', 'user', 'tree'));
 	}
 }

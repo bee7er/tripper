@@ -1,11 +1,16 @@
 # Set up database
 
+    vagrant ssh
+    mysql -uroot -psecret
+    create database trip
+    GRANT ALL ON trip.* TO trip_admin@'localhost' IDENTIFIED BY 'Cantata3546';
+
     php artisan migrate
     php artisan db:seed
 
 # Kick off in a browser with:
 
-    http://localhost/tripper/public/
+    http://tripper.test/
 
 # TODO
 
